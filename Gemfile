@@ -51,6 +51,9 @@ group :development, :test do
 end
 
 group :development do
+  # Add schema info to models, fixtures etc for ease of reference
+  gem 'annotate'
+
   # Static analysis of code
   gem 'brakeman'
 
