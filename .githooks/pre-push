@@ -1,0 +1,4 @@
+#!/bin/bash
+# https://www.git-scm.com/docs/githooks#_pre_push
+
+bundle exec pronto run --exit-code
