@@ -40,6 +40,8 @@ group :development, :test do
   # REPL based inspection and debugging
   gem 'pry'
 
+  gem 'responders'
+
   # Style and Lint checking
   gem 'rubocop', require: false
   gem 'rubocop-performance', require: false
