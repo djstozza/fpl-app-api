@@ -13,13 +13,8 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe '/api/teams', type: :request do
-  let(:team_1) { FactoryBot.build(:team) }
-  let(:team_2) { FactoryBot.build(:team) }
-
-  before do
-    team_1.save
-    team_2.save
-  end
+  let!(:team1) { create(:team) }
+  let!(:team2) { create(:team) }
 
   describe 'GET /index' do
     it 'renders a successful response' do
@@ -28,14 +23,14 @@ RSpec.describe '/api/teams', type: :request do
       expect(response).to be_successful
       expect(api.data).to contain_exactly(
         {
-          'id'=>'1',
-          'name'=>'Team Name 1',
-          'short_name'=>'TN1',
+          'id' => team1.to_param,
+          'name' => team1.name,
+          'short_name' => team1.short_name,
         },
         {
-          'id'=>'2',
-          'name'=>'Team Name 2',
-          'short_name'=>'TN2'
+          'id' => team2.to_param,
+          'name' => team2.name,
+          'short_name' => team2.short_name,
         },
       )
     end
@@ -43,8 +38,20 @@ RSpec.describe '/api/teams', type: :request do
 
   describe 'GET /show' do
     it 'renders a successful response' do
-      get api_team_url(team_1), as: :json
+      api.get api_team_url(team1), as: :json
       expect(response).to be_successful
+
+      expect(api.data).to eq(
+        'id' => team1.to_param,
+        'name' => team1.name,
+        'short_name' => team1.short_name
+      )
+    end
+
+    it 'returns a 404 if not found' do
+      api.get api_team_url(team2.id + 1)
+
+      expect(response).to have_http_status(404)
     end
   end
 end

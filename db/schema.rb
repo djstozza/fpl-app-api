@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_06_223032) do
+ActiveRecord::Schema.define(version: 2021_02_14_101017) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "positions", force: :cascade do |t|
+    t.string "singular_name"
+    t.string "singular_name_short"
+    t.string "plural_name"
+    t.string "plural_name_short"
+    t.integer "squad_select"
+    t.integer "squad_min_play"
+    t.integer "squad_max_play"
+    t.integer "external_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "teams", force: :cascade do |t|
     t.integer "external_id"
