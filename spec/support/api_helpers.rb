@@ -1,3 +1,4 @@
+require 'support/api_helpers/not_found_helper'
 require 'support/api_helpers/test_client'
 
 module APIHelpers

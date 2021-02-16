@@ -60,6 +60,8 @@ RSpec.describe '/api/rounds', type: :request do
     end
 
     describe 'GET /show' do
+      include_examples 'not found', 'round'
+
       it 'renders a successful response' do
         api.get api_round_url(round1)
         expect(response).to be_successful
@@ -73,12 +75,6 @@ RSpec.describe '/api/rounds', type: :request do
           'is_current' => false,
           'is_next' => false,
         )
-      end
-
-      it 'returns a 404 if not found' do
-        api.get api_round_url(Round.last.id + 1)
-
-        expect(response).to have_http_status(404)
       end
     end
   end

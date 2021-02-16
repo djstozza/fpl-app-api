@@ -37,6 +37,8 @@ RSpec.describe '/api/teams', type: :request do
   end
 
   describe 'GET /show' do
+    include_examples 'not found', 'team'
+
     it 'renders a successful response' do
       api.get api_team_url(team1)
       expect(response).to be_successful
@@ -46,12 +48,6 @@ RSpec.describe '/api/teams', type: :request do
         'name' => team1.name,
         'short_name' => team1.short_name
       )
-    end
-
-    it 'returns a 404 if not found' do
-      api.get api_team_url(team2.id + 1)
-
-      expect(response).to have_http_status(404)
     end
   end
 end
