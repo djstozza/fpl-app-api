@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_14_101017) do
+ActiveRecord::Schema.define(version: 2021_02_15_071034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,21 @@ ActiveRecord::Schema.define(version: 2021_02_14_101017) do
     t.integer "squad_select"
     t.integer "squad_min_play"
     t.integer "squad_max_play"
+    t.integer "external_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "rounds", force: :cascade do |t|
+    t.string "name"
+    t.string "deadline_time"
+    t.boolean "finished"
+    t.boolean "data_checked"
+    t.integer "deadline_time_epoch"
+    t.integer "deadline_time_game_offset"
+    t.boolean "is_previous"
+    t.boolean "is_current"
+    t.boolean "is_next"
     t.integer "external_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
