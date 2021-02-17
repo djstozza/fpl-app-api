@@ -15,4 +15,5 @@
 #  external_id         :integer
 #
 class Position < ApplicationRecord
+  validates :external_id, presence: true, uniqueness: true
 end

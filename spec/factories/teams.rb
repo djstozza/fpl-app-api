@@ -30,6 +30,10 @@
 #
 FactoryBot.define do
   factory :team do
+    sequence :external_id do |n|
+      n
+    end
+
     sequence :code do |n|
       n
     end

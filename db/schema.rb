@@ -10,10 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_15_071034) do
+ActiveRecord::Schema.define(version: 2021_02_17_082401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "fixtures", force: :cascade do |t|
+    t.string "kickoff_time"
+    t.integer "team_h_difficulty"
+    t.integer "team_a_difficulty"
+    t.integer "code"
+    t.integer "team_h_score"
+    t.integer "team_a_score"
+    t.integer "minutes"
+    t.boolean "started"
+    t.boolean "finished"
+    t.boolean "provisional_start_time"
+    t.boolean "finished_provisional"
+    t.jsonb "stats"
+    t.bigint "round_id"
+    t.bigint "team_h_id"
+    t.bigint "team_a_id"
+    t.integer "external_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["round_id"], name: "index_fixtures_on_round_id"
+    t.index ["team_a_id"], name: "index_fixtures_on_team_a_id"
+    t.index ["team_h_id"], name: "index_fixtures_on_team_h_id"
+  end
 
   create_table "positions", force: :cascade do |t|
     t.string "singular_name"

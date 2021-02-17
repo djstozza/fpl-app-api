@@ -17,4 +17,7 @@
 #  external_id               :integer
 #
 class Round < ApplicationRecord
+  has_many :fixtures
+
+  validates :external_id, presence: true, uniqueness: true
 end

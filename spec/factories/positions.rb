@@ -16,6 +16,10 @@
 #
 FactoryBot.define do
   factory :position do
+    sequence :external_id do |n|
+      n
+    end
+
     trait :goalkeeper do
       plural_name { 'Goalkeepers' }
       plural_name_short { 'GKP' }

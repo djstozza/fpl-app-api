@@ -29,4 +29,8 @@
 #  external_id           :integer
 #
 class Team < ApplicationRecord
+  has_many :home_fixtures, class_name: 'Fixture', foreign_key: :team_h_id
+  has_many :away_fixtures, class_name: 'Fixture', foreign_key: :team_a_id
+
+  validates :external_id, presence: true, uniqueness: true
 end
