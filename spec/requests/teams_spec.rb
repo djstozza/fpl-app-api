@@ -16,6 +16,8 @@ RSpec.describe '/api/teams', type: :request do
   let!(:team1) { create(:team) }
   let!(:team2) { create(:team) }
 
+  let!(:player) { create(:player, team: team1) }
+
   describe 'GET /index' do
     it 'renders a successful response' do
       api.get api_teams_url
@@ -43,10 +45,18 @@ RSpec.describe '/api/teams', type: :request do
       api.get api_team_url(team1)
       expect(response).to be_successful
 
-      expect(api.data).to eq(
+      expect(api.data).to include(
         'id' => team1.to_param,
         'name' => team1.name,
-        'short_name' => team1.short_name
+        'short_name' => team1.short_name,
+        'players' => including(
+          a_hash_including(
+            'id' => player.to_param,
+            'position' => a_hash_including(
+              'id' => player.position.to_param,
+            ),
+          ),
+        ),
       )
     end
   end

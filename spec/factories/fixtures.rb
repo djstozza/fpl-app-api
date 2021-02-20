@@ -38,13 +38,49 @@ FactoryBot.define do
       n
     end
 
-    association :round
-    association :away_team, factory: :team
-    association :home_team, factory: :team
     team_h_difficulty { 4 }
     team_a_difficulty { 1 }
+    team_h_score { 1 }
+    team_a_score { 0 }
     kickoff_time { Time.now }
     started { true }
     finished { true }
+    minutes { 90 }
+    stats do
+      [
+        {
+          'identifier' => 'goals_scored',
+          'a' => [],
+          'h'=> [{ 'value' => 1, 'element' => 1 }],
+        },
+        {
+          'identifier' => 'assists',
+          'a' => [],
+          'h'=> [{ 'value' => 1, 'element' => 2 }],
+        },
+        {
+          'identifier' => 'saves',
+          'a' => [{ 'value' => 4, 'element' => 3 }],
+          'h'=> [],
+        },
+        { 'identifier' => 'own_goals', 'a' => [], 'h' => [] },
+        { 'identifier' => 'penalties_saved', 'a' => [], 'h' => [] },
+        { 'identifier' => 'penalties_missed', 'a' => [], 'h' => [] },
+        { 'identifier' => 'yellow_cards', 'a' => [], 'h' => [] },
+        { 'identifier' => 'red_cards', 'a' => [], 'h' => [] },
+        {
+          'identifier' => 'bonus',
+          'a' => [{ 'value' => 1, 'element' => 3 }],
+          'h' => [
+            { 'value' => 3, 'element' => 1 },
+            { 'value' => 2, 'element' => 2 },
+          ],
+        },
+      ]
+    end
+
+    association :round
+    association :away_team, factory: :team
+    association :home_team, factory: :team
   end
 end

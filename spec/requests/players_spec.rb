@@ -27,6 +27,7 @@ RSpec.describe 'api/players', type: :request do
           'id' => player1.to_param,
           'first_name' => player1.first_name,
           'last_name' => player1.last_name,
+          'external_id' => player1.external_id.to_s,
           'position'=> {
             'id' => player1.position.to_param,
             'singular_name' => 'Forward',
@@ -42,6 +43,7 @@ RSpec.describe 'api/players', type: :request do
           'id' => player2.to_param,
           'first_name' => player2.first_name,
           'last_name' => player2.last_name,
+          'external_id' => player2.external_id.to_s,
           'position'=> {
             'id' => player2.position.to_param,
             'singular_name' => 'Defender',

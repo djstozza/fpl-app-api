@@ -3,12 +3,12 @@ class Api::PlayersController < ApplicationController
 
   # GET /api/players
   def index
-    respond_with PlayerSerializer.map(players)
+    respond_with PlayerSerializer.map(players, team: true)
   end
 
   # GET /api/players/1
   def show
-    respond_with PlayerSerializer.new(player)
+    respond_with PlayerSerializer.new(player, team: true)
   end
 
   private

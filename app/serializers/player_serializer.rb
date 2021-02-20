@@ -53,12 +53,13 @@ class PlayerSerializer < BaseSerializer
     id
     first_name
     last_name
+    external_id
   ].freeze
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
       attrs[:position] = serialized_position
-      attrs[:team] = serialized_team
+      attrs[:team] = serialized_team if includes[:team]
     end
   end
 

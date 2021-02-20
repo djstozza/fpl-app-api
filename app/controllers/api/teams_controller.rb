@@ -8,7 +8,7 @@ class Api::TeamsController < ApplicationController
 
   # GET /api/teams/1
   def show
-    respond_with TeamSerializer.new(team)
+    respond_with TeamSerializer.new(team, players: true)
   end
 
   private

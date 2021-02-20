@@ -18,15 +18,23 @@ RSpec.describe '/api/rounds', type: :request do
     let!(:round2) { create :round, :current }
     let!(:round3) { create :round, :next }
 
+    let!(:team1) { create :team }
+    let!(:team2) { create :team }
+
+    let!(:player1) { create :player, team: team1 }
+    let!(:player2) { create :player, team: team2 }
+
+    let!(:fixture1) do
+      create(
+        :fixture,
+        round: round1,
+        home_team: team1,
+        away_team: team2
+      )
+    end
+
     it 'renders a successful response' do
       api.get api_rounds_url
-
-
-
-      expect(api.data[0]).to match(a_hash_including(
-        'id' => round1.to_param,
-
-      ))
 
       expect(api.data).to contain_exactly(
         a_hash_including(
@@ -74,6 +82,45 @@ RSpec.describe '/api/rounds', type: :request do
           'is_previous' => true,
           'is_current' => false,
           'is_next' => false,
+          'fixtures' => including(
+            a_hash_including(
+              'team_a_difficulty' => 1,
+              'team_a_score' => 0,
+              'team_h_difficulty' => 4,
+              'team_h_score' => 1,
+              'stats' => including(
+                a_hash_including(
+                  'a'=>[],
+                  'h' => [{'value' => 1, 'element' => 1}],
+                  'identifier'=>'goals_scored'
+                )
+              ),
+              'home_team' => a_hash_including(
+                'id' =>  team1.to_param,
+                'name' => team1.name,
+                'short_name'=> team1.short_name,
+                'players' => including(
+                  a_hash_including(
+                    'id' => player1.to_param,
+                    'position' => a_hash_including(
+                      'id' => player1.position.to_param,
+                    ),
+                  ),
+                ),
+              ),
+              'away_team' => a_hash_including(
+                'id' => team2.to_param,
+                'players' => including(
+                  a_hash_including(
+                    'id' => player2.to_param,
+                    'position' => a_hash_including(
+                      'id' => player2.position.to_param,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         )
       end
     end

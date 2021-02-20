@@ -8,10 +8,10 @@ class Api::RoundsController < ApplicationController
 
   # GET /api/rounds/1
   def show
-    respond_with RoundSerializer.new(round)
+    respond_with RoundSerializer.new(round, verbose: true)
   end
 
-  private 
+  private
 
   # Use callbacks to share common setup or constraints between actions.
   def round
