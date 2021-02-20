@@ -17,6 +17,8 @@
 #  form                         :decimal(, )
 #  goals_conceded               :integer
 #  goals_scored                 :integer
+#  history                      :jsonb
+#  history_past                 :jsonb
 #  ict_index                    :decimal(, )
 #  in_dreamteam                 :boolean
 #  influence                    :decimal(, )
