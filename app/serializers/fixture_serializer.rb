@@ -28,23 +28,14 @@
 #  index_fixtures_on_team_a_id  (team_a_id)
 #  index_fixtures_on_team_h_id  (team_h_id)
 #
-FactoryBot.define do
-  factory :fixture do
-    sequence :external_id do |n|
-      n
-    end
+class FixtureSerializer < BaseSerializer
+  ATTRS = %w[
+    id
+    name
+    short_name
+  ].freeze
 
-    sequence :code do |n|
-      n
-    end
-
-    association :round
-    association :away_team, factory: :team
-    association :home_team, factory: :team
-    team_h_difficulty { 4 }
-    team_a_difficulty { 1 }
-    kickoff_time { Time.now }
-    started { true }
-    finished { true }
+  def serializable_hash(*)
+    attributes.slice(*ATTRS)
   end
 end

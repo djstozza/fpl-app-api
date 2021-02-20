@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_17_082401) do
+ActiveRecord::Schema.define(version: 2021_02_17_114349) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,50 @@ ActiveRecord::Schema.define(version: 2021_02_17_082401) do
     t.index ["round_id"], name: "index_fixtures_on_round_id"
     t.index ["team_a_id"], name: "index_fixtures_on_team_a_id"
     t.index ["team_h_id"], name: "index_fixtures_on_team_h_id"
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.integer "chance_of_playing_next_round"
+    t.integer "chance_of_playing_this_round"
+    t.integer "code"
+    t.integer "dreamteam_count"
+    t.integer "event_points"
+    t.string "first_name"
+    t.string "last_name"
+    t.decimal "form"
+    t.integer "external_id"
+    t.boolean "in_dreamteam"
+    t.string "news"
+    t.datetime "news_added"
+    t.string "photo"
+    t.decimal "points_per_game"
+    t.decimal "selected_by_percent"
+    t.boolean "special"
+    t.string "status"
+    t.integer "total_points"
+    t.integer "minutes"
+    t.integer "goals_scored"
+    t.integer "assists"
+    t.integer "clean_sheets"
+    t.integer "goals_conceded"
+    t.integer "own_goals"
+    t.integer "penalties_saved"
+    t.integer "penalties_missed"
+    t.integer "yellow_cards"
+    t.integer "red_cards"
+    t.integer "saves"
+    t.integer "bonus"
+    t.integer "bps"
+    t.decimal "creativity"
+    t.decimal "influence"
+    t.decimal "ict_index"
+    t.decimal "threat"
+    t.bigint "position_id"
+    t.bigint "team_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["position_id"], name: "index_players_on_position_id"
+    t.index ["team_id"], name: "index_players_on_team_id"
   end
 
   create_table "positions", force: :cascade do |t|

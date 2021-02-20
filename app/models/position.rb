@@ -16,4 +16,6 @@
 #
 class Position < ApplicationRecord
   validates :external_id, presence: true, uniqueness: true
+
+  has_many :players
 end

@@ -2,6 +2,7 @@
 
 Rails.application.routes.draw do
   namespace :api do
+    resources :players, only: [:index, :show]
     resources :rounds, only: [:index, :show]
     resources :positions, only: [:index]
     resources :teams, only: [:index, :show]

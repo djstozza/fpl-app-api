@@ -19,14 +19,23 @@ class PositionSerializer < BaseSerializer
     id
     singular_name
     singular_name_short
+  ].freeze
+
+  VERBOSE_ATTRS = %w[
     plural_name
     plural_name_short
     squad_select
     squad_min_play
     squad_max_play
-  ].freeze
+  ]
 
   def serializable_hash(*)
-    attributes.slice(*ATTRS)
+    attributes.slice(*attrs)
+  end
+
+  private
+
+  def attrs
+    includes[:verbose] ? ATTRS + VERBOSE_ATTRS : ATTRS
   end
 end
