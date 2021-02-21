@@ -1,0 +1,86 @@
+{
+  "events":  [
+    {
+      "id": 1,
+      "name": "Gameweek 1",
+      "deadline_time": "2020-09-12T10:00:00Z",
+      "average_entry_score": 50,
+      "finished": true,
+      "data_checked": true,
+      "highest_scoring_entry": 4761681,
+      "deadline_time_epoch": 1599904800,
+      "deadline_time_game_offset": 0,
+      "highest_score": 142,
+      "is_previous": false,
+      "is_current": false,
+      "is_next": false,
+      "chip_plays": [
+        { "chip_name": "bboost", "num_played": 112843 },
+        { "chip_name": "3xc", "num_played": 225426 }
+      ],
+      "most_selected": 259,
+      "most_transferred_in": 12,
+      "top_element": 254,
+      "top_element_info": { "id": 254, "points": 20 },
+      "transfers_made": 0,
+      "most_captained": 4,
+      "most_vice_captained": 4
+    },
+    {
+      "id": 2,
+      "name": "Gameweek 2",
+      "deadline_time": "2020-09-19T10:00:00Z",
+      "average_entry_score": 59,
+      "finished": true,
+      "data_checked": true,
+      "highest_scoring_entry": 6234344,
+      "deadline_time_epoch": 1600509600,
+      "deadline_time_game_offset": 0,
+      "highest_score": 165,
+      "is_previous": false,
+      "is_current": false,
+      "is_next": false,
+      "chip_plays": [
+        { "chip_name": "bboost", "num_played": 94615 },
+        { "chip_name": "freehit", "num_played": 111968 },
+        { "chip_name": "wildcard", "num_played": 494000 },
+        { "chip_name": "3xc", "num_played": 221133 }
+      ],
+      "most_selected": 259,
+      "most_transferred_in": 302,
+      "top_element": 390,
+      "top_element_info": { "id": 390, "points": 24 },
+      "transfers_made": 14637421,
+      "most_captained": 4,
+      "most_vice_captained": 254
+    },
+    {
+      "id": 3,
+      "name": "Gameweek 3",
+      "deadline_time": "2020-09-26T10:00:00Z",
+      "average_entry_score": 43,
+      "finished": true,
+      "data_checked": true,
+      "highest_scoring_entry": 6223553,
+      "deadline_time_epoch": 1601114400,
+      "deadline_time_game_offset": 0,
+      "highest_score": 119,
+      "is_previous": false,
+      "is_current": false,
+      "is_next": false,
+      "chip_plays": [
+        { "chip_name": "bboost", "num_played": 86797 },
+        { "chip_name": "freehit", "num_played": 155467 },
+        { "chip_name": "wildcard", "num_played": 681997 },
+        { "chip_name": "3xc", "num_played": 177478}
+      ],
+      "most_selected": 259,
+      "most_transferred_in": 164,
+      "top_element": 224,
+      "top_element_info": { "id": 224, "points": 17 },
+      "transfers_made": 20387878,
+      "most_captained": 272,
+      "most_vice_captained": 254
+    }
+  ]
+}

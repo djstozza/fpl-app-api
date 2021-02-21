@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+  require 'sidekiq-scheduler/web'
+  mount Sidekiq::Web => '/sidekiq'
+
   namespace :api do
     resources :players, only: [:index, :show]
     resources :rounds, only: [:index, :show]

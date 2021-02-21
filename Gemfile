@@ -14,9 +14,13 @@ gem 'puma', '~> 4.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+
+# Background processing jobs
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -80,6 +84,9 @@ group :test do
 
   # Give us code coverage metrics
   gem 'simplecov', require: false
+
+  # Stub HTTP requests
+  gem 'webmock'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
