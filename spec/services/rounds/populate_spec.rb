@@ -1,17 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Rounds::Populate, type: :service do
-  describe '#call' do
-    before do
-      stub_request(:any, 'https://fantasy.premierleague.com/api/bootstrap-static/')
-        .and_return(
-          status: 200,
-          body: file_fixture('bootstrap_static.json').read,
-          headers: { 'Content-Type'=> 'application/json' },
-        )
-    end
+  include StubRequestHelper
 
-    it 'creates round enrolments' do
+  describe '#call' do
+    before { stub_bootstrap_static_request }
+
+    it 'creates rounds' do
       expect { described_class.call }.to change { Round.count }.from(0).to(3)
       expect(Round.first.attributes).to include(
         'name' => 'Gameweek 1',
@@ -23,7 +18,7 @@ RSpec.describe Rounds::Populate, type: :service do
       )
     end
 
-    it 'updates existing round enrolments' do
+    it 'updates existing rounds' do
       round = build(:round, name: 'Gameweek 1', finished: false, external_id: 1)
       round.save
 

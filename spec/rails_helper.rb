@@ -13,6 +13,7 @@ require 'rspec/rails'
 require 'support/factory_bot'
 require 'support/database_cleaner'
 require 'support/api_helpers'
+require 'support/stub_request_helper'
 require 'support/jobs_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
