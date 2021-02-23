@@ -1,5 +1,4 @@
-require 'httparty'
-
+# Populate positions service
 class Positions::Populate < ApplicationService
   def call
     response.each do |position_json|

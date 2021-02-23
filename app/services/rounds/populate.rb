@@ -1,5 +1,4 @@
-require 'httparty'
-
+# Populate rounds service
 class Rounds::Populate < ApplicationService
   def call
     response.each do |round_json|

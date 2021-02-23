@@ -1,5 +1,4 @@
-require 'httparty'
-
+# Populate players service
 class Players::Populate < ApplicationService
   def call
     response.each do |player_json|

@@ -1,3 +1,5 @@
+require 'httparty'
+
 module StubRequestHelper
   module_function
 

@@ -1,5 +1,4 @@
-require 'httparty'
-
+# Populate teams service
 class Teams::Populate < ApplicationService
   def call
     response.each do |team_json|
