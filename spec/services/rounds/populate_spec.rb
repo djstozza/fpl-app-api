@@ -9,6 +9,7 @@ RSpec.describe Rounds::Populate, type: :service do
     it 'creates rounds' do
       expect { described_class.call }.to change { Round.count }.from(0).to(3)
       expect(Round.first.attributes).to include(
+        'external_id' => 1,
         'name' => 'Gameweek 1',
         'finished' => true,
         'data_checked' => true,
