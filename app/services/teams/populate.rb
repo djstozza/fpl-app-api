@@ -1,5 +1,5 @@
 # Populate teams service
-class Teams::Populate < ApplicationService
+class Teams::Populate < BasePopulateService
   def call
     response.each do |team_json|
       team = Team.find_or_create_by(external_id: team_json['id'])
@@ -22,6 +22,6 @@ class Teams::Populate < ApplicationService
   private
 
   def response
-    @response ||= ::HTTParty.get('https://fantasy.premierleague.com/api/bootstrap-static/')['teams']
+    @response ||= ::HTTParty.get(bootstrap_static_url)['teams']
   end
 end

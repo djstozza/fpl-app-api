@@ -21,6 +21,6 @@ class Rounds::Populate < ApplicationService
   private
 
   def response
-    @response ||= ::HTTParty.get('https://fantasy.premierleague.com/api/bootstrap-static/')['events']
+    @response ||= ::HTTParty.get(bootstrap_static_url)['events']
   end
 end

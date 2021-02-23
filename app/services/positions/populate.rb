@@ -20,6 +20,6 @@ class Positions::Populate < ApplicationService
   private
 
   def response
-    @response ||= ::HTTParty.get('https://fantasy.premierleague.com/api/bootstrap-static/')['element_types']
+    @response ||= ::HTTParty.get(bootstrap_static_url)['element_types']
   end
 end
