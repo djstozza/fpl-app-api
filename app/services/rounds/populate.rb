@@ -5,7 +5,7 @@ class Rounds::Populate < ApplicationService
     response.each do |round_json|
       round = Round.find_or_create_by(external_id: round_json['id'])
 
-      round.update(
+      round.update!(
         name: round_json['name'],
         deadline_time: round_json['deadline_time'],
         finished: round_json['finished'],

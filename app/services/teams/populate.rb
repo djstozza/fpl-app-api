@@ -5,7 +5,7 @@ class Teams::Populate < ApplicationService
     response.each do |team_json|
       team = Team.find_or_create_by(external_id: team_json['id'])
 
-      team.update(
+      team.update!(
         name: team_json['name'],
         code: team_json['code'],
         short_name: team_json['short_name'],

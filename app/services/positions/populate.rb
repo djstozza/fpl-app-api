@@ -5,7 +5,7 @@ class Positions::Populate < ApplicationService
     response.each do |position_json|
       position = Position.find_or_create_by(external_id: position_json['id'])
 
-      position.update(
+      position.update!(
         external_id: position_json['id'],
         plural_name: position_json['plural_name'],
         plural_name_short: position_json['plural_name_short'],
