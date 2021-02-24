@@ -8,7 +8,6 @@ class Players::Populate < ApplicationService
       team = Team.find_by(external_id: player_json['team'])
 
       player.update!(
-        external_id: player_json['id'],
         first_name: player_json['first_name'],
         last_name: player_json['second_name'],
         position: position,

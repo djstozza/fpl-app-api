@@ -5,7 +5,6 @@ class Positions::Populate < ApplicationService
       position = Position.find_or_create_by(external_id: position_json['id'])
 
       position.update!(
-        external_id: position_json['id'],
         plural_name: position_json['plural_name'],
         plural_name_short: position_json['plural_name_short'],
         singular_name: position_json['singular_name'],

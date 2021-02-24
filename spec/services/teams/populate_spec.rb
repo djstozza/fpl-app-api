@@ -7,7 +7,7 @@ RSpec.describe Teams::Populate, type: :service do
     before { stub_bootstrap_static_request }
 
     it 'creates teams' do
-      expect { described_class.call }.to change { Team.count }.from(0).to(3)
+      expect { described_class.call }.to change { Team.count }.from(0).to(20)
 
       expect(Team.first.attributes).to include(
         'external_id' => 1,
