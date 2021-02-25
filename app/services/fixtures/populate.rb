@@ -4,6 +4,8 @@ class Fixtures::Populate < BasePopulateService
     response.each do |fixture_json|
       fixture = Fixture.find_or_create_by(external_id: fixture_json['id'])
 
+      next if fixture_json['event'].blank?
+
       round = Round.find_by(external_id: fixture_json['event'])
       home_team = Team.find_by(external_id: fixture_json['team_h'])
       away_team = Team.find_by(external_id: fixture_json['team_a'])

@@ -6,3 +6,9 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+Positions::Populate.call
+Rounds::Populate.call
+Teams::Populate.call
+Players::Populate.call
+Fixtures::Populate.call
