@@ -1,5 +1,7 @@
 # Populate fixtures service
 class Fixtures::Populate < BasePopulateService
+  WINNING_POINTS = 3
+
   def call
     response.each do |fixture_json|
       fixture = Fixture.find_or_create_by(external_id: fixture_json['id'])

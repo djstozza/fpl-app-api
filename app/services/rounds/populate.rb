@@ -1,5 +1,5 @@
 # Populate rounds service
-class Rounds::Populate < ApplicationService
+class Rounds::Populate < BasePopulateService
   def call
     response.each do |round_json|
       round = Round.find_or_create_by(external_id: round_json['id'])

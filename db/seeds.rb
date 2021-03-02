@@ -12,3 +12,4 @@ Rounds::Populate.call
 Teams::Populate.call
 Players::Populate.call
 Fixtures::Populate.call
+Teams::ProcessStats.call

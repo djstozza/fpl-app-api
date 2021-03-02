@@ -1,5 +1,5 @@
 # Populate positions service
-class Positions::Populate < ApplicationService
+class Positions::Populate < BasePopulateService
   def call
     response.each do |position_json|
       position = Position.find_or_create_by(external_id: position_json['id'])

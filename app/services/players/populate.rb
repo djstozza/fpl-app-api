@@ -1,5 +1,5 @@
 # Populate players service
-class Players::Populate < ApplicationService
+class Players::Populate < BasePopulateService
   def call
     response.each do |player_json|
       player = Player.find_or_create_by(external_id: player_json['id'])

@@ -14,7 +14,7 @@ RSpec.describe Fixtures::Populate, type: :service do
     end
 
     it 'creates fixtures' do
-      expect { described_class.call }.to change { Fixture.count }.from(0).to(3)
+      expect { described_class.call }.to change { Fixture.count }.from(0).to(18)
 
       fixture = Fixture.first
 

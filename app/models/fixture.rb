@@ -34,4 +34,6 @@ class Fixture < ApplicationRecord
   belongs_to :away_team, class_name: 'Team', foreign_key: :team_a_id
 
   validates :external_id, presence: true, uniqueness: true
+
+  scope :finished, -> { where(finished: true) }
 end
