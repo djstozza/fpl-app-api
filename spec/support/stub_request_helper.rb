@@ -21,6 +21,15 @@ module StubRequestHelper
       )
   end
 
+  def stub_round_fixture_request(round_external_id)
+    stub_request(:get, "https://fantasy.premierleague.com/api/fixtures/?event=#{round_external_id}")
+      .and_return(
+        status: 200,
+        body: file_fixture("fixtures_#{round_external_id}.json").read,
+        headers: { 'Content-Type'=> 'application/json' },
+      )
+  end
+
   def stub_player_summary_request(external_id)
     stub_request(:get, "https://fantasy.premierleague.com/api/element-summary/#{external_id}/")
       .and_return(

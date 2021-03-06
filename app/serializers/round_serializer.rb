@@ -29,20 +29,6 @@ class RoundSerializer < BaseSerializer
   ].freeze
 
   def serializable_hash(*)
-    attributes.slice(*ATTRS).tap do |attrs|
-      attrs[:fixtures] = serialized_fixtures if includes[:verbose]
-    end
-  end
-
-  private
-
-  def serialized_fixtures
-    FixtureSerializer.map(
-      fixtures.includes(
-        :home_team,
-        :away_team,
-        home_team: :players
-      )
-    )
+    attributes.slice(*ATTRS)
   end
 end

@@ -8,7 +8,8 @@ class Api::RoundsController < ApplicationController
 
   # GET /api/rounds/1
   def show
-    respond_with RoundSerializer.new(round, verbose: true)
+    query = RoundDetailQuery.new(round)
+    respond_with query if stale?(query)
   end
 
   private

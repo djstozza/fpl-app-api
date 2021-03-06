@@ -12,7 +12,9 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe '/api/rounds', type: :request do
+RSpec.describe '/api/rounds', :no_transaction, type: :request do
+  include StubRequestHelper
+
   describe 'GET /index' do
     let!(:round1) { create :round, :previous }
     let!(:round2) { create :round, :current }
@@ -66,63 +68,139 @@ RSpec.describe '/api/rounds', type: :request do
         ),
       )
     end
+  end
 
-    describe 'GET /show' do
-      include_examples 'not found', 'round'
+  describe 'GET /show', :no_transaction do
+    include_examples 'not found', 'round'
 
-      it 'renders a successful response' do
-        api.get api_round_url(round1)
-        expect(response).to be_successful
+    before do
+      stub_bootstrap_static_request
 
-        expect(api.data).to include(
-          'id' => round1.to_param,
-          'name' => round1.name,
-          'finished' => true,
-          'data_checked' => true,
-          'is_previous' => true,
-          'is_current' => false,
-          'is_next' => false,
-          'fixtures' => including(
-            a_hash_including(
-              'team_a_difficulty' => 1,
-              'team_a_score' => 0,
-              'team_h_difficulty' => 4,
-              'team_h_score' => 1,
-              'stats' => including(
-                a_hash_including(
-                  'a'=>[],
-                  'h' => [{'value' => 1, 'element' => 1}],
-                  'identifier'=>'goals_scored'
-                )
-              ),
-              'home_team' => a_hash_including(
-                'id' =>  team1.to_param,
-                'name' => team1.name,
-                'short_name'=> team1.short_name,
-                'players' => including(
-                  a_hash_including(
-                    'id' => player1.to_param,
-                    'position' => a_hash_including(
-                      'id' => player1.position.to_param,
-                    ),
-                  ),
-                ),
-              ),
-              'away_team' => a_hash_including(
-                'id' => team2.to_param,
-                'players' => including(
-                  a_hash_including(
-                    'id' => player2.to_param,
-                    'position' => a_hash_including(
-                      'id' => player2.position.to_param,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        )
-      end
+      Rounds::Populate.call
+      Positions::Populate.call
+      Teams::Populate.call
+      Players::Populate.call
+
+      stub_fixture_request
+
+      Fixtures::Populate.call
+
+      @round = Round.first
     end
+
+    it 'renders a successful response' do
+      api.get api_round_url(@round)
+
+      expect(api.data).to include(
+        'id' => @round.to_param,
+        'is_current' => false,
+        'is_next' => false,
+        'is_previous' => false,
+        'finished' => true,
+        'data_checked' => true,
+        'deadline_time' => '2020-09-12T10:00:00Z',
+        'fixtures' => including(
+          a_hash_including(
+            'kickoff_time' => '2020-09-12T11:30:00Z',
+            'minutes' => 90,
+            'started' => true,
+            'finished' => true,
+            'away_team_score' => 3,
+            'home_team_score' => 0,
+            'home_team' => a_hash_including('name' => 'Fulham'),
+            'away_team' => a_hash_including('name' => 'Arsenal'),
+            'stats' => contain_exactly(
+              a_hash_including('identifier' => 'own_goals'),
+              a_hash_including('identifier' => 'red_cards'),
+              a_hash_including('identifier' => 'yellow_cards'),
+              a_hash_including('identifier' => 'bonus'),
+              a_hash_including('identifier' => 'penalties_saved'),
+              a_hash_including('identifier' => 'penalties_missed'),
+              {
+                'away' => [
+                  {
+                    'value' => 1,
+                    'player' => a_hash_including('name' => 'Aubameyang'),
+                  },
+                  {
+                    'value' => 1,
+                    'player' => a_hash_including('name' => 'Lacazette'),
+                  },
+                  {
+                    'value' => 1,
+                    'player' => a_hash_including('name' => 'Magalhães'),
+                  }
+                ],
+                'home' => [],
+                'identifier' => 'goals_scored',
+              },
+              {
+                'away' => [
+                  {
+                    'value' => 3,
+                    'player' => a_hash_including('name' => 'Borges Da Silva'),
+                  }
+                ],
+                'home' => [],
+                'identifier' => 'assists',
+              },
+              {
+                'away' => [
+                  {
+                    'value' => 2,
+                    'player' => a_hash_including('name' => 'Leno'),
+                  }
+                ],
+                'home' => [
+                  {
+                    'value' => 2,
+                    'player' => a_hash_including('name' => 'Rodák'),
+                  }
+                ],
+                'identifier' => 'saves',
+              }
+            )
+          )
+        )
+      )
+    end
+
+    it 'caches against the request' do
+      api.get api_round_url(@round)
+
+      expect(api.response).to have_http_status(200)
+
+      etag = api.response.headers['ETag']
+      last_modified = api.response.headers['Last-Modified']
+
+      get_request_with_caching(etag, last_modified)
+      expect(api.response).to have_http_status(304)
+
+      etag = api.response.headers['ETag']
+      last_modified = api.response.headers['Last-Modified']
+
+      @round.update!(updated_at: 10.minutes.from_now)
+
+      get_request_with_caching(etag, last_modified)
+      expect(api.response).to have_http_status(200)
+
+      etag = api.response.headers['ETag']
+      last_modified = api.response.headers['Last-Modified']
+
+      @round.fixtures.first.update!(updated_at: 20.minutes.from_now)
+
+      get_request_with_caching(etag, last_modified)
+      expect(api.response).to have_http_status(200)
+    end
+  end
+
+  private
+
+  def get_request_with_caching(etag, last_modified)
+    api.get api_round_url(@round),
+            headers: {
+              'HTTP_IF_NONE_MATCH' => etag,
+              'HTTP_IF_MODIFIED_SINCE' => last_modified,
+            }
   end
 end

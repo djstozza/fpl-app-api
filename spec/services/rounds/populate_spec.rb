@@ -19,12 +19,17 @@ RSpec.describe Rounds::Populate, type: :service do
       )
     end
 
-    it 'updates existing rounds' do
-      round = build(:round, name: 'Gameweek 1', finished: false, external_id: 1)
-      round.save
+    describe 'existing rounds' do
+      let!(:round_1) { create :round, :past, external_id: 1 }
+      let!(:round_2) { create :round, :past, external_id: 2 }
+      let!(:round_3) { create :round, :current, external_id: 3 }
 
-      expect { described_class.call }
-        .to change { round.reload.finished }.from(false).to(true)
+      it 'only updates existing rounds that have not finished' do
+        expect { described_class.call }
+          .to change { round_3.reload.data_checked }.from(false).to(true)
+          .and change { round_2.reload.updated_at }.by(0)
+          .and change { round_1.reload.updated_at }.by(0)
+      end
     end
   end
 end

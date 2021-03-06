@@ -1,14 +1,17 @@
 # Populate fixtures service
 class Fixtures::Populate < BasePopulateService
-  WINNING_POINTS = 3
+  def initialize(round = nil)
+    @round = round
+  end
 
   def call
     response.each do |fixture_json|
-      fixture = Fixture.find_or_create_by(external_id: fixture_json['id'])
+      fixture = Fixture.find_or_initialize_by(external_id: fixture_json['id'])
 
       next if fixture_json['event'].blank?
+      next if fixture.finished
 
-      round = Round.find_by(external_id: fixture_json['event'])
+      round ||= Round.find_by(external_id: fixture_json['event'])
       home_team = Team.find_by(external_id: fixture_json['team_h'])
       away_team = Team.find_by(external_id: fixture_json['team_a'])
 
@@ -34,7 +37,9 @@ class Fixtures::Populate < BasePopulateService
 
   private
 
+  attr_accessor :round
+
   def response
-    @response ||= ::HTTParty.get(fixtures_url)
+    @response ||= ::HTTParty.get(fixtures_url(round&.external_id))
   end
 end
