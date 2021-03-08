@@ -36,6 +36,7 @@ class Players::Populate < BasePopulateService
         penalties_saved: player_json['penalties_saved'],
         penalties_missed: player_json['penalties_missed'],
         yellow_cards: player_json['yellow_cards'],
+        red_cards: player_json['red_cards'],
         saves: player_json['saves'],
         bonus: player_json['bonus'],
         bps: player_json['bps'],

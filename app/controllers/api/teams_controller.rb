@@ -8,7 +8,8 @@ class Api::TeamsController < ApplicationController
 
   # GET /api/teams/1
   def show
-    respond_with TeamSerializer.new(team, players: true)
+    query = TeamDetailQuery.new(team)
+    respond_with query if stale?(query)
   end
 
   private

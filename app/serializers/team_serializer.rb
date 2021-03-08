@@ -36,14 +36,6 @@ class TeamSerializer < BaseSerializer
   ].freeze
 
   def serializable_hash(*)
-    attributes.slice(*ATTRS).tap do |attrs|
-      attrs[:players] = serialized_players if includes[:players]
-    end
-  end
-
-  private
-
-  def serialized_players
-    PlayerSerializer.map(players)
+    attributes.slice(*ATTRS)
   end
 end
