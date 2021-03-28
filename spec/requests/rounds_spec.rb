@@ -107,8 +107,8 @@ RSpec.describe '/api/rounds', :no_transaction, type: :request do
             'finished' => true,
             'away_team_score' => 3,
             'home_team_score' => 0,
-            'home_team' => a_hash_including('name' => 'Fulham'),
-            'away_team' => a_hash_including('name' => 'Arsenal'),
+            'home_team' => a_hash_including('short_name' => 'FUL'),
+            'away_team' => a_hash_including('short_name' => 'ARS'),
             'stats' => contain_exactly(
               a_hash_including('identifier' => 'own_goals'),
               a_hash_including('identifier' => 'red_cards'),
@@ -116,52 +116,40 @@ RSpec.describe '/api/rounds', :no_transaction, type: :request do
               a_hash_including('identifier' => 'bonus'),
               a_hash_including('identifier' => 'penalties_saved'),
               a_hash_including('identifier' => 'penalties_missed'),
+              a_hash_including('identifier' => 'saves'),
               {
                 'away' => [
                   {
                     'value' => 1,
-                    'player' => a_hash_including('name' => 'Aubameyang'),
+                    'player' => a_hash_including('last_name' => 'Aubameyang'),
                   },
                   {
                     'value' => 1,
-                    'player' => a_hash_including('name' => 'Lacazette'),
+                    'player' => a_hash_including('last_name' => 'Lacazette'),
                   },
                   {
                     'value' => 1,
-                    'player' => a_hash_including('name' => 'Magalhães'),
+                    'player' => a_hash_including('last_name' => 'Magalhães'),
                   }
                 ],
                 'home' => [],
                 'identifier' => 'goals_scored',
+                'display_order' => 1,
               },
               {
                 'away' => [
                   {
                     'value' => 3,
-                    'player' => a_hash_including('name' => 'Borges Da Silva'),
+                    'player' => a_hash_including('last_name' => 'Borges Da Silva'),
                   }
                 ],
                 'home' => [],
                 'identifier' => 'assists',
+                'display_order' => 2,
               },
-              {
-                'away' => [
-                  {
-                    'value' => 2,
-                    'player' => a_hash_including('name' => 'Leno'),
-                  }
-                ],
-                'home' => [
-                  {
-                    'value' => 2,
-                    'player' => a_hash_including('name' => 'Rodák'),
-                  }
-                ],
-                'identifier' => 'saves',
-              }
-            )
-          )
-        )
+            ),
+          ),
+        ),
       )
     end
 

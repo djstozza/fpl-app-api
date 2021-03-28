@@ -40,7 +40,7 @@ class RoundDetailQuery
     SqlQuery.results(
       'round_detail_query/fixtures',
       round_id: round.id,
-      unneded_identifiers: UNNEEDED_IDENTIFIERS,
+      unneeded_identifiers: UNNEEDED_IDENTIFIERS,
     )
   end
 end

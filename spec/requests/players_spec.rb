@@ -33,11 +33,11 @@ RSpec.describe 'api/players', type: :request do
             'singular_name' => 'Forward',
             'singular_name_short' => 'FWD',
           },
-          'team'=> {
+          'team'=> a_hash_including(
             'id' =>  player1.team.to_param,
             'name' => player1.team.name,
             'short_name' => player1.team.short_name,
-          }
+          ),
         },
         {
           'id' => player2.to_param,
@@ -49,11 +49,11 @@ RSpec.describe 'api/players', type: :request do
             'singular_name' => 'Defender',
             'singular_name_short' => 'DEF',
           },
-          'team'=> {
+          'team'=> a_hash_including(
             'id' => player2.team.to_param,
             'name' => player2.team.name,
             'short_name' => player2.team.short_name,
-          }
+          ),
         }
       )
     end
@@ -74,11 +74,11 @@ RSpec.describe 'api/players', type: :request do
           'singular_name' => 'Forward',
           'singular_name_short' => 'FWD',
         },
-        'team'=> {
+        'team'=> a_hash_including(
           'id' =>  player1.team.to_param,
           'name' => player1.team.name,
           'short_name' => player1.team.short_name,
-        }
+        ),
       )
     end
   end

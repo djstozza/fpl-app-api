@@ -25,6 +25,7 @@ class TeamDetailQuery
   def serializable_team
     {
       id: team.to_param,
+      short_name: team.short_name,
       name: team.name,
       position: team.position,
       points: team.points,

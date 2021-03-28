@@ -32,20 +32,21 @@ RSpec.describe '/api/teams', type: :request do
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      api.get api_teams_url
+      api.get api_teams_url, params: { sort: { name: 'asc'} }
 
       expect(response).to be_successful
+
       expect(api.data).to contain_exactly(
-        {
+        a_hash_including(
           'id' => team1.to_param,
           'name' => team1.name,
           'short_name' => team1.short_name,
-        },
-        {
+        ),
+        a_hash_including(
           'id' => team2.to_param,
           'name' => team2.name,
           'short_name' => team2.short_name,
-        },
+        ),
       )
     end
   end
@@ -113,9 +114,9 @@ RSpec.describe '/api/teams', type: :request do
             ),
             'home_team_score' => 3,
             'away_team_score' => 1,
-            'opposition_team' => a_hash_including(
+            'opponent' => a_hash_including(
               'id' => team2.to_param,
-              'name' => team2.name,
+              'short_name' => team2.short_name,
             ),
             'result' => 'W',
           ),
@@ -126,9 +127,9 @@ RSpec.describe '/api/teams', type: :request do
             ),
             'home_team_score' => 2,
             'away_team_score' => 0,
-            'opposition_team' => a_hash_including(
+            'opponent' => a_hash_including(
               'id' => team3.to_param,
-              'name' => team3.name,
+              'short_name' => team3.short_name,
             ),
             'result' => 'L',
           ),
@@ -139,9 +140,9 @@ RSpec.describe '/api/teams', type: :request do
             ),
             'home_team_score' => 0,
             'away_team_score' => 0,
-            'opposition_team' => a_hash_including(
+            'opponent' => a_hash_including(
               'id' => team2.to_param,
-              'name' => team2.name,
+              'short_name' => team2.short_name,
             ),
             'result' => 'D',
           ),

@@ -45,5 +45,7 @@ FactoryBot.define do
     sequence :short_name do |n|
       "TN#{n}"
     end
+
+    form { %w[W W L D W] }
   end
 end

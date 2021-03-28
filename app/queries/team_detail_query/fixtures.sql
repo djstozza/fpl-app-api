@@ -5,13 +5,21 @@ JSONB_BUILD_OBJECT(
 ) AS round,
 fixtures.started,
 fixtures.finished,
+fixtures.minutes,
 fixtures.kickoff_time,
 fixtures.team_a_score AS away_team_score,
 fixtures.team_h_score AS home_team_score,
 JSONB_BUILD_OBJECT(
   'id', opposition_team.id::TEXT,
-  'name', opposition_team.name
-) AS opposition_team,
+  'short_name', opposition_team.short_name
+) AS opponent,
+(
+  CASE
+    WHEN fixtures.team_h_id = teams.id
+    THEN 'H'
+    ELSE 'A'
+  END
+) AS leg,
 result,
 fixture_details.strength
 FROM teams
@@ -43,9 +51,9 @@ LATERAL (
   (
     CASE
       WHEN team_h_id = teams.id
-      THEN team_h_difficulty - team_a_difficulty
-      WHEN team_a_id = teams.id
       THEN team_a_difficulty - team_h_difficulty
+      WHEN team_a_id = teams.id
+      THEN team_h_difficulty - team_a_difficulty
     END
   ) AS strength
 ) fixture_details

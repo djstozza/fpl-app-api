@@ -33,9 +33,21 @@ class TeamSerializer < BaseSerializer
     id
     name
     short_name
+    position
+    played
+    points
+    wins
+    losses
+    draws
+    goals_for
+    goals_against
+    goal_difference
+    clean_sheets
   ].freeze
 
   def serializable_hash(*)
-    attributes.slice(*ATTRS)
+    attributes.slice(*ATTRS).tap do |attrs|
+      attrs[:current_form] = form.last(5)
+    end
   end
 end
