@@ -1,4 +1,5 @@
 SELECT
+fixtures.id::TEXT,
 JSONB_BUILD_OBJECT(
   'id', rounds.id::TEXT,
   'name', rounds.name
@@ -58,4 +59,4 @@ LATERAL (
   ) AS strength
 ) fixture_details
 WHERE teams.id = :team_id
-ORDER BY kickoff_time
+ORDER BY :sort, kickoff_time ASC

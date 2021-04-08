@@ -13,8 +13,12 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe 'api/players', type: :request do
-  let!(:player1) { create :player, :forward }
-  let!(:player2) { create :player, :defender }
+  let(:team1) { create :team }
+  let(:team2) { create :team }
+  let(:team3) { create :team }
+  let!(:player1) { create :player, :forward, team: team3, total_points: 90 }
+  let!(:player2) { create :player, :defender, team: team2, total_points: 20  }
+  let!(:player3) { create :player, :goalkeeper, team: team1, total_points: 50 }
 
   describe 'GET /index' do
     it 'renders a successful response' do
@@ -22,8 +26,8 @@ RSpec.describe 'api/players', type: :request do
 
       expect(response).to be_successful
 
-      expect(api.data).to contain_exactly(
-        {
+      expect(api.data).to match([
+        a_hash_including(
           'id' => player1.to_param,
           'first_name' => player1.first_name,
           'last_name' => player1.last_name,
@@ -34,12 +38,12 @@ RSpec.describe 'api/players', type: :request do
             'singular_name_short' => 'FWD',
           },
           'team'=> a_hash_including(
-            'id' =>  player1.team.to_param,
-            'name' => player1.team.name,
-            'short_name' => player1.team.short_name,
+            'id' =>  team3.to_param,
+            'name' => team3.name,
+            'short_name' => team3.short_name,
           ),
-        },
-        {
+        ),
+        a_hash_including(
           'id' => player2.to_param,
           'first_name' => player2.first_name,
           'last_name' => player2.last_name,
@@ -50,12 +54,58 @@ RSpec.describe 'api/players', type: :request do
             'singular_name_short' => 'DEF',
           },
           'team'=> a_hash_including(
-            'id' => player2.team.to_param,
-            'name' => player2.team.name,
-            'short_name' => player2.team.short_name,
+            'id' => team2.to_param,
+            'name' => team2.name,
+            'short_name' => team2.short_name,
           ),
-        }
-      )
+        ),
+        a_hash_including(
+          'id' => player3.to_param,
+          'first_name' => player3.first_name,
+          'last_name' => player3.last_name,
+          'external_id' => player3.external_id.to_s,
+          'position'=> {
+            'id' => player3.position.to_param,
+            'singular_name' => 'Goalkeeper',
+            'singular_name_short' => 'GKP',
+          },
+          'team'=> a_hash_including(
+            'id' => team1.to_param,
+            'name' => team1.name,
+            'short_name' => team1.short_name,
+          ),
+        ),
+      ])
+    end
+
+    it 'is sortable' do
+      api.get api_players_url, params: { sort: { last_name: 'desc' } }
+
+      expect(api.data).to match([
+        a_hash_including(
+          'id' => player3.to_param,
+        ),
+        a_hash_including(
+          'id' => player2.to_param,
+        ),
+        a_hash_including(
+          'id' => player1.to_param,
+        ),
+      ])
+
+      api.get api_players_url, params: { sort: { total_points: 'asc' } }
+
+      expect(api.data).to match([
+        a_hash_including(
+          'id' => player2.to_param,
+        ),
+        a_hash_including(
+          'id' => player3.to_param,
+        ),
+        a_hash_including(
+          'id' => player1.to_param,
+        ),
+      ])
     end
   end
 

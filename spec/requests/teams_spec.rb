@@ -98,7 +98,7 @@ RSpec.describe '/api/teams', type: :request do
         'name' => team1.name,
         'position' => 2,
         'points' => 4,
-        'form' => %w[W L D],
+        'current_form' => %w[W L D],
         'wins' => 1,
         'losses' => 1,
         'draws' => 1,
@@ -106,61 +106,6 @@ RSpec.describe '/api/teams', type: :request do
         'goals_for' => 3,
         'goals_against' => 3,
         'goal_difference' => 0,
-        'fixtures' => containing_exactly(
-          a_hash_including(
-            'round' => a_hash_including(
-              'id' => fixture1.round.to_param,
-              'name' => fixture1.round.name
-            ),
-            'home_team_score' => 3,
-            'away_team_score' => 1,
-            'opponent' => a_hash_including(
-              'id' => team2.to_param,
-              'short_name' => team2.short_name,
-            ),
-            'result' => 'W',
-          ),
-          a_hash_including(
-            'round' => a_hash_including(
-              'id' => fixture2.round.to_param,
-              'name' => fixture2.round.name
-            ),
-            'home_team_score' => 2,
-            'away_team_score' => 0,
-            'opponent' => a_hash_including(
-              'id' => team3.to_param,
-              'short_name' => team3.short_name,
-            ),
-            'result' => 'L',
-          ),
-          a_hash_including(
-            'round' => a_hash_including(
-              'id' => fixture3.round.to_param,
-              'name' => fixture3.round.name
-            ),
-            'home_team_score' => 0,
-            'away_team_score' => 0,
-            'opponent' => a_hash_including(
-              'id' => team2.to_param,
-              'short_name' => team2.short_name,
-            ),
-            'result' => 'D',
-          ),
-        ),
-        'players' => containing_exactly(
-          a_hash_including(
-            'id' => player1.to_param,
-            'first_name' => player1.first_name,
-            'last_name' => player1.last_name,
-            'position' => 'FWD',
-          ),
-          a_hash_including(
-            'id' => player2.to_param,
-            'first_name' => player2.first_name,
-            'last_name' => player2.last_name,
-            'position' => 'MID',
-          ),
-        ),
       )
     end
 
@@ -178,14 +123,6 @@ RSpec.describe '/api/teams', type: :request do
       last_modified = api.response.headers['Last-Modified']
 
       team1.update!(updated_at: 10.minutes.from_now)
-
-      get_request_with_caching(team1, etag, last_modified)
-      expect(api.response).to have_http_status(200)
-
-      etag = api.response.headers['ETag']
-      last_modified = api.response.headers['Last-Modified']
-
-      fixture1.update!(updated_at: 20.minutes.from_now)
 
       get_request_with_caching(team1, etag, last_modified)
       expect(api.response).to have_http_status(200)

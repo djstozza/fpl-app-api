@@ -9,7 +9,11 @@ Rails.application.routes.draw do
     resources :players, only: [:index, :show]
     resources :rounds, only: [:index, :show]
     resources :positions, only: [:index]
-    resources :teams, only: [:index, :show]
+    resources :teams, only: [:index, :show] do
+      scope module: :teams do
+        resources :fixtures, only: [:index]
+      end
+    end
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

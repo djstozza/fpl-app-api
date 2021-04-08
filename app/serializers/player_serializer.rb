@@ -56,6 +56,24 @@ class PlayerSerializer < BaseSerializer
     first_name
     last_name
     external_id
+    total_points
+    goals_scored
+    assists
+    saves
+    penalties_saved
+    penalties_missed
+    minutes
+    news
+    news_added
+    yellow_cards
+    red_cards
+    chance_of_playing_this_round
+    chance_of_playing_next_round
+    points_per_game
+    goals_conceded
+    clean_sheets
+    bonus
+    own_goals
   ].freeze
 
   def serializable_hash(*)

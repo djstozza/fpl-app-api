@@ -8,7 +8,7 @@ class Api::TeamsController < ApplicationController
 
   # GET /api/teams/1
   def show
-    query = TeamDetailQuery.new(team)
+    query = TeamSerializer.new(team)
     respond_with query if stale?(query)
   end
 
@@ -24,7 +24,7 @@ class Api::TeamsController < ApplicationController
   end
 
   def sort_params
-    params.require(:sort).permit(
+    params.fetch(:sort, {}).permit(
       :position,
       :name,
       :short_name,
