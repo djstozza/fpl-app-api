@@ -12,7 +12,7 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe 'api/players', type: :request do
+RSpec.describe 'api/players', :no_transaction, type: :request do
   let(:team1) { create :team }
   let(:team2) { create :team }
   let(:team3) { create :team }
@@ -21,8 +21,8 @@ RSpec.describe 'api/players', type: :request do
   let!(:player3) { create :player, :goalkeeper, team: team1, total_points: 50 }
 
   describe 'GET /index' do
-    it 'renders a successful response' do
-      api.get api_players_url
+    it 'renders a sortable list of players' do
+      api.get api_players_url, params: { sort: { last_name: 'asc' } }
 
       expect(response).to be_successful
 
@@ -34,12 +34,10 @@ RSpec.describe 'api/players', type: :request do
           'external_id' => player1.external_id.to_s,
           'position'=> {
             'id' => player1.position.to_param,
-            'singular_name' => 'Forward',
             'singular_name_short' => 'FWD',
           },
           'team'=> a_hash_including(
             'id' =>  team3.to_param,
-            'name' => team3.name,
             'short_name' => team3.short_name,
           ),
         ),
@@ -50,12 +48,10 @@ RSpec.describe 'api/players', type: :request do
           'external_id' => player2.external_id.to_s,
           'position'=> {
             'id' => player2.position.to_param,
-            'singular_name' => 'Defender',
             'singular_name_short' => 'DEF',
           },
           'team'=> a_hash_including(
             'id' => team2.to_param,
-            'name' => team2.name,
             'short_name' => team2.short_name,
           ),
         ),
@@ -66,19 +62,15 @@ RSpec.describe 'api/players', type: :request do
           'external_id' => player3.external_id.to_s,
           'position'=> {
             'id' => player3.position.to_param,
-            'singular_name' => 'Goalkeeper',
             'singular_name_short' => 'GKP',
           },
           'team'=> a_hash_including(
             'id' => team1.to_param,
-            'name' => team1.name,
             'short_name' => team1.short_name,
           ),
         ),
       ])
-    end
 
-    it 'is sortable' do
       api.get api_players_url, params: { sort: { last_name: 'desc' } }
 
       expect(api.data).to match([

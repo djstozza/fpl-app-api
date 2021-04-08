@@ -3,7 +3,11 @@ class Api::PlayersController < ApplicationController
 
   # GET /api/players
   def index
-    respond_with PlayerSerializer.map(players, team: true)
+    respond_with SqlQuery.run(
+      'players/index',
+      team_id: filter_params[:team_id],
+      sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', '))
+    )
   end
 
   # GET /api/players/1
@@ -13,15 +17,8 @@ class Api::PlayersController < ApplicationController
 
   private
 
-  def players
-    @players ||= Player
-      .includes(:position, :team)
-      .where(':team_id IS NULL OR team_id = :team_id', team_id: filter_params[:team_id])
-      .order(sort_params.to_h)
-  end
-
   def player
-    @player ||= players.find(params[:id])
+    @player ||= Player.find(params[:id])
   end
 
   def filter_params
@@ -32,6 +29,7 @@ class Api::PlayersController < ApplicationController
     params.fetch(:sort, {}).permit(
       :last_name,
       :first_name,
+      'teams.short_name',
       :position_id,
       :total_points,
       :goals_scored,

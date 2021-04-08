@@ -80,7 +80,7 @@ JSONB_BUILD_OBJECT(
   'id', home_team.id::TEXT,
   'short_name', home_team.short_name
 ) AS home_team,
-JSON_BUILD_OBJECT(
+JSONB_BUILD_OBJECT(
   'id', away_team.id::TEXT,
   'short_name', away_team.short_name
 ) AS away_team,
