@@ -29,6 +29,7 @@ JSONB_BUILD_OBJECT(
 FROM players
 JOIN teams ON teams.id = players.team_id
 JOIN positions ON positions.id = players.position_id
-WHERE (:team_id IS NULL OR teams.id = :team_id)
+WHERE (:team_id IS NULL OR team_id IN :team_id)
+  AND (:position_id IS NULL OR position_id IN :position_id)
 ORDER BY :sort, total_points DESC
 LIMIT 50

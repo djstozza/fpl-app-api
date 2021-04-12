@@ -6,7 +6,14 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   namespace :api do
-    resources :players, only: [:index, :show]
+    resources :players, only: [:index, :show] do
+
+      collection do
+        resources :facets, only: [:index], module: :players, as: :players_facets
+      end
+    end
+
+
     resources :rounds, only: [:index, :show]
     resources :positions, only: [:index]
     resources :teams, only: [:index, :show] do

@@ -5,8 +5,9 @@ class Api::PlayersController < ApplicationController
   def index
     respond_with SqlQuery.run(
       'players/index',
-      team_id: filter_params[:team_id],
-      sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', '))
+      team_id: Array(filter_params[:team_id]&.split(',').presence).compact,
+      position_id: Array(filter_params[:position_id]&.split(',').presence).compact,
+      sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', ')),
     )
   end
 
@@ -22,7 +23,10 @@ class Api::PlayersController < ApplicationController
   end
 
   def filter_params
-    params.fetch(:filter, {}).permit(:team_id)
+    params.fetch(:filter, {}).permit(
+      :position_id,
+      :team_id,
+    )
   end
 
   def sort_params
@@ -30,7 +34,7 @@ class Api::PlayersController < ApplicationController
       :last_name,
       :first_name,
       'teams.short_name',
-      :position_id,
+      'positions.singular_name_short',
       :total_points,
       :goals_scored,
       :assists,
