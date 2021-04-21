@@ -3,12 +3,7 @@ class Api::PlayersController < ApplicationController
 
   # GET /api/players
   def index
-    respond_with SqlQuery.run(
-      'players/index',
-      team_id: Array(filter_params[:team_id]&.split(',').presence).compact,
-      position_id: Array(filter_params[:position_id]&.split(',').presence).compact,
-      sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', ')),
-    )
+    respond_with players_query.results, total: total_query.get(:count)
   end
 
   # GET /api/players/1
@@ -16,10 +11,33 @@ class Api::PlayersController < ApplicationController
     respond_with PlayerSerializer.new(player, team: true)
   end
 
+  def players_query
+    SqlQuery.load(
+      'players/index',
+      players: filtered_players_query,
+      sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', ')),
+      offset: page_params[:offset],
+      limit: page_params[:limit],
+    )
+  end
+
+  def filtered_players_query
+    @filtered_players_query ||= SqlQuery.load(
+      'players/filtered',
+      team_id: Array(filter_params[:team_id]&.split(',').presence).compact,
+      position_id: Array(filter_params[:position_id]&.split(',').presence).compact,
+      sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', ')),
+    )
+  end
+
   private
 
   def player
     @player ||= Player.find(params[:id])
+  end
+
+  def total_query
+    SqlQuery.load('count', subquery: filtered_players_query)
   end
 
   def filter_params
@@ -47,5 +65,9 @@ class Api::PlayersController < ApplicationController
       :penalties_missed,
       :own_goals,
     )
+  end
+
+  def page_params
+    params.fetch(:page, {}).permit(:limit, :offset)
   end
 end

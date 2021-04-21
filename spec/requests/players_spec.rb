@@ -98,6 +98,8 @@ RSpec.describe 'api/players', :no_transaction, type: :request do
           'id' => player1.to_param,
         ),
       ])
+
+      expect(api.meta).to include('total' => 3)
     end
   end
 
