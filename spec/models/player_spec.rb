@@ -47,8 +47,12 @@
 #
 # Indexes
 #
-#  index_players_on_position_id  (position_id)
-#  index_players_on_team_id      (team_id)
+#  index_players_on_id_and_first_name    (id,first_name)
+#  index_players_on_id_and_goals_scored  (id,goals_scored)
+#  index_players_on_id_and_last_name     (id,last_name)
+#  index_players_on_id_and_total_points  (id,total_points)
+#  index_players_on_position_id          (position_id)
+#  index_players_on_team_id              (team_id)
 #
 require 'rails_helper'
 
