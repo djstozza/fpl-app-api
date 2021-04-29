@@ -71,6 +71,54 @@ FactoryBot.define do
     association :team
     association :position
 
+    history { [] }
+    history_past { [] }
+
+
+    trait :with_history do
+      history {
+        fixture ||= create :fixture
+        [
+          {
+            'element' => external_id,
+            'fixture' => fixture.external_id,
+            'opponent_team' => fixture.team_a_id,
+            'total_points' => 7,
+            'was_home' => false,
+            'kickoff_time' => fixture.kickoff_time,
+            'team_h_score' => fixture.team_h_score,
+            'team_a_score' => fixture.team_a_score,
+            'round' => fixture.round.external_id,
+            'minutes' => fixture.minutes,
+            'goals_scored' => 1,
+            'assists' => 0,
+            'clean_sheets' => 1,
+            'goals_conceded' => 0,
+            'own_goals' => 0,
+            'penalties_saved' => 0,
+            'penalties_missed' => 0,
+            'yellow_cards' => 1,
+            'red_cards' => 0,
+            'saves' => 0,
+            'bonus' => 0,
+            'bps' => 19,
+            'influence' => '36.6',
+            'creativity' => '15.3',
+            'threat' => '54.0',
+            'ict_index' => '10.6',
+            'value' => 120,
+            'transfers_balance' => 0,
+            'selected' => 2823465,
+            'transfers_in' => 0,
+            'transfers_out' => 0
+          }
+        ]
+      }
+    end
+
+
+
+
     trait :forward do
       association :position, :forward
     end

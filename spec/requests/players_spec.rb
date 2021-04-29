@@ -101,6 +101,21 @@ RSpec.describe 'api/players', :no_transaction, type: :request do
 
       expect(api.meta).to include('total' => 3)
     end
+
+    it 'is filterable' do
+      api.get api_players_url, params: {
+        filter: { team_id: team2.to_param },
+        sort: { total_points: 'asc' },
+      }
+
+      expect(api.data).to match([
+        a_hash_including(
+          'id' => player2.to_param,
+        ),
+      ])
+
+      expect(api.meta).to include('total' => 1)
+    end
   end
 
   describe 'GET /show' do

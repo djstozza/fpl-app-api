@@ -78,10 +78,14 @@ class PlayerSerializer < BaseSerializer
     clean_sheets
     bonus
     own_goals
+    photo
+    code
   ].freeze
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
+      attrs[:has_history] = history.count > 0 if includes[:history]
+      attrs[:has_history_past] = history_past.count > 0 if includes[:history_past]
       attrs[:position] = serialized_position
       attrs[:team] = serialized_team if includes[:team]
     end

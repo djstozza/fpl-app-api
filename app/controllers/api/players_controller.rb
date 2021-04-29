@@ -8,7 +8,7 @@ class Api::PlayersController < ApplicationController
 
   # GET /api/players/1
   def show
-    respond_with PlayerSerializer.new(player, team: true)
+    respond_with PlayerSerializer.new(player, team: true, history_past: true, history: true)
   end
 
   def players_query

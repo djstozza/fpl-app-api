@@ -7,9 +7,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :players, only: [:index, :show] do
-
       collection do
         resources :facets, only: [:index], module: :players, as: :players_facets
+      end
+
+      scope module: :players do
+        resources :history, only: [:index]
+        resources :history_past, only: [:index]
       end
     end
 
