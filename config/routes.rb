@@ -5,7 +5,19 @@ Rails.application.routes.draw do
   require 'sidekiq-scheduler/web'
   mount Sidekiq::Web => '/sidekiq'
 
+  devise_for :users, skip: [:registrations, :sessions]
+
   namespace :api do
+    devise_scope :user do
+      resources :registrations, only: [:create]
+      resources :sessions, only: [:create] do
+        put :update, on: :collection
+        patch :update, on: :collection
+      end
+    end
+
+    resource :users, only: [:update]
+
     resources :players, only: [:index, :show] do
       collection do
         resources :facets, only: [:index], module: :players, as: :players_facets
@@ -16,7 +28,6 @@ Rails.application.routes.draw do
         resources :history_past, only: [:index]
       end
     end
-
 
     resources :rounds, only: [:index, :show]
     resources :positions, only: [:index]
