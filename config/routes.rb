@@ -5,12 +5,16 @@ Rails.application.routes.draw do
   require 'sidekiq-scheduler/web'
   mount Sidekiq::Web => '/sidekiq'
 
-  devise_for :users, skip: [:registrations, :sessions]
+  devise_for :users, skip: [:registrations, :sessions, :passwords]
 
   namespace :api do
     devise_scope :user do
       resources :registrations, only: [:create]
       resources :sessions, only: [:create] do
+        put :update, on: :collection
+        patch :update, on: :collection
+      end
+      resources :passwords, only: [] do
         put :update, on: :collection
         patch :update, on: :collection
       end

@@ -1,8 +1,8 @@
-class Api::UsersController < ApplicationController
+class Api::PasswordsController < ApplicationController
   before_action :authenticate_user!, only: [:update]
 
   def update
-    service = Users::Update.new(user_params, user: current_user)
+    service = Users::ChangePassword.new(user_params, user: current_user)
 
     return respond_with service unless service.call
 
@@ -12,6 +12,6 @@ class Api::UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :username)
+    params.require(:user).permit(:password, :new_password)
   end
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'registrations', type: :request do
+RSpec.describe 'api/registrations', type: :request do
   it 'creates a new user' do
     expect {
       api.post api_registrations_path, params: {

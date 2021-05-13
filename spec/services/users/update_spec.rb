@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Users::Update, type: :service do
   let!(:user) { create :user }
+
   it 'updates the email and username' do
     data = { email: 'new@email.com', username: 'new' }
 

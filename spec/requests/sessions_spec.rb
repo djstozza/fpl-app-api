@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'sessions', type: :request do
+RSpec.describe 'api/sessions', type: :request do
   include ActiveSupport::Testing::TimeHelpers
   let!(:user) { create :user }
 
