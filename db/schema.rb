@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_01_063538) do
+ActiveRecord::Schema.define(version: 2021_05_14_235211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,30 @@ ActiveRecord::Schema.define(version: 2021_05_01_063538) do
     t.index ["round_id"], name: "index_fixtures_on_round_id"
     t.index ["team_a_id"], name: "index_fixtures_on_team_a_id"
     t.index ["team_h_id"], name: "index_fixtures_on_team_h_id"
+  end
+
+  create_table "fpl_teams", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "draft_pick_number"
+    t.integer "mini_draft_pick_number"
+    t.integer "rank"
+    t.bigint "owner_id"
+    t.bigint "league_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["league_id"], name: "index_fpl_teams_on_league_id"
+    t.index ["owner_id"], name: "index_fpl_teams_on_owner_id"
+  end
+
+  create_table "leagues", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "code", null: false
+    t.integer "status", default: 0, null: false
+    t.boolean "active", default: true, null: false
+    t.bigint "owner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["owner_id"], name: "index_leagues_on_owner_id"
   end
 
   create_table "players", force: :cascade do |t|

@@ -33,6 +33,9 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :leagues, except: [:edit, :destroy]
+    resources :fpl_teams, except: [:edit, :destroy]
+
     resources :rounds, only: [:index, :show]
     resources :positions, only: [:index]
     resources :teams, only: [:index, :show] do

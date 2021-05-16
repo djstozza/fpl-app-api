@@ -4,12 +4,11 @@ RSpec.describe 'api/passwords', type: :request do
   let!(:user) { create :user }
 
   describe 'PUT' do
-    it 'changes the password' do
-      token = Users::BaseService.call({}, user: user)
+    before { api.authenticate(user) }
 
+    it 'changes the password' do
       api.put api_passwords_path,
-              params: { user: { password: user.password, new_password: 'new password', } },
-              headers: { 'Authorization' => "Bearer #{token}" }
+              params: { user: { password: user.password, new_password: 'new password', } }
 
       expect(api.response).to have_http_status(:success)
 
@@ -21,11 +20,8 @@ RSpec.describe 'api/passwords', type: :request do
     end
 
     it 'fails if the params are invalid' do
-      token = Users::BaseService.call({}, user: user)
-
       api.put api_passwords_path,
-              params: { user: { password: user.password, new_password: user.password, } },
-              headers: { 'Authorization' => "Bearer #{token}" }
+              params: { user: { password: user.password, new_password: user.password, } }
 
       expect(api.errors).to contain_exactly(
         a_hash_including(

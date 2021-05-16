@@ -4,17 +4,16 @@ RSpec.describe 'api/users', type: :request do
   let!(:user) { create :user }
 
   describe 'PUT' do
-    it 'updates the user details' do
-      token = Users::BaseService.call({}, user: user)
+    before { api.authenticate(user) }
 
+    it 'updates the user details' do
       api.put api_users_path,
               params: {
                 user: {
                   email: 'new@email.com',
                   username: 'new',
                 },
-              },
-              headers: { 'Authorization' => "Bearer #{token}" }
+              }
 
       expect(api.response).to have_http_status(:success)
 
@@ -25,16 +24,13 @@ RSpec.describe 'api/users', type: :request do
     end
 
     it 'fails if the params are invalid' do
-      token = Users::BaseService.call({}, user: user)
-
       api.put api_users_path,
               params: {
                 user: {
                   email: 'invalid',
                   username: '',
                 },
-              },
-              headers: { 'Authorization' => "Bearer #{token}" }
+              }
 
       expect(api.response).to have_http_status(:unprocessable_entity)
 

@@ -25,7 +25,6 @@ class User < ApplicationRecord
   # SecurePassword enforces max password length to prevent DoS via bcrypt hashing
   MAX_PASSWORD_LENGTH = ActiveModel::SecurePassword::MAX_PASSWORD_LENGTH_ALLOWED
 
-
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable,
@@ -36,4 +35,7 @@ class User < ApplicationRecord
          password_length: MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH
 
   validates :username, presence: true, uniqueness: true
+
+  has_many :leagues, foreign_key: :owner_id
+  has_many :fpl_teams, foreign_key: :owner_id
 end

@@ -42,11 +42,11 @@ RSpec.describe 'api/sessions', type: :request do
   end
 
   describe 'PUT' do
-    it 'responds with an updated token' do
-      token = Users::BaseService.call({}, user: user)
+    before { api.authenticate(user) }
 
+    it 'responds with an updated token' do
       travel_to ENV['SESSION_EXPIRY'].to_i.minutes.from_now - 1.minute do
-        api.put api_sessions_path, params: {}, headers: { 'Authorization' => "Bearer #{token}" }
+        api.put api_sessions_path
 
         decoded_jwt = JWT.decode(api.data['token'], Rails.application.secrets.secret_key_base)[0]
 
@@ -58,10 +58,8 @@ RSpec.describe 'api/sessions', type: :request do
     end
 
     it 'fails if the token has expired' do
-      token = Users::BaseService.call({}, user: user)
-
       travel_to ENV['SESSION_EXPIRY'].to_i.minutes.from_now + 1.minute do
-        api.put api_sessions_path, params: {}, headers: { 'Authorization' => "Bearer #{token}" }
+        api.put api_sessions_path
 
         expect(api.response).to have_http_status(:unauthorized)
       end

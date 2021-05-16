@@ -12,6 +12,15 @@ module APIHelpers
       @results = Hash.new { |hash, key| hash[key] = {} }
     end
 
+    def authenticate(user)
+      token = Users::BaseService.call({}, user: user)
+
+      headers['Authorization'] = "Bearer #{token}"
+    end
+
+    def deuthenticate
+      headers.delete('Authorization')
+    end
 
     def headers
       @headers ||= {
