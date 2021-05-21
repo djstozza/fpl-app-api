@@ -11,7 +11,7 @@ RSpec.describe Api::FplTeamsController, type: :routing do
     end
 
     it 'routes to #create' do
-      expect(post: 'api/fpl_teams').to route_to('api/fpl_teams#create')
+      expect(post: 'api/fpl_teams').not_to route_to('api/fpl_teams#create')
     end
 
     it 'routes to #update via PUT' do

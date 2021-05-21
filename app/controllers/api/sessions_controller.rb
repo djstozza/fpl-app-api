@@ -4,17 +4,16 @@ class Api::SessionsController < Devise::SessionsController
 
   def create
     user = User.find_by(email: sign_in_params[:email])
-    service = Users::SignIn.new(sign_in_params, user: user)
-    token = service.call
+    service = Users::SignIn.call(sign_in_params, user: user)
+    token = service.token
 
     return respond_with service unless token
 
-    respond_with token: token, user: UserSerializer.new(service.user)
+    respond_with token: token, user: UserSerializer.new(user)
   end
 
   def update
-    service = Users::BaseService.new({}, user: current_user)
-    token = service.call
+    token = Users::BaseService.call({}, user: current_user).token
 
     respond_with token: token, user: UserSerializer.new(current_user)
   end

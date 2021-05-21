@@ -18,9 +18,10 @@ class Api::LeaguesController < ApplicationController
 
   # POST /api/leagues
   def create
-    league = League.create!({ **league_params, owner: current_user })
+    service = Leagues::Create.call(league_params, current_user)
+    return respond_with service if service.errors.any?
 
-    respond_with(serialized_league(league))
+    respond_with(serialized_league(service.league))
   end
 
   # PUT /api/leagues/1
@@ -33,15 +34,15 @@ class Api::LeaguesController < ApplicationController
   private
 
   def league
-    @league ||= League.find(params[:id])
+    @league ||= League.find(params[:id] || params[:league_id])
   end
 
   def serialized_league(league)
-    LeagueSerializer.new(league, current_user: current_user)
+    LeagueSerializer.new(league, current_user: current_user, fpl_teams: true)
   end
 
   def league_params
-    params.require(:league).permit(:name, :code)
+    params.require(:league).permit(:name, :code, :fpl_team_name)
   end
 
   def check_user_authorisation

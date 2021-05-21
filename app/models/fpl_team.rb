@@ -21,7 +21,9 @@ class FplTeam < ApplicationRecord
   belongs_to :owner, class_name: 'User', foreign_key: :owner_id
   belongs_to :league
 
-  validates :name, presence: true, uniqueness: { case_sensitive: false }
+  alias_attribute :fpl_team_name, :name
+
+  validates :name, :fpl_team_name, presence: true, uniqueness: { case_sensitive: false }
   validates :draft_pick_number,
             :mini_draft_pick_number,
             uniqueness: { scope: :league },

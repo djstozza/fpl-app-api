@@ -27,6 +27,7 @@ class LeagueSerializer < BaseSerializer
       if includes[:current_user]
         attrs[:is_owner] = owner == includes[:current_user]
         attrs[:owner] = UserSerializer.new(owner)
+        attrs[:fpl_teams] = FplTeamSerializer.map(fpl_teams) if includes[:fpl_teams]
       end
     end
   end

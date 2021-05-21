@@ -64,39 +64,39 @@ RSpec.describe "/fpl_teams", type: :request do
     end
   end
 
-  describe 'POST /create' do
-    it 'creates a new fpl_team' do
-      league = create :league
-      api.authenticate(user)
-
-      expect {
-        api.post api_fpl_teams_url, params: { fpl_team: { name: 'New fpl_team', league_id: league.to_param } }
-      }.to change { FplTeam.count }.from(0).to(1)
-
-      new_fpl_team = FplTeam.last
-
-      expect(api.data).to match(
-        'id' => new_fpl_team.to_param,
-        'name' => 'New fpl_team',
-        'league' => a_hash_including('id' => league.to_param),
-        'is_owner' => true,
-        'owner' => a_hash_including('id' => user.to_param),
-      )
-    end
-
-    it 'responds with a 422 message if params invalid' do
-      api.authenticate(user)
-
-      api.post api_fpl_teams_url, params: { fpl_team: { name: nil, league_id: nil } }
-
-      expect(api.response).to have_http_status(:unprocessable_entity)
-
-      expect(api.errors).to contain_exactly(
-        a_hash_including('detail' => "Name can't be blank", 'source' => 'name'),
-        a_hash_including('detail' => "League must exist", 'source' => 'league'),
-      )
-    end
-  end
+  # describe 'POST /create' do
+  #   it 'creates a new fpl_team' do
+  #     league = create :league
+  #     api.authenticate(user)
+  #
+  #     expect {
+  #       api.post api_fpl_teams_url, params: { fpl_team: { name: 'New fpl_team', league_id: league.to_param } }
+  #     }.to change { FplTeam.count }.from(0).to(1)
+  #
+  #     new_fpl_team = FplTeam.last
+  #
+  #     expect(api.data).to match(
+  #       'id' => new_fpl_team.to_param,
+  #       'name' => 'New fpl_team',
+  #       'league' => a_hash_including('id' => league.to_param),
+  #       'is_owner' => true,
+  #       'owner' => a_hash_including('id' => user.to_param),
+  #     )
+  #   end
+  #
+  #   it 'responds with a 422 message if params invalid' do
+  #     api.authenticate(user)
+  #
+  #     api.post api_fpl_teams_url, params: { fpl_team: { name: nil, league_id: nil } }
+  #
+  #     expect(api.response).to have_http_status(:unprocessable_entity)
+  #
+  #     expect(api.errors).to contain_exactly(
+  #       a_hash_including('detail' => "Name can't be blank", 'source' => 'name'),
+  #       a_hash_including('detail' => "League must exist", 'source' => 'league'),
+  #     )
+  #   end
+  # end
 
   describe 'PUT /update' do
     it 'updates the fpl_team' do
@@ -117,13 +117,12 @@ RSpec.describe "/fpl_teams", type: :request do
     it 'responds with a 422 message if params invalid' do
       api.authenticate(user)
 
-      api.put api_fpl_team_url(fpl_team), params: { fpl_team: { name: nil, league_id: nil } }
+      api.put api_fpl_team_url(fpl_team), params: { fpl_team: { name: nil } }
 
       expect(api.response).to have_http_status(:unprocessable_entity)
 
-      expect(api.errors).to contain_exactly(
+      expect(api.errors).to include(
         a_hash_including('detail' => "Name can't be blank", 'source' => 'name'),
-        a_hash_including('detail' => "League must exist", 'source' => 'league'),
       )
     end
 

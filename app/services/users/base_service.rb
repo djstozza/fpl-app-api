@@ -1,5 +1,5 @@
 class Users::BaseService < ApplicationService
-  attr_reader :user, :email, :username, :password, :new_password
+  attr_reader :user, :email, :username, :password, :new_password, :token
 
   def initialize(data, user: nil)
     @user = user || User.new
@@ -7,6 +7,7 @@ class Users::BaseService < ApplicationService
     @username = data[:username]
     @password = data[:password]
     @new_password = data[:new_password]
+    @token = nil
   end
 
   def call
@@ -25,7 +26,7 @@ class Users::BaseService < ApplicationService
   end
 
   def generate_jwt
-    JWT.encode(
+    @token = JWT.encode(
       {
         id: user.id,
         exp: (ENV['SESSION_EXPIRY'].to_i || 120).minutes.from_now.to_i,

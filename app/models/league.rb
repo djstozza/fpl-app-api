@@ -19,7 +19,8 @@ class League < ApplicationRecord
   CODE_LENGTH = 8
 
   belongs_to :owner, class_name: 'User', foreign_key: :owner_id
-  has_many :users, through: :fpl_teams
+  has_many :fpl_teams
+  has_many :users, through: :fpl_teams, source: :owner
 
   validates :name, presence: true, uniqueness: { case_sensitive: false, allow_nil: true }
   validates :code, presence: true, length: { is: CODE_LENGTH, allow_nil: true }

@@ -6,18 +6,11 @@ class Api::FplTeamsController < ApplicationController
 
   # GET api/fpl_teams
   def index
-    respond_with(FplTeamSerializer.map(current_user.fpl_teams))
+    respond_with(FplTeamSerializer.map(current_user.fpl_teams, league: true))
   end
 
   # GET api/fpl_teams/1
   def show
-    respond_with(serialized_fpl_team(fpl_team))
-  end
-
-  # POST api/fpl_teams
-  def create
-    fpl_team = FplTeam.create!({ **fpl_team_params, owner: current_user })
-
     respond_with(serialized_fpl_team(fpl_team))
   end
 
@@ -35,11 +28,11 @@ class Api::FplTeamsController < ApplicationController
   end
 
   def serialized_fpl_team(fpl_team)
-    FplTeamSerializer.new(fpl_team, current_user: current_user)
+    FplTeamSerializer.new(fpl_team, current_user: current_user, league: true)
   end
 
   def fpl_team_params
-    params.require(:fpl_team).permit(:name, :league_id)
+    params.require(:fpl_team).permit(:name)
   end
 
   def check_user_authorisation

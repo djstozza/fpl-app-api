@@ -46,6 +46,7 @@ RSpec.describe 'api/leagues', type: :request do
         'status' => league.status,
         'is_owner' => true,
         'owner' => a_hash_including('id' => user.to_param),
+        'fpl_teams' => [],
       )
     end
 
@@ -61,6 +62,7 @@ RSpec.describe 'api/leagues', type: :request do
         'status' => league.status,
         'is_owner' => false,
         'owner' => a_hash_including('id' => user.to_param),
+        'fpl_teams' => [],
       )
     end
   end
@@ -69,9 +71,8 @@ RSpec.describe 'api/leagues', type: :request do
     it 'creates a new league' do
       api.authenticate(user)
 
-      expect {
-        api.post api_leagues_url, params: { league: { name: 'New league', code: '12345678' } }
-      }.to change { League.count }.from(0).to(1)
+      api.post api_leagues_url,
+               params: { league: { name: 'New league', code: '12345678', fpl_team_name: 'New fpl_team' } }
 
       new_league = League.last
 
@@ -81,19 +82,23 @@ RSpec.describe 'api/leagues', type: :request do
         'status' => new_league.status,
         'is_owner' => true,
         'owner' => a_hash_including('id' => user.to_param),
+        'fpl_teams' => containing_exactly(
+          a_hash_including('name' => 'New fpl_team')
+        )
       )
     end
 
     it 'responds with a 422 message if params invalid' do
       api.authenticate(user)
 
-      api.post api_leagues_url, params: { league: { name: nil, code: nil } }
+      api.post api_leagues_url, params: { league: { name: nil, code: nil, fpl_team_name: nil } }
 
       expect(api.response).to have_http_status(:unprocessable_entity)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => "Name can't be blank", 'source' => 'name'),
         a_hash_including('detail' => "Code can't be blank", 'source' => 'code'),
+        a_hash_including('detail' => "Fpl team name can't be blank", 'source' => 'fpl_team_name'),
       )
     end
   end
@@ -111,6 +116,7 @@ RSpec.describe 'api/leagues', type: :request do
         'status' => league.status,
         'is_owner' => true,
         'owner' => a_hash_including('id' => user.to_param),
+        'fpl_teams' => [],
       )
 
       expect(league.reload.code).to eq('12345678')

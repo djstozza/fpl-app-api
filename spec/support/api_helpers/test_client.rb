@@ -13,7 +13,7 @@ module APIHelpers
     end
 
     def authenticate(user)
-      token = Users::BaseService.call({}, user: user)
+      token = Users::BaseService.call({}, user: user).token
 
       headers['Authorization'] = "Bearer #{token}"
     end
