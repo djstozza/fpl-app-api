@@ -8,7 +8,7 @@ module Api::Leagues
       service = Leagues::Join.call(league_params, current_user, league: league)
       return respond_with service if service.errors.any?
 
-      respond_with(serialized_league(service.league))
+      respond_with(serialized_league(service.league.reload))
     end
 
     private

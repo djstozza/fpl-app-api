@@ -20,7 +20,6 @@ RSpec.describe "aoi/leagues/joins", type: :request do
     it 'creates a new fpl_team' do
       api.authenticate(user)
 
-
       api.post api_league_join_url(league.id), params: { league: { fpl_team_name: 'New fpl_team', code: league.code } }
 
       new_fpl_team = FplTeam.last

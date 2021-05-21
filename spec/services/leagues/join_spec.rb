@@ -57,4 +57,15 @@ RSpec.describe Leagues::Join, type: :service do
       'You have already joined this league'
     )
   end
+
+  it 'fails if the max quota of fpl_teams has been reached' do
+    stub_const('League::MAX_FPL_TEAM_QUOTA', 0)
+
+    expect { service }
+      .not_to change { FplTeam.count }
+
+    expect(service.errors.full_messages).to contain_exactly(
+      'This league has no more spaces left'
+    )
+  end
 end

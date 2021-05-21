@@ -17,6 +17,8 @@
 #
 class League < ApplicationRecord
   CODE_LENGTH = 8
+  MIN_FPL_TEAM_QUOTA = 7
+  MAX_FPL_TEAM_QUOTA = 11
 
   belongs_to :owner, class_name: 'User', foreign_key: :owner_id
   has_many :fpl_teams
