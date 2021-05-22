@@ -28,4 +28,10 @@ class Leagues::BaseService < ApplicationService
 
     errors.merge!(fpl_team.errors) if fpl_team.errors.any?
   end
+
+  def user_is_owner
+    return if league.owner == user
+
+    errors.add(:base, 'You are not authorised to perform this action')
+  end
 end

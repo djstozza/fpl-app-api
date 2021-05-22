@@ -12,41 +12,37 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "aoi/leagues/league_id/joins", type: :request do
+RSpec.describe "aoi/leagues/league_id/generate_Drafts", type: :request do
   let!(:user) { create :user }
-  let!(:league) { create :league }
+  let!(:league) { create :league, owner: user }
+  let!(:fpl_team) { create :fpl_team, league: league, owner: user }
+
+  before do
+    (League::MIN_FPL_TEAM_QUOTA - 1).times do
+      create(:fpl_team, league: league)
+    end
+  end
 
   describe 'POST /create' do
-    it 'creates a new fpl_team' do
+    it 'generates fpl_team draft pick numbers and transitions the league to draft_picks_generated' do
       api.authenticate(user)
 
-      api.post api_league_join_url(league.id), params: { league: { fpl_team_name: 'New fpl_team', code: league.code } }
+      expect { api.post api_league_generate_draft_path(league.id) }
+        .to change { league.reload.status }.from('initialized').to('draft_picks_generated')
 
-      new_fpl_team = FplTeam.last
-
-      expect(api.data).to match(
-        'id' => league.to_param,
-        'name' => league.name,
-        'status' => league.status,
-        'is_owner' => false,
-        'owner' => a_hash_including('id' => league.owner.to_param),
-        'fpl_teams' => contain_exactly(
-          a_hash_including('id' => new_fpl_team.to_param)
-        ),
-      )
+      expect(league.fpl_teams.pluck(:draft_pick_number)).to all(be_an(Integer))
     end
 
     it 'responds with a 422 message if params invalid' do
-      create(:fpl_team, league: league, owner: user)
+      another_user = create :user
+      api.authenticate(another_user)
 
-      api.authenticate(user)
-
-      api.post api_league_join_url(league), params: { league: { fpl_team_name: 'New fpl_team', code: league.code } }
+      expect { api.post api_league_generate_draft_path(league.id) }.not_to change { league.reload.status }
 
       expect(api.response).to have_http_status(:unprocessable_entity)
 
       expect(api.errors).to contain_exactly(
-        a_hash_including('detail' => 'You have already joined this league', 'source' => 'base'),
+        a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),
       )
     end
   end

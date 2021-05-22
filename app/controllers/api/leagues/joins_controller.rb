@@ -1,14 +1,12 @@
 module Api::Leagues
   class JoinsController < Api::LeaguesController
-    before_action :authenticate_user!
     load_resource :league
 
-    # GET /api/leagues/league_id/join
+    # POST /api/leagues/league_id/join
     def create
       service = Leagues::Join.call(league_params, current_user, league: league)
-      return respond_with service if service.errors.any?
 
-      respond_with(serialized_league(service.league.reload))
+      respond_with service.errors.any? ? service : serialized_league(service.league.reload)
     end
 
     private

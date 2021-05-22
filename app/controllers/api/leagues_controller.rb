@@ -19,9 +19,8 @@ class Api::LeaguesController < ApplicationController
   # POST /api/leagues
   def create
     service = Leagues::Create.call(league_params, current_user)
-    return respond_with service if service.errors.any?
 
-    respond_with(serialized_league(service.league))
+    respond_with service.errors.any? ? service : serialized_league(service.league)
   end
 
   # PUT /api/leagues/1

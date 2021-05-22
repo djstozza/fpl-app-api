@@ -24,7 +24,9 @@ class LeagueSerializer < BaseSerializer
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
-      if includes[:current_user]
+      current_user = includes[:current_user]
+
+      if current_user
         attrs[:is_owner] = owner == includes[:current_user]
         attrs[:owner] = UserSerializer.new(owner)
         attrs[:fpl_teams] = FplTeamSerializer.map(fpl_teams) if includes[:fpl_teams]

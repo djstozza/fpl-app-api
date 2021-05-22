@@ -29,7 +29,7 @@ class League < ApplicationRecord
 
   enum status: {
     initialized: 0,
-    generate_draft_picks: 1,
+    draft_picks_generated: 1,
     create_draft: 2,
     draft: 3,
     live: 4,
