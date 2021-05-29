@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_14_235211) do
+ActiveRecord::Schema.define(version: 2021_05_26_090301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "draft_picks", force: :cascade do |t|
+    t.integer "pick_number"
+    t.boolean "mini_draft", default: false, null: false
+    t.bigint "fpl_team_id"
+    t.bigint "player_id"
+    t.bigint "league_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["fpl_team_id"], name: "index_draft_picks_on_fpl_team_id"
+    t.index ["league_id"], name: "index_draft_picks_on_league_id"
+    t.index ["player_id"], name: "index_draft_picks_on_player_id"
+  end
 
   create_table "fixtures", force: :cascade do |t|
     t.string "kickoff_time"
@@ -50,6 +63,13 @@ ActiveRecord::Schema.define(version: 2021_05_14_235211) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["league_id"], name: "index_fpl_teams_on_league_id"
     t.index ["owner_id"], name: "index_fpl_teams_on_owner_id"
+  end
+
+  create_table "fpl_teams_players", id: false, force: :cascade do |t|
+    t.bigint "fpl_team_id", null: false
+    t.bigint "player_id", null: false
+    t.index ["fpl_team_id"], name: "index_fpl_teams_players_on_fpl_team_id"
+    t.index ["player_id"], name: "index_fpl_teams_players_on_player_id"
   end
 
   create_table "leagues", force: :cascade do |t|

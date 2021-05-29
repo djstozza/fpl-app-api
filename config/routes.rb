@@ -35,7 +35,9 @@ Rails.application.routes.draw do
 
     resources :leagues, except: [:edit, :destroy] do
       resource :join, only: [:create], controller: 'leagues/joins'
-      resource :generate_draft, only: [:create], controller: 'leagues/generate_drafts'
+      resource :generate_draft_picks, only: [:create], controller: 'leagues/generate_draft_picks'
+      resource :create_draft, only: [:create], controller: 'leagues/create_drafts'
+      resources :draft_picks, only: [:index, :update], controller: 'leagues/draft_picks'
     end
     resources :fpl_teams, only: [:index, :show, :update]
 

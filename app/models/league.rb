@@ -20,9 +20,14 @@ class League < ApplicationRecord
   MIN_FPL_TEAM_QUOTA = 7
   MAX_FPL_TEAM_QUOTA = 11
 
+  # 15 player picks per team & 1 mini draft pick
+  PICKS_PER_TEAM = FplTeam::QUOTAS[:team] + 1
+
   belongs_to :owner, class_name: 'User', foreign_key: :owner_id
   has_many :fpl_teams
+  has_many :players, through: :fpl_teams
   has_many :users, through: :fpl_teams, source: :owner
+  has_many :draft_picks
 
   validates :name, presence: true, uniqueness: { case_sensitive: false, allow_nil: true }
   validates :code, presence: true, length: { is: CODE_LENGTH, allow_nil: true }
@@ -30,8 +35,11 @@ class League < ApplicationRecord
   enum status: {
     initialized: 0,
     draft_picks_generated: 1,
-    create_draft: 2,
-    draft: 3,
-    live: 4,
+    draft: 2,
+    live: 3,
   }
+
+  def current_draft_pick
+    draft_picks.order(:pick_number).find_by(player_id: nil, mini_draft: false)
+  end
 end

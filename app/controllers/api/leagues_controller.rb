@@ -1,6 +1,5 @@
 class Api::LeaguesController < ApplicationController
   before_action :authenticate_user!
-  before_action :check_user_authorisation, only: [:update]
 
   load_resource :league, only: [:show, :update]
 
@@ -25,15 +24,15 @@ class Api::LeaguesController < ApplicationController
 
   # PUT /api/leagues/1
   def update
-    league.update!(league_params)
+    service = Leagues::Update.call(league_params, current_user, league: league)
 
-    respond_with(serialized_league(league))
+    respond_with service.errors.any? ? service : serialized_league(service.league)
   end
 
   private
 
   def league
-    @league ||= League.find(params[:id] || params[:league_id])
+    @league ||= League.find(params[:league_id] || params[:id])
   end
 
   def serialized_league(league)
@@ -42,11 +41,5 @@ class Api::LeaguesController < ApplicationController
 
   def league_params
     params.require(:league).permit(:name, :code, :fpl_team_name)
-  end
-
-  def check_user_authorisation
-    return if league.owner == current_user
-
-    head :unauthorized
   end
 end

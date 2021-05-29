@@ -12,7 +12,7 @@ class Leagues::BaseService < ApplicationService
   end
 
   def call
-    valid?
+    return unless valid?
   end
 
   private
@@ -33,5 +33,19 @@ class Leagues::BaseService < ApplicationService
     return if league.owner == user
 
     errors.add(:base, 'You are not authorised to perform this action')
+  end
+
+  def min_fpl_team_quota
+    return if fpl_team_count >= League::MIN_FPL_TEAM_QUOTA
+
+    errors.add(:base, "There must be at least #{League::MIN_FPL_TEAM_QUOTA} teams present")
+  end
+
+  def fpl_teams
+    @fpl_teams ||= league.fpl_teams
+  end
+
+  def fpl_team_count
+    @fpl_team_count ||= fpl_teams.count
   end
 end

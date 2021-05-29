@@ -12,13 +12,12 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "aoi/leagues/league_id/generate_Drafts", type: :request do
+RSpec.describe 'api/leagues/league_id/generate_drafts', type: :request do
   let!(:user) { create :user }
   let!(:league) { create :league, owner: user }
-  let!(:fpl_team) { create :fpl_team, league: league, owner: user }
 
   before do
-    (League::MIN_FPL_TEAM_QUOTA - 1).times do
+    (League::MIN_FPL_TEAM_QUOTA).times do
       create(:fpl_team, league: league)
     end
   end
@@ -27,7 +26,7 @@ RSpec.describe "aoi/leagues/league_id/generate_Drafts", type: :request do
     it 'generates fpl_team draft pick numbers and transitions the league to draft_picks_generated' do
       api.authenticate(user)
 
-      expect { api.post api_league_generate_draft_path(league.id) }
+      expect { api.post api_league_generate_draft_picks_path(league.id) }
         .to change { league.reload.status }.from('initialized').to('draft_picks_generated')
 
       expect(league.fpl_teams.pluck(:draft_pick_number)).to all(be_an(Integer))
@@ -37,7 +36,7 @@ RSpec.describe "aoi/leagues/league_id/generate_Drafts", type: :request do
       another_user = create :user
       api.authenticate(another_user)
 
-      expect { api.post api_league_generate_draft_path(league.id) }.not_to change { league.reload.status }
+      expect { api.post api_league_generate_draft_picks_path(league.id) }.not_to change { league.reload.status }
 
       expect(api.response).to have_http_status(:unprocessable_entity)
 

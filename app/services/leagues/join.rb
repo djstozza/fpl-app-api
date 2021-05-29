@@ -5,7 +5,6 @@ class Leagues::Join < Leagues::BaseService
   validate :within_quota
   validate :valid_fpl_team
 
-
   private
 
   def valid_code
