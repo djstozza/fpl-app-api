@@ -32,7 +32,7 @@ class Api::FplTeamsController < ApplicationController
   end
 
   def fpl_team_params
-    params.require(:fpl_team).permit(:name)
+    params.require(:fpl_team).permit(:name, :rank, :draft_pick_number, :mini_draft_pick_number)
   end
 
   def check_user_authorisation

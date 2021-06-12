@@ -20,19 +20,21 @@ RSpec.describe "aoi/leagues/league_id/joins", type: :request do
     it 'creates a new fpl_team' do
       api.authenticate(user)
 
-      api.post api_league_join_url(league.id), params: { league: { fpl_team_name: 'New fpl_team', code: league.code } }
+      expect {
+        api.post api_leagues_join_url,
+                 params: { league: { fpl_team_name: 'New fpl_team', code: league.code, name: league.name } }
+      }.to change { FplTeam.count }.from(0).to(1)
 
-      new_fpl_team = FplTeam.last
-
-      expect(api.data).to match(
-        'id' => league.to_param,
-        'name' => league.name,
-        'status' => league.status,
-        'is_owner' => false,
-        'owner' => a_hash_including('id' => league.owner.to_param),
-        'fpl_teams' => contain_exactly(
-          a_hash_including('id' => new_fpl_team.to_param)
-        ),
+      expect(api.data).to contain_exactly(
+        a_hash_including(
+          'id' => league.to_param,
+          'name' => league.name,
+          'status' => league.status.humanize,
+          'is_owner' => false,
+          'show_draft_pick_column' => false,
+          'show_live_columns' => false,
+          'owner' => a_hash_including('id' => league.owner.to_param),
+        )
       )
     end
 
@@ -41,12 +43,26 @@ RSpec.describe "aoi/leagues/league_id/joins", type: :request do
 
       api.authenticate(user)
 
-      api.post api_league_join_url(league), params: { league: { fpl_team_name: 'New fpl_team', code: league.code } }
+      api.post api_leagues_join_url,
+               params: { league: { fpl_team_name: 'New fpl_team', code: league.code, name: league.name } }
 
       expect(api.response).to have_http_status(:unprocessable_entity)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You have already joined this league', 'source' => 'base'),
+      )
+    end
+
+    it 'responds with a 422 message if the name is invalid' do
+      api.authenticate(user)
+
+      api.post api_leagues_join_url,
+               params: { league: { fpl_team_name: 'New fpl_team', code: league.code, name: 'invalid' } }
+
+      expect(api.response).to have_http_status(:unprocessable_entity)
+
+      expect(api.errors).to contain_exactly(
+        a_hash_including('detail' => 'Name does not match with any league on record', 'source' => 'name'),
       )
     end
   end

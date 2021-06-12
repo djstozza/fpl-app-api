@@ -5,9 +5,7 @@ class Api::LeaguesController < ApplicationController
 
   # GET /api/leagues
   def index
-    leagues = LeagueSerializer.map(current_user.leagues.order(:name))
-
-    respond_with(leagues)
+    respond_with(LeagueSerializer.map(leagues, current_user: current_user))
   end
 
   # GET /api/leagues/1
@@ -35,11 +33,26 @@ class Api::LeaguesController < ApplicationController
     @league ||= League.find(params[:league_id] || params[:id])
   end
 
+  def leagues
+    League
+      .includes(:owner)
+      .joins(:fpl_teams)
+      .where('fpl_teams.owner_id = ?', current_user.id)
+      .order(sort_params.to_h)
+  end
+
   def serialized_league(league)
     LeagueSerializer.new(league, current_user: current_user, fpl_teams: true)
   end
 
   def league_params
     params.require(:league).permit(:name, :code, :fpl_team_name)
+  end
+
+  def sort_params
+    params.fetch(:sort, {}).permit(
+      :name,
+      :status,
+    )
   end
 end

@@ -12,6 +12,8 @@ class Leagues::GenerateDraftPick < Leagues::BaseService
   def call
     return unless valid?
 
+    fpl_teams.update_all(draft_pick_number: nil)
+
     shuffled_fpl_teams.each do |fpl_team|
       fpl_team.update(draft_pick_number: (shuffled_fpl_teams.index(fpl_team) + 1))
       errors.merge!(fpl_team.errors) if fpl_team.errors.any?
@@ -28,8 +30,8 @@ class Leagues::GenerateDraftPick < Leagues::BaseService
   end
 
   def league_status
-    return if league.initialized?
+    return if league.initialized? || league.draft_picks_generated?
 
-    errors.add(:base, 'Draft pick numbers have already been assigned')
+    errors.add(:base, 'Draft has already been created')
   end
 end

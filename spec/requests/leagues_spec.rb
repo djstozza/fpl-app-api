@@ -15,21 +15,34 @@ require 'rails_helper'
 RSpec.describe 'api/leagues', type: :request do
   let!(:user) { create :user }
   let(:league) { create :league, owner: user }
+  let!(:fpl_team) { create :fpl_team, league: league, owner: user }
 
   describe 'GET /index' do
-    it 'returns a list of the leagues where the user is the owner' do
-      league.save
+    it 'returns a list of the leagues for which the user has fpl_teams' do
+      another_fpl_team = create(:fpl_team, owner: user)
+      another_fpl_team.save!
 
-      create :league
+      create :fpl_team
 
       api.authenticate(user)
-      api.get api_leagues_url
+      api.get api_leagues_url, params: { sort: { name: 'desc' } }
 
 
-      expect(api.data).to contain_exactly(
-        'id' => league.to_param,
-        'name' => league.name,
-        'status' => league.status,
+      expect(api.data).to match(
+        [
+          a_hash_including(
+            'id' => another_fpl_team.league.to_param,
+            'name' => another_fpl_team.league.name,
+            'status' => another_fpl_team.league.status.humanize,
+            'is_owner' => false,
+          ),
+          a_hash_including(
+            'id' => league.to_param,
+            'name' => league.name,
+            'status' => league.status.humanize,
+            'is_owner' => true,
+          ),
+        ],
       )
     end
   end
@@ -43,10 +56,14 @@ RSpec.describe 'api/leagues', type: :request do
       expect(api.data).to match(
         'id' => league.to_param,
         'name' => league.name,
-        'status' => league.status,
+        'status' => league.status.humanize,
+        'code' => league.code,
         'is_owner' => true,
         'owner' => a_hash_including('id' => user.to_param),
-        'fpl_teams' => [],
+        'can_create_draft' => false,
+        'can_generate_draft_picks' => false,
+        'show_draft_pick_column' => false,
+        'show_live_columns' => false,
       )
     end
 
@@ -59,10 +76,11 @@ RSpec.describe 'api/leagues', type: :request do
       expect(api.data).to match(
         'id' => league.to_param,
         'name' => league.name,
-        'status' => league.status,
+        'status' => league.status.humanize,
         'is_owner' => false,
         'owner' => a_hash_including('id' => user.to_param),
-        'fpl_teams' => [],
+        'show_draft_pick_column' => false,
+        'show_live_columns' => false,
       )
     end
   end
@@ -79,12 +97,14 @@ RSpec.describe 'api/leagues', type: :request do
       expect(api.data).to match(
         'id' => new_league.to_param,
         'name' => 'New league',
-        'status' => new_league.status,
+        'status' => new_league.status.humanize,
+        'code' => league.code,
         'is_owner' => true,
         'owner' => a_hash_including('id' => user.to_param),
-        'fpl_teams' => containing_exactly(
-          a_hash_including('name' => 'New fpl_team')
-        )
+        'can_create_draft' => false,
+        'can_generate_draft_picks' => false,
+        'show_draft_pick_column' => false,
+        'show_live_columns' => false,
       )
     end
 
@@ -113,10 +133,14 @@ RSpec.describe 'api/leagues', type: :request do
       expect(api.data).to match(
         'id' => league.to_param,
         'name' => 'New name',
-        'status' => league.status,
+        'status' => league.status.humanize,
+        'code' => league.code,
         'is_owner' => true,
         'owner' => a_hash_including('id' => user.to_param),
-        'fpl_teams' => [],
+        'can_create_draft' => false,
+        'can_generate_draft_picks' => false,
+        'show_draft_pick_column' => false,
+        'show_live_columns' => false,
       )
 
       expect(league.reload.code).to eq('12345678')

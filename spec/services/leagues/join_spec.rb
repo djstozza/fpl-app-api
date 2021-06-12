@@ -68,4 +68,15 @@ RSpec.describe Leagues::Join, type: :service do
       'This league has no more spaces left'
     )
   end
+
+  it 'fails if the league does not exist' do
+    service = described_class.call(data, user, league: nil)
+
+    expect { service }
+      .not_to change { FplTeam.count }
+
+    expect(service.errors.full_messages).to contain_exactly(
+      'Name does not match with any league on record'
+    )
+  end
 end

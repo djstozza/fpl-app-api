@@ -1,13 +1,15 @@
 # Join a league and create an fpl_team
 class Leagues::Join < Leagues::BaseService
-  validate :valid_code
+  validate :valid_name_and_code
   validate :unique_users
   validate :within_quota
   validate :valid_fpl_team
 
   private
 
-  def valid_code
+  def valid_name_and_code
+    return errors.add(:name, 'does not match with any league on record') unless league.persisted?
+
     return if league.code == code
 
     errors.add(:code, 'is incorrect')

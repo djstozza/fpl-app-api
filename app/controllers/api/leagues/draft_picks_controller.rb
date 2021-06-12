@@ -4,7 +4,6 @@ module Api::Leagues
 
     # GET api/leagues/league_id/draft_picks
     def index
-
       respond_with draft_picks_query
     end
 

@@ -21,6 +21,9 @@ class FplTeamSerializer < BaseSerializer
   ATTRS = %w[
     id
     name
+    rank
+    draft_pick_number
+    mini_draft_pick_number
   ]
 
   def serializable_hash(*)

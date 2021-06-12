@@ -21,7 +21,7 @@ class League < ApplicationRecord
   MAX_FPL_TEAM_QUOTA = 11
 
   # 15 player picks per team & 1 mini draft pick
-  PICKS_PER_TEAM = FplTeam::QUOTAS[:team] + 1
+  PICKS_PER_TEAM = FplTeam::QUOTAS[:players] + 1
 
   belongs_to :owner, class_name: 'User', foreign_key: :owner_id
   has_many :fpl_teams
@@ -38,6 +38,10 @@ class League < ApplicationRecord
     draft: 2,
     live: 3,
   }
+
+  def can_generate_draft_picks?
+    fpl_teams.count >= MIN_FPL_TEAM_QUOTA && (initialized? || draft_picks_generated?)
+  end
 
   def current_draft_pick
     draft_picks.order(:pick_number).find_by(player_id: nil, mini_draft: false)

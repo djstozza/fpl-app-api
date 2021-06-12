@@ -29,13 +29,21 @@ RSpec.describe Leagues::GenerateDraftPick, type: :service do
       )
     end
 
-    it 'fails if the league is not initialized' do
+    it 'allows draft picks to be regenerated if the status is draft_picks_generated' do
       league.update(status: 'draft_picks_generated')
 
       expect { service }.not_to change { league.reload.status }
+      expect(league.fpl_teams.pluck(:draft_pick_number)).to all(be_an(Integer))
+    end
+
+    it 'fails if the status is not initialized or draft' do
+      league.update(status: 'draft')
+
+      expect { service }.not_to change { league.reload.status }
+
       expect(league.fpl_teams.pluck(:draft_pick_number)).to all(be_nil)
       expect(service.errors.full_messages).to contain_exactly(
-        'Draft pick numbers have already been assigned',
+        'Draft has already been created',
       )
     end
   end

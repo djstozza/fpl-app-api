@@ -19,18 +19,33 @@ class LeagueSerializer < BaseSerializer
   ATTRS = %w[
     id
     name
-    status
   ]
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
-      current_user = includes[:current_user]
-
+      attrs[:status] = status.humanize
+      attrs[:show_draft_pick_column] = !initialized?
+      attrs[:show_live_columns] = live?
       if current_user
-        attrs[:is_owner] = owner == includes[:current_user]
+        attrs[:is_owner] = is_owner
         attrs[:owner] = UserSerializer.new(owner)
-        attrs[:fpl_teams] = FplTeamSerializer.map(fpl_teams) if includes[:fpl_teams]
+      end
+
+      if is_owner
+        attrs[:code] = code
+        attrs[:can_generate_draft_picks] = can_generate_draft_picks?
+        attrs[:can_create_draft] = draft_picks_generated?
       end
     end
+  end
+
+  private
+
+  def current_user
+    @current_user ||= includes[:current_user]
+  end
+
+  def is_owner
+    @is_owner ||= owner == current_user
   end
 end
