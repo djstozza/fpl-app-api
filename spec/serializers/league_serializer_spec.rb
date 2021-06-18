@@ -104,9 +104,29 @@ RSpec.describe LeagueSerializer, type: :serializer do
       expect(serializer_with_owner).to include(can_create_draft: false)
     end
 
-    it 'is fals eif the league status is live' do
+    it 'is false if the league status is live' do
       league.update(status: 'live')
       expect(serializer_with_owner).to include(can_create_draft: false)
+    end
+  end
+
+  describe '#can_go_to_draft' do
+    it 'is false if the league is initialized' do
+      expect(serializer).to include(can_go_to_draft: false)
+    end
+
+    it 'is false if the status is draft_picks_generated' do
+      expect(serializer).to include(can_go_to_draft: false)
+    end
+
+    it 'is true if the league status is draft' do
+      league.update(status: 'draft')
+      expect(serializer).to include(can_go_to_draft: true)
+    end
+
+    it 'is true if the league status is live' do
+      league.update(status: 'live')
+      expect(serializer).to include(can_go_to_draft: true)
     end
   end
 end

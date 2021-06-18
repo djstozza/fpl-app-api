@@ -5,9 +5,7 @@
 class SqlQuery
 
   DB = Sequel.connect(ActiveRecord::Base.connection_config)
-  DB.extension(:pg_streaming)
-  DB.extension(:pg_json)
-  DB.extension(:pg_array)
+  DB.extension :pg_streaming, :pg_array, :pg_json
   Sequel.extension(:pg_array_ops)
 
   DB.logger = Rails.logger
@@ -59,6 +57,11 @@ class SqlQuery
   # Execute query and return rows as an array
   def results
     @dataset.all
+  end
+
+  # Get the first row from the results
+  def result
+    results[0]
   end
 
   # Return a single field from the first row of the query

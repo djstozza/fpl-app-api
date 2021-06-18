@@ -29,6 +29,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
 
       expect(api.data['draft_finished']).to eq(false)
       expect(api.data['user_can_pick']).to eq(false)
+      expect(api.data['next_draft_pick_id']).to eq(draft_pick3.to_param)
       expect(api.data['draft_picks']).to match(
         [
           a_hash_including(
@@ -88,25 +89,27 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
           ),
         ],
       )
+
+      expect(api.meta).to include('total' => 3)
     end
 
     it 'returns user_can_pick = true if the draft pick owner is next' do
       api.authenticate(draft_pick3.owner)
 
-      api.get api_league_draft_picks_path(league)
+      api.get api_league_draft_picks_path(league), params: { sort: { pick_number: 'asc' } }
 
       expect(api.data['user_can_pick']).to eq(true)
     end
-  end
 
-  describe 'PATCH /update' do
-    it 'updates the draft current pick', :no_transaction do
-      api.authenticate(draft_pick3.owner)
+    it 'is filterable' do
+      api.authenticate(user)
 
-      api.put api_league_draft_pick_path(league.id, draft_pick3.id), params: { league: { player_id: player.id } }
+      api.get api_league_draft_picks_path(league), params: {
+        filter: {
+          fpl_team_id: "#{draft_pick1.fpl_team.to_param},#{draft_pick2.fpl_team.to_param}"
+        },
+      }
 
-      expect(api.data['draft_finished']).to eq(true)
-      expect(api.data['user_can_pick']).to eq(false)
       expect(api.data['draft_picks']).to match(
         [
           a_hash_including(
@@ -148,6 +151,47 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
             'team' => nil,
             'position' => nil,
           ),
+        ],
+      )
+
+      api.get api_league_draft_picks_path(league), params: { filter: { mini_draft: true } }
+
+      expect(api.data['draft_picks']).to contain_exactly(
+        a_hash_including(
+          'id' => draft_pick2.to_param,
+          'pick_number' => draft_pick2.pick_number,
+          'fpl_team' => a_hash_including(
+            'id' => draft_pick2.fpl_team.to_param,
+            'name' => draft_pick2.fpl_team.name,
+          ),
+          'user' => a_hash_including(
+            'id' => draft_pick2.owner.to_param,
+            'username' => draft_pick2.owner.username,
+          ),
+          'mini_draft' => true,
+          'player' => nil,
+          'team' => nil,
+          'position' => nil,
+        ),
+      )
+
+      expect(api.meta).to include('total' => 1)
+    end
+  end
+
+  describe 'PATCH /update' do
+    it 'updates the draft current pick', :no_transaction do
+      api.authenticate(draft_pick3.owner)
+
+      api.put api_league_draft_pick_path(league.id, draft_pick3.id), params: {
+        league: { player_id: player.id },
+        sort: { pick_number: 'desc' },
+      }
+
+      expect(api.data['draft_finished']).to eq(true)
+      expect(api.data['user_can_pick']).to eq(false)
+      expect(api.data['draft_picks']).to match(
+        [
           a_hash_including(
             'id' => draft_pick3.to_param,
             'pick_number' => draft_pick3.pick_number,
@@ -171,7 +215,46 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
             ),
             'position' => player.position.singular_name_short,
           ),
-        ]
+          a_hash_including(
+            'id' => draft_pick2.to_param,
+            'pick_number' => draft_pick2.pick_number,
+            'fpl_team' => a_hash_including(
+              'id' => draft_pick2.fpl_team.to_param,
+              'name' => draft_pick2.fpl_team.name,
+            ),
+            'user' => a_hash_including(
+              'id' => draft_pick2.owner.to_param,
+              'username' => draft_pick2.owner.username,
+            ),
+            'mini_draft' => true,
+            'player' => nil,
+            'team' => nil,
+            'position' => nil,
+          ),
+          a_hash_including(
+            'id' => draft_pick1.to_param,
+            'pick_number' => draft_pick1.pick_number,
+            'mini_draft' => false,
+            'fpl_team' => a_hash_including(
+              'id' => fpl_team.to_param,
+              'name' => fpl_team.name,
+            ),
+            'user' => a_hash_including(
+              'id' => user.to_param,
+              'username' => user.username,
+            ),
+            'player' => a_hash_including(
+              'id' => draft_pick1.player.to_param,
+              'first_name' => draft_pick1.player.first_name,
+              'last_name' => draft_pick1.player.last_name,
+            ),
+            'team' => a_hash_including(
+              'id' => draft_pick1.player.team.to_param,
+              'short_name' => draft_pick1.player.team.short_name,
+            ),
+            'position' => draft_pick1.player.position.singular_name_short,
+          ),
+        ],
       )
     end
   end

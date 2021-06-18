@@ -64,6 +64,7 @@ RSpec.describe 'api/leagues', type: :request do
         'can_generate_draft_picks' => false,
         'show_draft_pick_column' => false,
         'show_live_columns' => false,
+        'can_go_to_draft' => false,
       )
     end
 
@@ -81,6 +82,7 @@ RSpec.describe 'api/leagues', type: :request do
         'owner' => a_hash_including('id' => user.to_param),
         'show_draft_pick_column' => false,
         'show_live_columns' => false,
+        'can_go_to_draft' => false,
       )
     end
   end
@@ -105,6 +107,7 @@ RSpec.describe 'api/leagues', type: :request do
         'can_generate_draft_picks' => false,
         'show_draft_pick_column' => false,
         'show_live_columns' => false,
+        'can_go_to_draft' => false,
       )
     end
 
@@ -141,6 +144,7 @@ RSpec.describe 'api/leagues', type: :request do
         'can_generate_draft_picks' => false,
         'show_draft_pick_column' => false,
         'show_live_columns' => false,
+        'can_go_to_draft' => false,
       )
 
       expect(league.reload.code).to eq('12345678')

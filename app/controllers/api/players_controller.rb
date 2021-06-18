@@ -3,7 +3,7 @@ class Api::PlayersController < ApplicationController
 
   # GET /api/players
   def index
-    respond_with players_query.results, total: total_query.get(:count)
+    respond_with players_query.results, total: total_query(filtered_players_query)
   end
 
   # GET /api/players/1
@@ -15,7 +15,7 @@ class Api::PlayersController < ApplicationController
     SqlQuery.load(
       'players/index',
       players: filtered_players_query,
-      sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', ')),
+      sort: sort_query,
       offset: page_params[:offset],
       limit: page_params[:limit],
     )
@@ -26,7 +26,7 @@ class Api::PlayersController < ApplicationController
       'players/filtered',
       team_id: Array(filter_params[:team_id]&.split(',').presence).compact,
       position_id: Array(filter_params[:position_id]&.split(',').presence).compact,
-      sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', ')),
+      league_id: filter_params[:league_id],
     )
   end
 
@@ -36,19 +36,16 @@ class Api::PlayersController < ApplicationController
     @player ||= Player.find(params[:id])
   end
 
-  def total_query
-    SqlQuery.load('count', subquery: filtered_players_query)
-  end
-
   def filter_params
     params.fetch(:filter, {}).permit(
       :position_id,
       :team_id,
+      :league_id,
     )
   end
 
   def sort_params
-    params.fetch(:sort, {}).permit(
+    permitted =  params.fetch(:sort, {}).permit(
       :last_name,
       :first_name,
       'teams.short_name',
@@ -65,6 +62,10 @@ class Api::PlayersController < ApplicationController
       :penalties_missed,
       :own_goals,
     )
+
+    permitted[:total_points] ||= 'desc'
+
+    permitted
   end
 
   def page_params

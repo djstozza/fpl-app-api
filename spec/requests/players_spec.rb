@@ -116,6 +116,30 @@ RSpec.describe 'api/players', :no_transaction, type: :request do
 
       expect(api.meta).to include('total' => 1)
     end
+
+    it 'excludes players that have been picked in a league' do
+      fpl_team1 = create(:fpl_team)
+      fpl_team1.players << player1
+
+      fpl_team2 = create(:fpl_team)
+      fpl_team2.players << player2
+
+      api.get api_players_url, params: {
+        filter: { league_id: fpl_team1.league.to_param },
+        sort: { total_points: 'asc' },
+      }
+
+      expect(api.data).to match(
+        [
+          a_hash_including(
+            'id' => player2.to_param,
+          ),
+          a_hash_including(
+            'id' => player3.to_param,
+          ),
+        ],
+      )
+    end
   end
 
   describe 'GET /show' do

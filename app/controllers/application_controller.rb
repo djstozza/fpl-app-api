@@ -55,4 +55,12 @@ class ApplicationController < ActionController::API
   def signed_in?
     @current_user_id.present?
   end
+
+  def sort_query
+    SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', '))
+  end
+
+  def total_query(subquery)
+    SqlQuery.load('count', subquery: subquery).get(:count)
+  end
 end

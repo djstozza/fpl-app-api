@@ -13,6 +13,6 @@ JSONB_BUILD_OBJECT(
 FROM players
 JOIN teams ON teams.id = players.team_id
 JOIN positions ON positions.id = players.position_id
-ORDER BY :sort, total_points DESC
+ORDER BY :sort
 LIMIT :limit
 OFFSET :offset

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   require 'sidekiq/web'
   require 'sidekiq-scheduler/web'
   mount Sidekiq::Web => '/sidekiq'
+  mount ActionCable.server => '/cable'
 
   devise_for :users, skip: [:registrations, :sessions, :passwords]
 
@@ -40,7 +41,11 @@ Rails.application.routes.draw do
 
       resource :generate_draft_picks, only: [:create], controller: 'leagues/generate_draft_picks'
       resource :create_draft, only: [:create], controller: 'leagues/create_drafts'
-      resources :draft_picks, only: [:index, :update], controller: 'leagues/draft_picks'
+      resources :draft_picks, only: [:index, :update], controller: 'leagues/draft_picks' do
+        collection do
+          resources :facets, only: [:index], module: 'leagues/draft_picks', as: :draft_picks_facets
+        end
+      end
       resources :fpl_teams, only: [:index], controller: 'leagues/fpl_teams'
     end
     resources :fpl_teams, only: [:index, :show, :update]

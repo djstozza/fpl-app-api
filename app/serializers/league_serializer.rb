@@ -26,6 +26,8 @@ class LeagueSerializer < BaseSerializer
       attrs[:status] = status.humanize
       attrs[:show_draft_pick_column] = !initialized?
       attrs[:show_live_columns] = live?
+      attrs[:can_go_to_draft] = draft? || live?
+
       if current_user
         attrs[:is_owner] = is_owner
         attrs[:owner] = UserSerializer.new(owner)
