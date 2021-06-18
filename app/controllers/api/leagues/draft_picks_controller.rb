@@ -4,14 +4,15 @@ module Api::Leagues
 
     # GET api/leagues/league_id/draft_picks
     def index
-      respond_with draft_picks_query.result, total: total_query(filtered_draft_picks_query)
+      respond_with draft_picks_query.results, total: total_query(filtered_draft_picks_query)
     end
 
     # PUT api/leagues/league_id/draft_picks/id
     def update
       service = Leagues::UpdateDraftPick.call(league_params, league, draft_pick, current_user)
 
-      respond_with service.errors.any? ? service : draft_picks_query.result
+      respond_with service.errors.any? ? service
+        : draft_picks_query.results, total: total_query(filtered_draft_picks_query)
     end
 
     private

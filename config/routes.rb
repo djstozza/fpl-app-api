@@ -43,6 +43,7 @@ Rails.application.routes.draw do
       resource :create_draft, only: [:create], controller: 'leagues/create_drafts'
       resources :draft_picks, only: [:index, :update], controller: 'leagues/draft_picks' do
         collection do
+          resources :status, only: [:index], module: 'leagues/draft_picks', as: :draft_picks_status
           resources :facets, only: [:index], module: 'leagues/draft_picks', as: :draft_picks_facets
         end
       end

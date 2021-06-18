@@ -46,4 +46,8 @@ class League < ApplicationRecord
   def current_draft_pick
     draft_picks.order(:pick_number).find_by(player_id: nil, mini_draft: false)
   end
+
+  def can_go_to_draft?
+    draft? || live?
+  end
 end

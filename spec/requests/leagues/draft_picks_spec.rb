@@ -26,11 +26,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
       api.authenticate(user)
 
       api.get api_league_draft_picks_path(league)
-
-      expect(api.data['draft_finished']).to eq(false)
-      expect(api.data['user_can_pick']).to eq(false)
-      expect(api.data['next_draft_pick_id']).to eq(draft_pick3.to_param)
-      expect(api.data['draft_picks']).to match(
+      expect(api.data).to match(
         [
           a_hash_including(
             'id' => draft_pick1.to_param,
@@ -93,14 +89,6 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
       expect(api.meta).to include('total' => 3)
     end
 
-    it 'returns user_can_pick = true if the draft pick owner is next' do
-      api.authenticate(draft_pick3.owner)
-
-      api.get api_league_draft_picks_path(league), params: { sort: { pick_number: 'asc' } }
-
-      expect(api.data['user_can_pick']).to eq(true)
-    end
-
     it 'is filterable' do
       api.authenticate(user)
 
@@ -110,7 +98,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
         },
       }
 
-      expect(api.data['draft_picks']).to match(
+      expect(api.data).to match(
         [
           a_hash_including(
             'id' => draft_pick1.to_param,
@@ -156,7 +144,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
 
       api.get api_league_draft_picks_path(league), params: { filter: { mini_draft: true } }
 
-      expect(api.data['draft_picks']).to contain_exactly(
+      expect(api.data).to contain_exactly(
         a_hash_including(
           'id' => draft_pick2.to_param,
           'pick_number' => draft_pick2.pick_number,
@@ -188,9 +176,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
         sort: { pick_number: 'desc' },
       }
 
-      expect(api.data['draft_finished']).to eq(true)
-      expect(api.data['user_can_pick']).to eq(false)
-      expect(api.data['draft_picks']).to match(
+      expect(api.data).to match(
         [
           a_hash_including(
             'id' => draft_pick3.to_param,

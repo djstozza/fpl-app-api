@@ -1,18 +1,16 @@
 SELECT
-leagues.id AS league_id,
-JSONB_BUILD_OBJECT(
-  'id', draft_picks.id::TEXT,
-  'pick_number', draft_picks.pick_number,
-  'mini_draft', draft_picks.mini_draft,
-  'fpl_team', JSONB_BUILD_OBJECT(
+  draft_picks.id::TEXT,
+  draft_picks.pick_number,
+  draft_picks.mini_draft,
+  JSONB_BUILD_OBJECT(
     'id', fpl_teams.id::TEXT,
     'name', fpl_teams.name
-  ),
-  'user', JSONB_BUILD_OBJECT(
+  ) AS fpl_team,
+  JSONB_BUILD_OBJECT(
     'id', users.id::TEXT,
     'username', users.username
-  ),
-  'player', (
+  ) AS user,
+  (
     CASE
       WHEN players.id IS NOT NULL
       THEN (
@@ -24,8 +22,8 @@ JSONB_BUILD_OBJECT(
       )
       ELSE null
     END
-  ),
-  'team', (
+  ) AS player,
+  (
     CASE
       WHEN teams.id IS NOT NULL
       THEN (
@@ -36,15 +34,14 @@ JSONB_BUILD_OBJECT(
       )
       ELSE NULL
     END
-  ),
-  'position', (
+  ) AS team,
+  (
     CASE
       WHEN positions.id IS NOT NULL
       THEN positions.singular_name_short
       ELSE NULL
     END
-  )
-) AS draft_pick
+  ) AS position
 FROM leagues
 JOIN fpl_teams ON fpl_teams.league_id = leagues.id
 JOIN draft_picks
