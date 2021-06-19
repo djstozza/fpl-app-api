@@ -9,6 +9,7 @@ module Api::Leagues
         league_id: league.id,
         can_draft: league.can_go_to_draft?,
         current_user_id: current_user.id,
+        player_quota: FplTeam::QUOTAS[:players],
       ).result
     end
   end

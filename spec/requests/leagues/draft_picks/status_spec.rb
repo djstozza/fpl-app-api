@@ -30,6 +30,8 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
       expect(api.data['draft_finished']).to eq(false)
       expect(api.data['user_can_pick']).to eq(false)
       expect(api.data['next_draft_pick_id']).to eq(draft_pick3.to_param)
+      expect(api.data['can_make_player_pick']).to eq(true)
+      expect(api.data['can_make_mini_draft_pick']).to eq(true)
     end
 
     it 'returns user_can_pick = true if the draft pick owner is next' do
@@ -40,6 +42,8 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
       expect(api.data['draft_finished']).to eq(false)
       expect(api.data['user_can_pick']).to eq(true)
       expect(api.data['next_draft_pick_id']).to eq(draft_pick3.to_param)
+      expect(api.data['can_make_player_pick']).to eq(true)
+      expect(api.data['can_make_mini_draft_pick']).to eq(true)
     end
 
     it 'returns draft_finished = true when all the picks have a mini_draft pick or a player associated with them' do
@@ -63,6 +67,26 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
       expect(api.data['draft_finished']).to eq(false)
       expect(api.data['user_can_pick']).to eq(false)
       expect(api.data['next_draft_pick_id']).to eq(nil)
+    end
+
+    it 'returns can_make_player_pick = false if the players quota has been reached' do
+      (FplTeam::QUOTAS[:players] - 1).times do
+        create(:draft_pick, league: league, fpl_team: fpl_team)
+      end
+
+      api.authenticate(user)
+
+      api.get api_league_draft_picks_status_index_path(league)
+
+      expect(api.data['can_make_player_pick']).to eq(false)
+    end
+
+    it 'returns can_make_mini_draft_pick = false if the user has made a mini draft pick' do
+      api.authenticate(draft_pick2.owner)
+
+      api.get api_league_draft_picks_status_index_path(league)
+
+      expect(api.data['can_make_mini_draft_pick']).to eq(false)
     end
   end
 end
