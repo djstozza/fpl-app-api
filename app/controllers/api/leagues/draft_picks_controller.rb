@@ -4,7 +4,7 @@ module Api::Leagues
 
     # GET api/leagues/league_id/draft_picks
     def index
-      respond_with draft_picks_query.results, total: total_query(filtered_draft_picks_query)
+      respond_with draft_picks_query.results, total: total_query(draft_picks_query)
     end
 
     # PUT api/leagues/league_id/draft_picks/id
@@ -12,7 +12,7 @@ module Api::Leagues
       service = Leagues::UpdateDraftPick.call(league_params, league, draft_pick, current_user)
 
       respond_with service.errors.any? ? service
-        : draft_picks_query.results, total: total_query(filtered_draft_picks_query)
+        : draft_picks_query.results, total: total_query(draft_picks_query)
     end
 
     private
@@ -22,19 +22,8 @@ module Api::Leagues
     end
 
     def draft_picks_query
-      SqlQuery.load(
+      @draft_picks_query ||= SqlQuery.load(
         'leagues/draft_picks/index',
-        filtered_draft_picks: filtered_draft_picks_query,
-        league_id: league.id,
-        current_user_id: current_user.id,
-        offset: page_params[:offset],
-        limit: page_params[:limit],
-      )
-    end
-
-    def filtered_draft_picks_query
-      @filtered_draft_picks_query ||= SqlQuery.load(
-        'leagues/draft_picks/filtered',
         team_id: Array(filter_params[:team_id]&.split(',').presence).compact,
         position_id: Array(filter_params[:position_id]&.split(',').presence).compact,
         fpl_team_id: Array(filter_params[:fpl_team_id]&.split(',').presence).compact,
@@ -72,10 +61,6 @@ module Api::Leagues
 
       permitted[:pick_number] ||= 'asc'
       permitted
-    end
-
-    def page_params
-      params.fetch(:page, {}).permit(:limit, :offset)
     end
   end
 end
