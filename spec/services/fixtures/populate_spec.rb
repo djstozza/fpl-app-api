@@ -55,12 +55,15 @@ RSpec.describe Fixtures::Populate, type: :service do
   describe '#call - single round' do
     let(:round_1) { Round.first }
     let(:round_2) { Round.second }
-    let!(:fixture_1) { create :fixture, round: round_1, started: true, finished: true, external_id: 7 }
-    let!(:fixture_2) { create :fixture, round: round_1, started: true, finished: false, external_id: 8 }
-    let!(:fixture_3) { create :fixture, round: round_2, started: true, finished: false, external_id: 12 }
-
+    let(:fixture_1) { build :fixture, round: round_1, started: true, finished: true, external_id: 7 }
+    let(:fixture_2) { build :fixture, round: round_1, started: true, finished: false, external_id: 8 }
+    let(:fixture_3) { build :fixture, round: round_2, started: true, finished: false, external_id: 12 }
 
     it 'only updates existing fixtures of the specfied round that have not finished' do
+      fixture_1.save!
+      fixture_2.save!
+      fixture_3.save!
+
       stub_round_fixture_request(round_1.external_id)
 
       expect { described_class.call(round_1) }

@@ -28,20 +28,9 @@ class Leagues::UpdateDraftPick < Leagues::BaseService
     draft_player if player_id
     mini_draft_pick if mini_draft
 
-    player_substr = "has drafted #{player&.first_name} #{player&.last_name} (#{player&.team&.short_name})"
-    mini_draft_substr = 'has made a mini draft pick'
+    return if errors.any?
 
-    success_str = "#{user.username} #{player ? player_substr : mini_draft_substr}"
-
-    ActionCable
-      .server
-      .broadcast(
-        "league_#{league.id}_draft_picks",
-        {
-          updatedAt: draft_pick.reload.updated_at.to_i,
-          message: success_str,
-        },
-      )
+    DraftPicks::BroadcastJob.perform_later(draft_pick.id)
   end
 
   private

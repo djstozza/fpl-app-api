@@ -26,10 +26,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
       .and change { league.current_draft_pick }.from(draft_pick).to(next_draft_pick)
       .and change { fpl_team.players.count }.from(0).to(1)
       .and change { league.players.count }.from(0).to(1)
-      .and have_broadcasted_to("league_#{league.id}_draft_picks").with(
-        updatedAt: draft_pick.reload.updated_at.to_i,
-        message: "#{user.username} has drafted #{player.first_name} #{player.last_name} (#{player.team.short_name})"
-      )
+      .and enqueue_job(DraftPicks::BroadcastJob).with(draft_pick.id)
   end
 
   it 'sets mini_draft to true and updates the next draft pick of the league' do
@@ -39,10 +36,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
       .to change { draft_pick.reload.mini_draft }.from(false).to(true)
       .and change { league.current_draft_pick }.from(draft_pick).to(next_draft_pick)
       .and change { fpl_team.reload.mini_draft_pick_number }.from(nil).to(1)
-      .and have_broadcasted_to("league_#{league.id}_draft_picks").with(
-        updatedAt: draft_pick.reload.updated_at.to_i,
-        message: "#{user.username} has made a mini draft pick"
-      )
+      .and enqueue_job(DraftPicks::BroadcastJob).with(draft_pick.id)
   end
 
   it 'fails if the player_id is invalid' do
@@ -52,7 +46,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
       .to change { draft_pick.reload.updated_at }.by(0)
       .and change { fpl_team.players.count }.by(0)
       .and change { league.players.count }.by(0)
-      .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+      .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
     expect(service.errors.full_messages).to contain_exactly('Player is invalid')
   end
@@ -66,7 +60,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
         .and change { fpl_team.reload.updated_at }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(service.errors.full_messages)
         .to contain_exactly('Either select a player or a mini draft pick number')
@@ -80,7 +74,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
         .and change { fpl_team.reload.updated_at }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(service.errors.full_messages)
         .to contain_exactly('Either select a player or a mini draft pick number')
@@ -97,7 +91,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
         .to contain_exactly('You cannot draft players at this time')
@@ -109,7 +103,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
       expect { mini_draft_service }
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.reload.updated_at }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(mini_draft_service.errors.full_messages)
         .to contain_exactly('You cannot draft players at this time')
@@ -126,7 +120,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
         .to contain_exactly('You are not authorised to perform this action')
@@ -138,7 +132,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
       expect { mini_draft_service }
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.reload.updated_at }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(mini_draft_service.errors.full_messages)
         .to contain_exactly('You are not authorised to perform this action')
@@ -154,7 +148,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
 
       expect { service }
         .to change { draft_pick.reload.updated_at }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(service.errors.full_messages)
         .to contain_exactly('You cannot pick out of turn')
@@ -169,7 +163,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
       expect { service }
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.reload.updated_at }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(service.errors.full_messages)
         .to contain_exactly('You cannot pick out of turn')
@@ -188,7 +182,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
         .to contain_exactly("You cannot have more than #{FplTeam::QUOTAS[:forwards]} forwards in your team")
@@ -206,7 +200,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
         .to contain_exactly("You cannot have more than #{FplTeam::QUOTAS[:defenders]} defenders in your team")
@@ -224,7 +218,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
         .to contain_exactly("You cannot have more than #{FplTeam::QUOTAS[:midfielders]} midfielders in your team")
@@ -242,7 +236,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
         .to contain_exactly("You cannot have more than #{FplTeam::QUOTAS[:goalkeepers]} goalkeepers in your team")
@@ -271,7 +265,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
         .to include("You are only allowed #{FplTeam::QUOTAS[:players]} players in a team")
@@ -288,7 +282,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages).to contain_exactly(
         "You cannot have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player.team.name})"
@@ -305,7 +299,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.players.count }.by(0)
         .and change { league.players.count }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
         .to contain_exactly("#{player.first_name} #{player.last_name} has already been picked")
@@ -319,7 +313,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
       expect { mini_draft_service }
         .to change { draft_pick.reload.updated_at }.by(0)
         .and change { fpl_team.reload.updated_at }.by(0)
-        .and have_broadcasted_to("league_#{league.id}_draft_picks").exactly(0).times
+        .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(mini_draft_service.errors.full_messages)
         .to contain_exactly('You have already selected your position in the mini draft')
