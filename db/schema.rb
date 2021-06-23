@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_26_090301) do
+ActiveRecord::Schema.define(version: 2021_06_21_212957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,19 @@ ActiveRecord::Schema.define(version: 2021_05_26_090301) do
     t.index ["team_h_id"], name: "index_fixtures_on_team_h_id"
   end
 
+  create_table "fpl_team_lists", force: :cascade do |t|
+    t.integer "round_rank"
+    t.integer "cumulative_rank"
+    t.integer "total_score"
+    t.bigint "fpl_team_id"
+    t.bigint "round_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["fpl_team_id", "round_id"], name: "index_fpl_team_lists_on_fpl_team_id_and_round_id", unique: true
+    t.index ["fpl_team_id"], name: "index_fpl_team_lists_on_fpl_team_id"
+    t.index ["round_id"], name: "index_fpl_team_lists_on_round_id"
+  end
+
   create_table "fpl_teams", force: :cascade do |t|
     t.string "name", null: false
     t.integer "draft_pick_number"
@@ -81,6 +94,17 @@ ActiveRecord::Schema.define(version: 2021_05_26_090301) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["owner_id"], name: "index_leagues_on_owner_id"
+  end
+
+  create_table "list_positions", force: :cascade do |t|
+    t.integer "role", null: false
+    t.bigint "fpl_team_list_id"
+    t.bigint "player_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["fpl_team_list_id"], name: "index_list_positions_on_fpl_team_list_id"
+    t.index ["player_id", "fpl_team_list_id"], name: "index_list_positions_on_player_id_and_fpl_team_list_id", unique: true
+    t.index ["player_id"], name: "index_list_positions_on_player_id"
   end
 
   create_table "players", force: :cascade do |t|

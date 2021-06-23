@@ -60,8 +60,15 @@ class Player < ApplicationRecord
   belongs_to :team
   belongs_to :position
 
+  delegate :singular_name_short, to: :position
+
   scope :forwards, -> { joins(:position).where('positions.singular_name_short = ?', 'FWD') }
   scope :midfielders, -> { joins(:position).where('positions.singular_name_short = ?', 'MID') }
   scope :defenders, -> { joins(:position).where('positions.singular_name_short = ?', 'DEF') }
   scope :goalkeepers, -> { joins(:position).where('positions.singular_name_short = ?', 'GKP') }
+  scope :outfielders, -> { joins(:position).where('positions.singular_name_short != ?', 'GKP') }
+
+  def goalkeeper?
+    position.singular_name_short.downcase == 'gkp'
+  end
 end

@@ -69,7 +69,7 @@ FactoryBot.define do
     end
 
     association :team
-    association :position
+    association :position, :forward
 
     history { [] }
     history_past { [] }
@@ -115,9 +115,6 @@ FactoryBot.define do
         ]
       }
     end
-
-
-
 
     trait :forward do
       association :position, :forward

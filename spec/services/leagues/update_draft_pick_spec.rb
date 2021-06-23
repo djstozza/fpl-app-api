@@ -275,7 +275,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
   describe '#maximum_number_of_players_from_team' do
     it 'fails if the fpl_team already has the quota of players from the same team' do
       FplTeam::QUOTAS[:team].times do
-        fpl_team.players << create(:player, team: player.team)
+        fpl_team.players << create(:player, :midfielder, team: player.team)
       end
 
       expect { player_draft_service }

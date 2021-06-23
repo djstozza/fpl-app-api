@@ -50,4 +50,8 @@ class League < ApplicationRecord
   def can_go_to_draft?
     draft? || live?
   end
+
+  def has_incomplete_draft_picks?
+    draft_picks.any? && draft_picks.where(mini_draft: false, player_id: nil).any?
+  end
 end
