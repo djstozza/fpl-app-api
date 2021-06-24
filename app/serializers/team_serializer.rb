@@ -47,7 +47,7 @@ class TeamSerializer < BaseSerializer
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
-      attrs[:current_form] = form.last(5)
+      attrs[:current_form] = form&.last(5)
     end
   end
 end

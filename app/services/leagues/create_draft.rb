@@ -48,4 +48,8 @@ class Leagues::CreateDraft < Leagues::BaseService
 
     errors.add(:base, 'You cannot create a draft at this time')
   end
+
+  def fpl_teams
+    @fpl_teams ||= league.fpl_teams.order(:draft_pick_number)
+  end
 end

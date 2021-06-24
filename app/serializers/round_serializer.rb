@@ -29,6 +29,14 @@ class RoundSerializer < BaseSerializer
   ].freeze
 
   def serializable_hash(*)
-    attributes.slice(*ATTRS)
+    attributes.slice(*ATTRS).tap do |attrs|
+      attrs[:current] = current_round_id == id
+    end
+  end
+
+  private
+
+  def current_round_id
+    @current_round ||= Round.current.id
   end
 end

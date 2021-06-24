@@ -5,7 +5,7 @@ class FplTeams::ProcessInitialLineup < ApplicationService
 
   def initialize(fpl_team)
     @fpl_team = fpl_team
-    @round = Round.find_by(is_current: true) || Round.first
+    @round = Round.current
     @fpl_team_list = FplTeamList.new
   end
 
