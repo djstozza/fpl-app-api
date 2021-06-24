@@ -24,7 +24,7 @@ class Api::FplTeamsController < ApplicationController
   private
 
   def fpl_team
-    @fpl_team ||= FplTeam.find(params[:id])
+    @fpl_team ||= FplTeam.find(params[:id] || params[:fpl_team_id])
   end
 
   def serialized_fpl_team(fpl_team)
