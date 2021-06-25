@@ -106,13 +106,16 @@ RSpec.describe "/fpl_teams", type: :request do
       )
     end
 
-    it 'renders a 401 message if the user is not the owner' do
+    it 'responds with a 422 message if the user is not the owner' do
       another_user = create :user
       api.authenticate(another_user)
 
-      api.put api_fpl_team_url(fpl_team), params: { league: { name: 'New league', code: '12345678' } }
+      api.put api_fpl_team_url(fpl_team), params: { fpl_team: { name: 'New name' } }
 
-      expect(api.response).to have_http_status(:unauthorized)
+      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.errors).to include(
+        a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),
+      )
     end
   end
 end

@@ -32,18 +32,14 @@ RSpec.describe Leagues::Update, type: :service do
     )
   end
 
+
   it 'fails if the user is not the owner' do
-
-  end
-
-
-  it 'fails if the league params are invalid' do
     league.update(owner: create(:user))
 
     expect { service }.not_to change { league.reload.updated_at }
 
     expect(service.errors.full_messages).to contain_exactly(
-      "You are not authorised to perform this action",
+      'You are not authorised to perform this action',
     )
   end
 end
