@@ -17,19 +17,23 @@
 #  index_fpl_team_lists_on_fpl_team_id_and_round_id  (fpl_team_id,round_id) UNIQUE
 #  index_fpl_team_lists_on_round_id                  (round_id)
 #
-class FplTeamList < ApplicationRecord
-  STARTING_LIST_POSITION_COUNT = 11
-  MINIMUM_POSITION_COUNTS = {
-    forwards: 1,
-    midfielders: 2,
-    defenders: 3,
-    goalkeepers: 1,
-  }.freeze
-  belongs_to :round
-  belongs_to :fpl_team
+class FplTeamListSerializer < BaseSerializer
+  ATTRS = %w[
+    id
+    cumulative_rank
+    round_rank
+    total_score
+  ]
 
-  has_many :list_positions
-  has_many :players, through: :list_positions
+  def serializable_hash(*)
+    attributes.slice(*ATTRS).tap do |attrs|
+      attrs[:round] = serialized_round
+    end
+  end
 
-  validates :round_id, uniqueness: { scope: [:fpl_team_id] }
+  private
+
+  def serialized_round
+    RoundSerializer.new(round)
+  end
 end

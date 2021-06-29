@@ -13,13 +13,22 @@ class FplTeams::ProcessInitialLineup < ApplicationService
     return unless valid?
 
     players = fpl_team.players.order(ict_index: :desc)
-    default_forward = players.forwards.first
-    default_goal_keeper = players.goalkeepers.first
+    default_forwards = players.forwards.first(FplTeamList::MINIMUM_POSITION_COUNTS[:forwards])
+    default_defenders = players.defenders.first(FplTeamList::MINIMUM_POSITION_COUNTS[:defenders])
+    default_goal_keepers = players.goalkeepers.first(FplTeamList::MINIMUM_POSITION_COUNTS[:goalkeepers])
 
     starting = []
-    starting << default_forward
-    starting += players.outfielders.where.not(id: default_forward.id).first(9)
-    starting << default_goal_keeper
+    starting += default_forwards
+    starting += default_defenders
+    starting += default_goal_keepers
+
+    remainder = FplTeamList::STARTING_LIST_POSITION_COUNT - starting.count
+
+    starting +=
+      players
+      .outfielders
+      .where.not(id: [*default_forwards.pluck(:id), *default_defenders.pluck(:id)])
+      .first(remainder)
 
     starting.each do |player|
       list_position = ListPosition.create(player: player, fpl_team_list: fpl_team_list, role: 'starting')

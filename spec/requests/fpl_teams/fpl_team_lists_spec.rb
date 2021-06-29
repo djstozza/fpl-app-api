@@ -14,96 +14,137 @@ require 'rails_helper'
 
 RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :request do
   let(:fpl_team) { create :fpl_team }
-  let(:round) { create :round }
-  let(:fpl_team_list) { create :fpl_team_list, fpl_team: fpl_team, round: round }
-  let(:team1) { create :team }
-  let(:team2) { create :team }
-  let(:team3) { create :team }
-  let(:team4) { create :team }
-  let(:fixture1) { create :fixture, round: round, home_team: team1, away_team: team3 }
-  let(:fixture2) { create :fixture, round: round, away_team: team2 }
-  let(:fixture3) { create :fixture, round: round, away_team: team1 }
-  let!(:fixture4) { create :fixture, round: round, home_team: team4 }
-  let(:player1) do
-    create(
-      :player,
-      :midfielder,
-      team: team1,
-      history: [
-        {
-          'round' => round.external_id,
-          'fixture' => fixture1.external_id,
-          'minutes' => 90,
-          'goals_scored' => 1,
-          'total_points' => 11,
-          'assists' => 1,
-          'bonus' => 3,
-        },
-        {
-          'round' => round.external_id, # Two fixtures in the same round
-          'fixture' => fixture3.external_id,
-          'minutes' => 70,
-          'total_points' => 1,
-          'goals_scored' => 0,
-          'assists' => 0,
-          'yellow_cards' => 1,
-        },
-      ],
-    )
-  end
-  let(:player2) do
-    create(
-      :player,
-      :defender,
-      team: team2,
-      history: [
-        {
-          'round' => round.external_id,
-          'fixture' => fixture2.external_id,
-          'minutes' => 90,
-          'total_points' => 8,
-          'goals_scored' => 0,
-          'assists' => 0,
-          'clean_sheets' => 1,
-          'bonus' => 2,
-        }
-      ]
-    )
-  end
-  let(:player3) do
-    create(
-      :player,
-      :forward,
-      team: team3,
-      history: [
-        {
-          'round' => round.external_id,
-          'fixture' => fixture1.external_id,
-          'minutes' => 0,
-          'total_points' => 0,
-          'goals_scored' => 0,
-          'assists' => 0,
-          'clean_sheets' => 0,
-          'bonus' => 0,
-        }
-      ]
-    )
-  end
-  let(:player4) { create :player, :forward, team: team4 }
-  let!(:list_position1) { create :list_position, :starting, fpl_team_list: fpl_team_list, player: player1 }
-  let!(:list_position2) { create :list_position, :substitute_1, fpl_team_list: fpl_team_list, player: player2 }
-  let!(:list_position3) { create :list_position, fpl_team_list: fpl_team_list, player: player3 }
-  let!(:list_position4) { create :list_position, :substitute_2, fpl_team_list: fpl_team_list, player: player4 }
+
+  before { api.authenticate(fpl_team.owner) }
 
   describe 'GET /index' do
     before { api.authenticate(fpl_team.owner) }
+    let(:round1) { create :round, deadline_time: 5.weeks.ago }
+    let(:round2) { create :round, deadline_time: 4.weeks.ago }
+    let(:round3) { create :round, deadline_time: 3.weeks.ago }
+    let!(:fpl_team_list1) { create :fpl_team_list, fpl_team: fpl_team, round: round1 }
+    let!(:fpl_team_list2) { create :fpl_team_list, fpl_team: fpl_team, round: round2 }
+    let!(:fpl_team_list3) { create :fpl_team_list, fpl_team: fpl_team, round: round3 }
+
+    it 'returns a list of fpl_team_lists for an fpl_team ordered by round deadline_time' do
+      api.get api_fpl_team_fpl_team_lists_url(fpl_team)
+
+      expect(api.data).to match(
+        [
+          a_hash_including(
+            'id' => fpl_team_list1.to_param,
+            'round' => a_hash_including(
+              'id' => round1.to_param,
+            )
+          ),
+          a_hash_including(
+            'id' => fpl_team_list2.to_param,
+            'round' => a_hash_including(
+              'id' => round2.to_param,
+            )
+          ),
+          a_hash_including(
+            'id' => fpl_team_list3.to_param,
+            'round' => a_hash_including(
+              'id' => round3.to_param,
+            )
+          ),
+        ],
+      )
+    end
+  end
+
+  describe 'GET /show' do
+    let(:round) { create :round, :current, deadline_time: 2.weeks.from_now }
+    let(:fpl_team_list) { create :fpl_team_list, fpl_team: fpl_team, round: round }
+    let(:team1) { create :team }
+    let(:team2) { create :team }
+    let(:team3) { create :team }
+    let(:team4) { create :team }
+    let(:fixture1) { create :fixture, round: round, home_team: team1, away_team: team3 }
+    let(:fixture2) { create :fixture, round: round, away_team: team2 }
+    let(:fixture3) { create :fixture, round: round, away_team: team1 }
+    let!(:fixture4) { create :fixture, round: round, home_team: team4 }
+    let(:player1) do
+      create(
+        :player,
+        :midfielder,
+        team: team1,
+        history: [
+          {
+            'round' => round.external_id,
+            'fixture' => fixture1.external_id,
+            'minutes' => 90,
+            'goals_scored' => 1,
+            'total_points' => 11,
+            'assists' => 1,
+            'bonus' => 3,
+          },
+          {
+            'round' => round.external_id, # Two fixtures in the same round
+            'fixture' => fixture3.external_id,
+            'minutes' => 70,
+            'total_points' => 1,
+            'goals_scored' => 0,
+            'assists' => 0,
+            'yellow_cards' => 1,
+          },
+        ],
+      )
+    end
+    let(:player2) do
+      create(
+        :player,
+        :defender,
+        team: team2,
+        history: [
+          {
+            'round' => round.external_id,
+            'fixture' => fixture2.external_id,
+            'minutes' => 90,
+            'total_points' => 8,
+            'goals_scored' => 0,
+            'assists' => 0,
+            'clean_sheets' => 1,
+            'bonus' => 2,
+          }
+        ]
+      )
+    end
+    let(:player3) do
+      create(
+        :player,
+        :forward,
+        team: team3,
+        history: [
+          {
+            'round' => round.external_id,
+            'fixture' => fixture1.external_id,
+            'minutes' => 0,
+            'total_points' => 0,
+            'goals_scored' => 0,
+            'assists' => 0,
+            'clean_sheets' => 0,
+            'bonus' => 0,
+          }
+        ]
+      )
+    end
+    let(:player4) { create :player, :forward, team: team4 }
+    let!(:list_position1) { create :list_position, :starting, fpl_team_list: fpl_team_list, player: player1 }
+    let!(:list_position2) { create :list_position, :substitute_1, fpl_team_list: fpl_team_list, player: player2 }
+    let!(:list_position3) { create :list_position, fpl_team_list: fpl_team_list, player: player3 }
+    let!(:list_position4) { create :list_position, :substitute_2, fpl_team_list: fpl_team_list, player: player4 }
 
     it 'returns a list of player details for the round along with their scores' do
-      api.get api_fpl_team_fpl_team_lists_url(fpl_team), params: { fpl_team_list: { round_id: round.id } }
+      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
 
       expect(api.response).to have_http_status(:success)
 
-      expect(api.data).to match(
+      expect(api.data['can_substitute']).to eq(true)
+      expect(api.data['can_waiver_pick']).to eq(true)
+      expect(api.data['can_trade']).to eq(false)
+      expect(api.data['list_positions']).to match(
         [
           a_hash_including(
             'player' => a_hash_including(
@@ -127,6 +168,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
             'assists' => 0,
             'clean_sheets' => 0,
             'bonus' => 0,
+            'leg' => 'A',
           ),
           a_hash_including(
             'player' => a_hash_including(
@@ -149,6 +191,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
             'total_points' => 11,
             'assists' => 1,
             'bonus' => 3,
+            'leg' => 'H',
           ),
           a_hash_including(
             'player' => a_hash_including(
@@ -171,6 +214,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
             'goals_scored' => 0,
             'assists' => 0,
             'yellow_cards' => 1,
+            'leg' => 'A',
           ),
           a_hash_including(
             'player' => a_hash_including(
@@ -186,7 +230,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'id' => fixture2.home_team.to_param,
               'short_name' => fixture2.home_team.short_name,
             ),
-            'role_str' => 'Substitute 1',
+            'role_str' => 'S1',
             'position' => player2.position.singular_name_short,
             'minutes' => 90,
             'total_points' => 8,
@@ -194,6 +238,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
             'assists' => 0,
             'clean_sheets' => 1,
             'bonus' => 2,
+            'leg' => 'A',
           ),
           a_hash_including(
             'player' => a_hash_including(
@@ -209,11 +254,63 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'id' => fixture4.away_team.to_param,
               'short_name' => fixture4.away_team.short_name,
             ),
-            'role_str' => 'Substitute 2',
+            'role_str' => 'S2',
             'position' => player4.position.singular_name_short,
+            'leg' => 'H',
           ),
         ],
       )
+    end
+
+    it 'allows waiver_picks but no trades if the waiver deadline has not passed if the round is the next round' do
+      round.update(is_next: true, is_current: false)
+
+      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+
+      expect(api.data['can_substitute']).to eq(true)
+      expect(api.data['can_waiver_pick']).to eq(true)
+      expect(api.data['can_trade']).to eq(false)
+    end
+
+    it 'allows trades but no waiver_picks if the waiver deadline has passed and the round is current' do
+      round.update(deadline_time: 23.hours.from_now)
+
+      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+
+      expect(api.data['can_substitute']).to eq(true)
+      expect(api.data['can_waiver_pick']).to eq(false)
+      expect(api.data['can_trade']).to eq(true)
+    end
+
+    it 'does not allow substitutions, waiver_picks or trades if the user is not the owner' do
+      fpl_team.update(owner: create(:user))
+      round.update(deadline_time: 23.hours.from_now)
+
+      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+
+      expect(api.data['can_substitute']).to eq(false)
+      expect(api.data['can_waiver_pick']).to eq(false)
+      expect(api.data['can_trade']).to eq(false)
+    end
+
+    it 'does not allow substitutions, waiver_picks or trades if the round is not current' do
+      round.update(data_checked: true)
+
+      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+
+      expect(api.data['can_substitute']).to eq(false)
+      expect(api.data['can_waiver_pick']).to eq(false)
+      expect(api.data['can_trade']).to eq(false)
+    end
+
+    it 'does not allow substitutions, waiver_picks or trades if the deadline_time has passed' do
+      round.update(deadline_time: 1.day.ago)
+
+      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+
+      expect(api.data['can_substitute']).to eq(false)
+      expect(api.data['can_waiver_pick']).to eq(false)
+      expect(api.data['can_trade']).to eq(false)
     end
   end
 end

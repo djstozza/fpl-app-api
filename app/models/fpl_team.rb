@@ -32,6 +32,7 @@ class FplTeam < ApplicationRecord
   has_many :draft_picks
   has_and_belongs_to_many :players
   has_many :teams, through: :players
+  has_many :fpl_team_lists
 
   alias_attribute :fpl_team_name, :name
 

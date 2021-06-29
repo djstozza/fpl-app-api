@@ -12,58 +12,194 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "/list_positions", type: :request do
-  # This should return the minimal set of attributes required to create a valid
-  # ListPosition. As you add validations to ListPosition, be sure to
-  # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
+RSpec.describe "api/list_positions", :no_transaction, type: :request do
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  let(:fpl_team_list) { create :fpl_team_list }
 
-  # This should return the minimal set of values that should be in the headers
-  # in order to pass any filters (e.g. authentication) defined in
-  # ListPositionsController, or in your router and rack
-  # middleware. Be sure to keep this updated too.
-  let(:valid_headers) {
-    {}
-  }
+  let!(:list_position1) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
+  let!(:list_position2) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+  let!(:list_position3) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+  let!(:list_position4) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+  let!(:list_position5) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+  let!(:list_position6) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+  let!(:list_position7) { create :list_position, :starting, :goalkeeper, fpl_team_list_id: fpl_team_list.id }
+  let!(:list_position8) { create :list_position, :substitute_gkp, :goalkeeper, fpl_team_list_id: fpl_team_list.id }
 
+  before { api.authenticate(fpl_team_list.fpl_team.owner) }
 
-  # describe "PATCH /update" do
-  #   context "with valid parameters" do
-  #     let(:new_attributes) {
-  #       skip("Add a hash of attributes valid for your model")
-  #     }
-  #
-  #     it "updates the requested list_position" do
-  #       list_position = ListPosition.create! valid_attributes
-  #       patch list_position_url(list_position),
-  #             params: { list_position: new_attributes }, headers: valid_headers, as: :json
-  #       list_position.reload
-  #       skip("Add assertions for updated state")
-  #     end
-  #
-  #     it "renders a JSON response with the list_position" do
-  #       list_position = ListPosition.create! valid_attributes
-  #       patch list_position_url(list_position),
-  #             params: { list_position: new_attributes }, headers: valid_headers, as: :json
-  #       expect(response).to have_http_status(:ok)
-  #       expect(response.content_type).to match(a_string_including("application/json"))
-  #     end
-  #   end
-  #
-  #   context "with invalid parameters" do
-  #     it "renders a JSON response with errors for the list_position" do
-  #       list_position = ListPosition.create! valid_attributes
-  #       patch list_position_url(list_position),
-  #             params: { list_position: invalid_attributes }, headers: valid_headers, as: :json
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.content_type).to eq("application/json")
-  #     end
-  #   end
-  # end
+  describe 'GET /show' do
+    context '3 forwards, 4 defenders, 3 midfielders' do
+      let!(:list_position9) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position10) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position11) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position12) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position13) { create :list_position, :substitute_1, :midfielder, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position14) { create :list_position, :substitute_2, :defender, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position15) { create :list_position, :substitute_3, :defender, fpl_team_list_id: fpl_team_list.id }
+
+      it 'shows valid potential substitutions' do
+        # Subbing out a starting forward
+        api.get(api_list_position_url(list_position1.id))
+        # All substitutes can be subbed in
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position13.to_param),
+          a_hash_including('id' => list_position14.to_param),
+          a_hash_including('id' => list_position15.to_param),
+        )
+
+        # Subbing out a starting defender
+        api.get(api_list_position_url(list_position4.id))
+        # Can only sub in substitute defenders since there are only 3 starting defenders
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position14.to_param),
+          a_hash_including('id' => list_position15.to_param),
+        )
+
+        # Subbing out the starting goalkeeper
+        api.get(api_list_position_url(list_position7.id))
+        # Can only sub in the substitute goalkeeper
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position8.to_param),
+        )
+
+        # Subbing in a the substitute goalkeeper
+        api.get(api_list_position_url(list_position8.id))
+        # Can only sub out the starting goalkeeper
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position7.to_param),
+        )
+
+        # Subbing in a substitute midfielder
+        api.get(api_list_position_url(list_position13.id))
+        # There are only 3 starting defenders so none of them can be subbed out
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position1.to_param),
+          a_hash_including('id' => list_position2.to_param),
+          a_hash_including('id' => list_position3.to_param),
+          a_hash_including('id' => list_position9.to_param),
+          a_hash_including('id' => list_position10.to_param),
+          a_hash_including('id' => list_position11.to_param),
+          a_hash_including('id' => list_position12.to_param),
+        )
+      end
+    end
+
+    context '1 forward, 5 midfielders, 4 defenders' do
+      let!(:list_position9) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position10) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position11) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position12) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position13) { create :list_position, :substitute_1, :forward, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position14) { create :list_position, :substitute_2, :forward, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position15) { create :list_position, :substitute_3, :defender, fpl_team_list_id: fpl_team_list.id }
+
+      it 'shows valid potential substitutions' do
+        # Subbing out a starting forward
+        api.get(api_list_position_url(list_position1.id))
+        # Only substitute forwards can be subbed in since there is only one starting forward
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position13.to_param),
+          a_hash_including('id' => list_position14.to_param),
+        )
+
+        # Subbing out a starting midfielder
+        api.get(api_list_position_url(list_position2.id))
+        # All substitutes can be subbed in
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position13.to_param),
+          a_hash_including('id' => list_position14.to_param),
+          a_hash_including('id' => list_position15.to_param),
+        )
+
+        # Subbing out the starting goalkeeper
+        api.get(api_list_position_url(list_position7.id))
+        # Can only sub in the substitute goalkeeper
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position8.to_param),
+        )
+
+        # Subbing in a substitute forward
+        api.get(api_list_position_url(list_position14.id))
+        # All starting outfielders can be subbed out
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position1.to_param),
+          a_hash_including('id' => list_position2.to_param),
+          a_hash_including('id' => list_position3.to_param),
+          a_hash_including('id' => list_position4.to_param),
+          a_hash_including('id' => list_position5.to_param),
+          a_hash_including('id' => list_position6.to_param),
+          a_hash_including('id' => list_position9.to_param),
+          a_hash_including('id' => list_position10.to_param),
+          a_hash_including('id' => list_position11.to_param),
+          a_hash_including('id' => list_position12.to_param),
+        )
+
+        # Subbing in a substitute defender
+        api.get(api_list_position_url(list_position15.id))
+        # All starting outfielders can be subbed out except for the starting forward since there is only one
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position2.to_param),
+          a_hash_including('id' => list_position3.to_param),
+          a_hash_including('id' => list_position4.to_param),
+          a_hash_including('id' => list_position5.to_param),
+          a_hash_including('id' => list_position6.to_param),
+          a_hash_including('id' => list_position9.to_param),
+          a_hash_including('id' => list_position10.to_param),
+          a_hash_including('id' => list_position11.to_param),
+          a_hash_including('id' => list_position12.to_param),
+        )
+      end
+    end
+
+    context '3 forwards, 2 midfielders, 5 defenders' do
+      let!(:list_position9) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position10) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position11) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position12) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position13) { create :list_position, :substitute_1, :midfielder, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position14) { create :list_position, :substitute_2, :midfielder, fpl_team_list_id: fpl_team_list.id }
+      let!(:list_position15) { create :list_position, :substitute_3, :midfielder, fpl_team_list_id: fpl_team_list.id }
+
+      it 'shows valid potential substitutions' do
+        # Subbing out a starting forward
+        api.get(api_list_position_url(list_position1.id))
+        # All substitutes can be subbed in
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position13.to_param),
+          a_hash_including('id' => list_position14.to_param),
+          a_hash_including('id' => list_position15.to_param),
+        )
+
+        # Subbing out the starting goalkeeper
+        api.get(api_list_position_url(list_position7.id))
+        # Can only sub in the substitute goalkeeper
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position8.to_param),
+        )
+
+        # Subbing in a the substitute goalkeeper
+        api.get(api_list_position_url(list_position8.id))
+        # Can only sub out the starting goalkeeper
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position7.to_param),
+        )
+
+        # Subbing out a starting forward
+        api.get(api_list_position_url(list_position13.id))
+        # All starting outfielders can be subbed out
+        expect(api.data).to contain_exactly(
+          a_hash_including('id' => list_position1.to_param),
+          a_hash_including('id' => list_position2.to_param),
+          a_hash_including('id' => list_position3.to_param),
+          a_hash_including('id' => list_position4.to_param),
+          a_hash_including('id' => list_position5.to_param),
+          a_hash_including('id' => list_position6.to_param),
+          a_hash_including('id' => list_position9.to_param),
+          a_hash_including('id' => list_position10.to_param),
+          a_hash_including('id' => list_position11.to_param),
+          a_hash_including('id' => list_position12.to_param),
+        )
+      end
+    end
+  end
 end

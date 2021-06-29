@@ -1,10 +1,17 @@
-SELECT
+SELECT DISTINCT ON(role, display_order, fixtures.id, players.id)
+fpl_team_lists.id AS fpl_team_list_id,
 JSONB_BUILD_OBJECT(
   'id', players.id::TEXT,
   'first_name', first_name,
   'last_name', last_name
 ) AS player,
 singular_name_short AS position,
+CASE
+  WHEN singular_name_short = 'FWD' THEN 0
+  WHEN singular_name_short = 'MID' THEN 1
+  WHEN singular_name_short = 'DEF' THEN 3
+  WHEN singular_name_short = 'GKP' THEN 4
+END AS display_order,
 role,
 fixtures.kickoff_time,
 fixtures.started,
@@ -20,11 +27,15 @@ JSONB_BUILD_OBJECT(
 ) AS opponent,
 CASE
   WHEN role = 0 THEN 'Starting'
-  WHEN role = 1 THEN 'Substitute 1'
-  WHEN role = 2 THEN 'Substitute 2'
-  WHEN role = 3 THEN 'Substitute 3'
-  WHEN role = 4 THEN 'Substitute GKP'
-END AS role_str
+  WHEN role = 1 THEN 'S1'
+  WHEN role = 2 THEN 'S2'
+  WHEN role = 3 THEN 'S3'
+  WHEN role = 4 THEN 'SGKP'
+END AS role_str,
+CASE
+  WHEN teams.id = fixtures.team_h_id THEN 'H'
+  ELSE 'A'
+END AS leg
 FROM list_positions
 JOIN players ON list_positions.player_id = players.id
 JOIN positions ON players.position_id = positions.id
@@ -75,8 +86,7 @@ Default to the player's team if no history information is present for the round 
 */
 JOIN teams
   ON (history.opponent_team IS NULL AND teams.id = player_team.id)
-  OR (fixtures.team_a_id = opposition_team.id AND fixtures.team_h_id = teams.id)
-  OR (fixtures.team_h_id = opposition_team.id AND fixtures.team_a_id = teams.id)
-WHERE fpl_team_lists.fpl_team_id = :fpl_team_id
-  AND fpl_team_lists.round_id = :round_id
-ORDER BY role ASC, positions.id DESC
+  OR (fixtures.team_h_id = teams.id AND teams.id != opposition_team.id)
+  OR (fixtures.team_a_id = teams.id AND teams.id != opposition_team.id)
+WHERE fpl_team_lists.id = :fpl_team_list_id
+ORDER BY role ASC, display_order, players.id ASC, fixtures.id ASC

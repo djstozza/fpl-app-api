@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :list_positions
   require 'sidekiq/web'
   require 'sidekiq-scheduler/web'
   mount Sidekiq::Web => '/sidekiq'
@@ -51,8 +50,10 @@ Rails.application.routes.draw do
       resources :fpl_teams, only: [:index], controller: 'leagues/fpl_teams'
     end
     resources :fpl_teams, only: [:index, :show, :update] do
-      resources :fpl_team_lists, module: 'fpl_teams', only: [:index]
+      resources :fpl_team_lists, module: 'fpl_teams', only: [:index, :show]
     end
+
+    resources :list_positions, only: [:show]
 
     resources :rounds, only: [:index, :show]
     resources :positions, only: [:index]
