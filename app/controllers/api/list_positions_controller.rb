@@ -3,7 +3,7 @@ class Api::ListPositionsController < ApplicationController
   load_resource :list_position, only: [:show]
 
   def show
-    respond_with SqlQuery.results('list_positions/valid_substitutions', list_position_id: list_position.id)
+    respond_with SqlQuery.load('list_positions/valid_substitutions', list_position_id: list_position.id).result
   end
 
   private

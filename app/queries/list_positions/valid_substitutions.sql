@@ -44,40 +44,46 @@ in_list_positions AS (
         ELSE list_positions.role = 0 AND positions.singular_name_short != 'GKP'
       END
     )
+),
+
+valid_substitutions AS (
+  SELECT
+  in_list_positions.id::TEXT
+  FROM list_positions
+  LEFT OUTER JOIN out_list_position USING (fpl_team_list_id)
+  LEFT JOIN in_list_positions USING (fpl_team_list_id)
+  JOIN players ON list_positions.player_id = players.id
+  JOIN positions ON players.position_id = positions.id
+  WHERE fpl_team_list_id = out_list_position.fpl_team_list_id
+    AND (list_positions.role = 0 OR list_positions.id = in_list_positions.id)
+    AND list_positions.id != out_list_position.id
+  GROUP BY in_list_positions.id, out_list_position.singular_name_short, in_list_positions.singular_name_short
+  /*
+    There must always be a minimum of 3 starting defenders, 2 starting midfielders and 1 starting forward.
+    This check removes invalid substitutions i.e. subbing out a starting defender for a substitute midfielder when there
+    are only 3 starting defenders would be invalid
+  */
+  HAVING (
+    CASE
+      WHEN out_list_position.singular_name_short != 'DEF' AND in_list_positions.singular_name_short = 'DEF'
+        THEN COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END) - 1
+      ELSE COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END)
+    END >= 3
+  ) AND (
+    CASE
+      WHEN out_list_position.singular_name_short != 'MID' AND in_list_positions.singular_name_short = 'MID'
+        THEN COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END) - 1
+      ELSE COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END)
+    END >= 2
+  ) AND (
+    CASE
+      WHEN out_list_position.singular_name_short != 'FWD' AND in_list_positions.singular_name_short = 'FWD'
+        THEN COUNT(CASE WHEN positions.singular_name_short = 'FWD' THEN 1 END) - 1
+      ELSE COUNT(CASE WHEN positions.singular_name_short = 'FWD' THEN 1 END)
+    END > 0
+  )
 )
 
 SELECT
-in_list_positions.id::TEXT
-FROM list_positions
-LEFT OUTER JOIN out_list_position USING (fpl_team_list_id)
-LEFT JOIN in_list_positions USING (fpl_team_list_id)
-JOIN players ON list_positions.player_id = players.id
-JOIN positions ON players.position_id = positions.id
-WHERE fpl_team_list_id = out_list_position.fpl_team_list_id
-  AND (list_positions.role = 0 OR list_positions.id = in_list_positions.id)
-  AND list_positions.id != out_list_position.id
-GROUP BY in_list_positions.id, out_list_position.singular_name_short, in_list_positions.singular_name_short
-/*
-  There must always be a minimum of 3 starting defenders, 2 starting midfielders and 1 starting forward.
-  This check removes invalid substitutions i.e. subbing out a starting defender for a substitute midfielder when there
-  are only 3 starting defenders would be invalid
-*/
-HAVING (
-  CASE
-    WHEN out_list_position.singular_name_short != 'DEF' AND in_list_positions.singular_name_short = 'DEF'
-      THEN COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END) - 1
-    ELSE COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END)
-  END >= 3
-) AND (
-  CASE
-    WHEN out_list_position.singular_name_short != 'MID' AND in_list_positions.singular_name_short = 'MID'
-      THEN COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END) - 1
-    ELSE COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END)
-  END >= 2
-) AND (
-  CASE
-    WHEN out_list_position.singular_name_short != 'FWD' AND in_list_positions.singular_name_short = 'FWD'
-      THEN COUNT(CASE WHEN positions.singular_name_short = 'FWD' THEN 1 END) - 1
-    ELSE COUNT(CASE WHEN positions.singular_name_short = 'FWD' THEN 1 END)
-  END > 0
-)
+JSONB_AGG(valid_substitutions.id) AS valid_substitutions
+FROM valid_substitutions

@@ -41,45 +41,45 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
         # Subbing out a starting forward
         api.get(api_list_position_url(list_position1.id))
         # All substitutes can be subbed in
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position13.to_param),
-          a_hash_including('id' => list_position14.to_param),
-          a_hash_including('id' => list_position15.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position13.to_param,
+          list_position14.to_param,
+          list_position15.to_param,
         )
 
         # Subbing out a starting defender
         api.get(api_list_position_url(list_position4.id))
         # Can only sub in substitute defenders since there are only 3 starting defenders
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position14.to_param),
-          a_hash_including('id' => list_position15.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position14.to_param,
+          list_position15.to_param,
         )
 
         # Subbing out the starting goalkeeper
         api.get(api_list_position_url(list_position7.id))
         # Can only sub in the substitute goalkeeper
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position8.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position8.to_param,
         )
 
         # Subbing in a the substitute goalkeeper
         api.get(api_list_position_url(list_position8.id))
         # Can only sub out the starting goalkeeper
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position7.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position7.to_param,
         )
 
         # Subbing in a substitute midfielder
         api.get(api_list_position_url(list_position13.id))
         # There are only 3 starting defenders so none of them can be subbed out
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position1.to_param),
-          a_hash_including('id' => list_position2.to_param),
-          a_hash_including('id' => list_position3.to_param),
-          a_hash_including('id' => list_position9.to_param),
-          a_hash_including('id' => list_position10.to_param),
-          a_hash_including('id' => list_position11.to_param),
-          a_hash_including('id' => list_position12.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position1.to_param,
+          list_position2.to_param,
+          list_position3.to_param,
+          list_position9.to_param,
+          list_position10.to_param,
+          list_position11.to_param,
+          list_position12.to_param,
         )
       end
     end
@@ -97,56 +97,56 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
         # Subbing out a starting forward
         api.get(api_list_position_url(list_position1.id))
         # Only substitute forwards can be subbed in since there is only one starting forward
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position13.to_param),
-          a_hash_including('id' => list_position14.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position13.to_param,
+          list_position14.to_param,
         )
 
         # Subbing out a starting midfielder
         api.get(api_list_position_url(list_position2.id))
         # All substitutes can be subbed in
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position13.to_param),
-          a_hash_including('id' => list_position14.to_param),
-          a_hash_including('id' => list_position15.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position13.to_param,
+          list_position14.to_param,
+          list_position15.to_param,
         )
 
         # Subbing out the starting goalkeeper
         api.get(api_list_position_url(list_position7.id))
         # Can only sub in the substitute goalkeeper
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position8.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position8.to_param,
         )
 
         # Subbing in a substitute forward
         api.get(api_list_position_url(list_position14.id))
         # All starting outfielders can be subbed out
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position1.to_param),
-          a_hash_including('id' => list_position2.to_param),
-          a_hash_including('id' => list_position3.to_param),
-          a_hash_including('id' => list_position4.to_param),
-          a_hash_including('id' => list_position5.to_param),
-          a_hash_including('id' => list_position6.to_param),
-          a_hash_including('id' => list_position9.to_param),
-          a_hash_including('id' => list_position10.to_param),
-          a_hash_including('id' => list_position11.to_param),
-          a_hash_including('id' => list_position12.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position1.to_param,
+          list_position2.to_param,
+          list_position3.to_param,
+          list_position4.to_param,
+          list_position5.to_param,
+          list_position6.to_param,
+          list_position9.to_param,
+          list_position10.to_param,
+          list_position11.to_param,
+          list_position12.to_param,
         )
 
         # Subbing in a substitute defender
         api.get(api_list_position_url(list_position15.id))
         # All starting outfielders can be subbed out except for the starting forward since there is only one
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position2.to_param),
-          a_hash_including('id' => list_position3.to_param),
-          a_hash_including('id' => list_position4.to_param),
-          a_hash_including('id' => list_position5.to_param),
-          a_hash_including('id' => list_position6.to_param),
-          a_hash_including('id' => list_position9.to_param),
-          a_hash_including('id' => list_position10.to_param),
-          a_hash_including('id' => list_position11.to_param),
-          a_hash_including('id' => list_position12.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position2.to_param,
+          list_position3.to_param,
+          list_position4.to_param,
+          list_position5.to_param,
+          list_position6.to_param,
+          list_position9.to_param,
+          list_position10.to_param,
+          list_position11.to_param,
+          list_position12.to_param,
         )
       end
     end
@@ -164,40 +164,40 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
         # Subbing out a starting forward
         api.get(api_list_position_url(list_position1.id))
         # All substitutes can be subbed in
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position13.to_param),
-          a_hash_including('id' => list_position14.to_param),
-          a_hash_including('id' => list_position15.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position13.to_param,
+          list_position14.to_param,
+          list_position15.to_param,
         )
 
         # Subbing out the starting goalkeeper
         api.get(api_list_position_url(list_position7.id))
         # Can only sub in the substitute goalkeeper
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position8.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position8.to_param,
         )
 
         # Subbing in a the substitute goalkeeper
         api.get(api_list_position_url(list_position8.id))
         # Can only sub out the starting goalkeeper
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position7.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position7.to_param,
         )
 
         # Subbing out a starting forward
         api.get(api_list_position_url(list_position13.id))
         # All starting outfielders can be subbed out
-        expect(api.data).to contain_exactly(
-          a_hash_including('id' => list_position1.to_param),
-          a_hash_including('id' => list_position2.to_param),
-          a_hash_including('id' => list_position3.to_param),
-          a_hash_including('id' => list_position4.to_param),
-          a_hash_including('id' => list_position5.to_param),
-          a_hash_including('id' => list_position6.to_param),
-          a_hash_including('id' => list_position9.to_param),
-          a_hash_including('id' => list_position10.to_param),
-          a_hash_including('id' => list_position11.to_param),
-          a_hash_including('id' => list_position12.to_param),
+        expect(api.data['valid_substitutions']).to contain_exactly(
+          list_position1.to_param,
+          list_position2.to_param,
+          list_position3.to_param,
+          list_position4.to_param,
+          list_position5.to_param,
+          list_position6.to_param,
+          list_position9.to_param,
+          list_position10.to_param,
+          list_position11.to_param,
+          list_position12.to_param,
         )
       end
     end

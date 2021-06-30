@@ -1,4 +1,5 @@
 SELECT DISTINCT ON(role, display_order, fixtures.id, players.id)
+list_positions.id::TEXT,
 fpl_team_lists.id AS fpl_team_list_id,
 JSONB_BUILD_OBJECT(
   'id', players.id::TEXT,
