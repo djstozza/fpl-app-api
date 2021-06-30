@@ -37,6 +37,6 @@ class RoundSerializer < BaseSerializer
   private
 
   def current_round_id
-    @current_round ||= Round.current.id
+    @current_round ||= Round.current&.id
   end
 end

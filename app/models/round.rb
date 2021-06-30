@@ -24,9 +24,7 @@ class Round < ApplicationRecord
     return current_round if current_round && !current_round.data_checked
 
     next_round = find_by(is_next: true)
-    return next_round if next_round && !next_round.data_checked
-
-    first
+    next_round if next_round && !next_round.data_checked
   end
 
   validates :external_id, presence: true, uniqueness: true

@@ -41,7 +41,7 @@ in_list_positions AS (
           This will return all starting players (role = 0) who are not goalkeepers if the out list position player is a
           non-goalkeeper substitute i.e. role = 1 (substitute_1), role = 2 (substitute_2), role = 3 (substitute_3)
         */
-        ELSE list_positions.role = 0 AND positions.singular_name_short != 'GKP'
+        ELSE positions.singular_name_short != 'GKP'
       END
     )
 ),
@@ -57,7 +57,12 @@ valid_substitutions AS (
   WHERE fpl_team_list_id = out_list_position.fpl_team_list_id
     AND (list_positions.role = 0 OR list_positions.id = in_list_positions.id)
     AND list_positions.id != out_list_position.id
-  GROUP BY in_list_positions.id, out_list_position.singular_name_short, in_list_positions.singular_name_short
+  GROUP BY
+    in_list_positions.id,
+    in_list_positions.role,
+    out_list_position.role,
+    out_list_position.singular_name_short,
+    in_list_positions.singular_name_short
   /*
     There must always be a minimum of 3 starting defenders, 2 starting midfielders and 1 starting forward.
     This check removes invalid substitutions i.e. subbing out a starting defender for a substitute midfielder when there
@@ -65,20 +70,26 @@ valid_substitutions AS (
   */
   HAVING (
     CASE
-      WHEN out_list_position.singular_name_short != 'DEF' AND in_list_positions.singular_name_short = 'DEF'
-        THEN COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END) - 1
+      WHEN out_list_position.singular_name_short != 'DEF'
+        AND in_list_positions.singular_name_short = 'DEF'
+        AND (in_list_positions.role = 0 OR out_list_position.role = 0)
+          THEN COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END) - 1
       ELSE COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END)
     END >= 3
   ) AND (
     CASE
-      WHEN out_list_position.singular_name_short != 'MID' AND in_list_positions.singular_name_short = 'MID'
-        THEN COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END) - 1
+      WHEN out_list_position.singular_name_short != 'MID'
+        AND in_list_positions.singular_name_short = 'MID'
+        AND (in_list_positions.role = 0 OR out_list_position.role = 0)
+          THEN COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END) - 1
       ELSE COUNT(CASE WHEN positions.singular_name_short = 'DEF' THEN 1 END)
     END >= 2
   ) AND (
     CASE
-      WHEN out_list_position.singular_name_short != 'FWD' AND in_list_positions.singular_name_short = 'FWD'
-        THEN COUNT(CASE WHEN positions.singular_name_short = 'FWD' THEN 1 END) - 1
+      WHEN out_list_position.singular_name_short != 'FWD'
+        AND in_list_positions.singular_name_short = 'FWD'
+        AND (in_list_positions.role = 0 OR out_list_position.role = 0)
+          THEN COUNT(CASE WHEN positions.singular_name_short = 'FWD' THEN 1 END) - 1
       ELSE COUNT(CASE WHEN positions.singular_name_short = 'FWD' THEN 1 END)
     END > 0
   )

@@ -18,7 +18,6 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
   before { api.authenticate(fpl_team.owner) }
 
   describe 'GET /index' do
-    before { api.authenticate(fpl_team.owner) }
     let(:round1) { create :round, deadline_time: 5.weeks.ago }
     let(:round2) { create :round, deadline_time: 4.weeks.ago }
     let(:round3) { create :round, deadline_time: 3.weeks.ago }
@@ -27,7 +26,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
     let!(:fpl_team_list3) { create :fpl_team_list, fpl_team: fpl_team, round: round3 }
 
     it 'returns a list of fpl_team_lists for an fpl_team ordered by round deadline_time' do
-      api.get api_fpl_team_fpl_team_lists_url(fpl_team)
+      api.get api_fpl_team_lists_url, params: { fpl_team_list: { fpl_team_id: fpl_team.to_param } }
 
       expect(api.data).to match(
         [
@@ -137,7 +136,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
     let!(:list_position4) { create :list_position, :substitute_2, fpl_team_list: fpl_team_list, player: player4 }
 
     it 'returns a list of player details for the round along with their scores' do
-      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+      api.get api_fpl_team_list_url(fpl_team_list)
 
       expect(api.response).to have_http_status(:success)
 
@@ -265,7 +264,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
     it 'allows waiver_picks but no trades if the waiver deadline has not passed if the round is the next round' do
       round.update(is_next: true, is_current: false)
 
-      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+      api.get api_fpl_team_list_url(fpl_team_list)
 
       expect(api.data['can_substitute']).to eq(true)
       expect(api.data['can_waiver_pick']).to eq(true)
@@ -275,7 +274,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
     it 'allows trades but no waiver_picks if the waiver deadline has passed and the round is current' do
       round.update(deadline_time: 23.hours.from_now)
 
-      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+      api.get api_fpl_team_list_url(fpl_team_list)
 
       expect(api.data['can_substitute']).to eq(true)
       expect(api.data['can_waiver_pick']).to eq(false)
@@ -286,7 +285,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
       fpl_team.update(owner: create(:user))
       round.update(deadline_time: 23.hours.from_now)
 
-      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+      api.get api_fpl_team_list_url(fpl_team_list)
 
       expect(api.data['can_substitute']).to eq(false)
       expect(api.data['can_waiver_pick']).to eq(false)
@@ -296,7 +295,7 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
     it 'does not allow substitutions, waiver_picks or trades if the round is not current' do
       round.update(data_checked: true)
 
-      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+      api.get api_fpl_team_list_url(fpl_team_list)
 
       expect(api.data['can_substitute']).to eq(false)
       expect(api.data['can_waiver_pick']).to eq(false)
@@ -306,11 +305,103 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
     it 'does not allow substitutions, waiver_picks or trades if the deadline_time has passed' do
       round.update(deadline_time: 1.day.ago)
 
-      api.get api_fpl_team_fpl_team_list_url(fpl_team, fpl_team_list)
+      api.get api_fpl_team_list_url(fpl_team_list)
 
       expect(api.data['can_substitute']).to eq(false)
       expect(api.data['can_waiver_pick']).to eq(false)
       expect(api.data['can_trade']).to eq(false)
+    end
+  end
+
+  describe 'PUT /update' do
+    let(:round) { create :round, :current }
+    let(:fpl_team_list) { create :fpl_team_list, fpl_team: fpl_team, round: round }
+    let(:team1) { create :team }
+    let(:team2) { create :team }
+    let(:player1) { create :player, team: team1 }
+    let(:player2) { create :player, team: team2 }
+
+    let!(:fixture) { create :fixture, round: fpl_team_list.round, home_team: team1, away_team: team2 }
+
+    let!(:list_position1) do
+      create(
+        :list_position,
+        :starting,
+        :forward,
+        player: player1,
+        fpl_team_list_id: fpl_team_list.id,
+      )
+    end
+    let!(:list_position2) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position3) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position4) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position5) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position6) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position7) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position8) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position9) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position10) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position11) { create :list_position, :starting, :goalkeeper, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position12) do
+      create(
+        :list_position,
+        :substitute_1,
+        :midfielder,
+        player: player2,
+        fpl_team_list_id: fpl_team_list.id,
+      )
+    end
+    let!(:list_position13) { create :list_position, :substitute_2, :defender, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position14) { create :list_position, :substitute_3, :defender, fpl_team_list_id: fpl_team_list.id }
+    let!(:list_position15) { create :list_position, :substitute_gkp, :goalkeeper, fpl_team_list_id: fpl_team_list.id }
+
+    it 'processes list position substitutions' do
+      api.put api_fpl_team_list_url(fpl_team_list),
+              params: {
+                fpl_team_list: {
+                  out_list_position_id: list_position1.id,
+                  in_list_position_id: list_position12.id,
+                },
+              }
+
+      expect(api.data['list_positions']).to match(
+        [
+          a_hash_including(
+            'player' => a_hash_including(
+              'id' => player2.to_param,
+              'first_name' => player2.first_name,
+              'last_name' => player2.last_name,
+            ),
+            'role_str' => 'Starting',
+            'position' => player2.position.singular_name_short,
+            'team' => a_hash_including(
+              'id' => team2.to_param,
+              'short_name' => team2.short_name,
+            ),
+            'opponent' => a_hash_including(
+              'id' => fixture.home_team.to_param,
+              'short_name' => fixture.home_team.short_name,
+            ),
+          ),
+          a_hash_including(
+            'player' => a_hash_including(
+              'id' => player1.to_param,
+              'first_name' => player1.first_name,
+              'last_name' => player1.last_name,
+            ),
+            'role_str' => 'S1',
+            'position' => player1.position.singular_name_short,
+            'team' => a_hash_including(
+              'id' => team1.to_param,
+              'short_name' => team1.short_name,
+            ),
+            'opponent' => a_hash_including(
+              'id' => fixture.away_team.to_param,
+              'short_name' => fixture.away_team.short_name,
+            ),
+          ),
+        ]
+      )
     end
   end
 end

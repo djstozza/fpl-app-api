@@ -12,7 +12,7 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "api/list_positions", :no_transaction, type: :request do
+RSpec.describe 'api/list_positions', :no_transaction, type: :request do
 
   let(:fpl_team_list) { create :fpl_team_list }
 
@@ -71,7 +71,8 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
 
         # Subbing in a substitute midfielder
         api.get(api_list_position_url(list_position13.id))
-        # There are only 3 starting defenders so none of them can be subbed out
+        # There are only 3 starting defenders so none of them can be subbed out.
+        # A substitute can also switch places with another substitute i.e. S1 to S3
         expect(api.data['valid_substitutions']).to contain_exactly(
           list_position1.to_param,
           list_position2.to_param,
@@ -80,6 +81,8 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
           list_position10.to_param,
           list_position11.to_param,
           list_position12.to_param,
+          list_position14.to_param,
+          list_position15.to_param,
         )
       end
     end
@@ -120,7 +123,7 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
 
         # Subbing in a substitute forward
         api.get(api_list_position_url(list_position14.id))
-        # All starting outfielders can be subbed out
+        # All starting outfielders can be subbed out and a substitute can switch places with another substitute
         expect(api.data['valid_substitutions']).to contain_exactly(
           list_position1.to_param,
           list_position2.to_param,
@@ -132,11 +135,14 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
           list_position10.to_param,
           list_position11.to_param,
           list_position12.to_param,
+          list_position13.to_param,
+          list_position15.to_param,
         )
 
         # Subbing in a substitute defender
         api.get(api_list_position_url(list_position15.id))
-        # All starting outfielders can be subbed out except for the starting forward since there is only one
+        # All starting outfielders can be subbed out except for the starting forward since there is only one.
+        # A substitute can always switch places with another substitute i.e. S1 to S3
         expect(api.data['valid_substitutions']).to contain_exactly(
           list_position2.to_param,
           list_position3.to_param,
@@ -147,6 +153,8 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
           list_position10.to_param,
           list_position11.to_param,
           list_position12.to_param,
+          list_position13.to_param,
+          list_position14.to_param
         )
       end
     end
@@ -184,9 +192,9 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
           list_position7.to_param,
         )
 
-        # Subbing out a starting forward
+        # Subbing out a substitute forward
         api.get(api_list_position_url(list_position13.id))
-        # All starting outfielders can be subbed out
+        # All starting outfielders can be subbed out and a substitute can switch places with another substitute
         expect(api.data['valid_substitutions']).to contain_exactly(
           list_position1.to_param,
           list_position2.to_param,
@@ -198,6 +206,8 @@ RSpec.describe "api/list_positions", :no_transaction, type: :request do
           list_position10.to_param,
           list_position11.to_param,
           list_position12.to_param,
+          list_position14.to_param,
+          list_position15.to_param,
         )
       end
     end
