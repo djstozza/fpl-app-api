@@ -19,7 +19,7 @@ class ApplicationController < ActionController::API
 
   def respond_with(resource, **meta)
     if resource.respond_to?(:errors) && resource.errors.present?
-      render json: serialized_errors(resource), status: :unprocessable_entity
+      render json: serialized_errors(resource), status: meta[:status] || :unprocessable_entity
     else
       render json: { meta: meta, data: resource }
     end
@@ -27,18 +27,11 @@ class ApplicationController < ActionController::API
 
   # Check for auth headers - if present, decode or send unauthorized response (called always to allow current_user)
   def process_token
-    if request.headers['Authorization'].present?
-      begin
-        jwt_payload = JWT.decode(
-          request.headers['Authorization'].split(' ')[1],
-          Rails.application.secrets.secret_key_base,
-        ).first
+    service = Auth::ProcessToken.call(request)
 
-        @current_user_id = jwt_payload['id']
-      rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
-        head :unauthorized
-      end
-    end
+    return respond_with service, status: :unauthorized if service.errors.any?
+
+    @current_user_id = service.current_user_id
   end
 
   # If user has not signed in, return unauthorized response (called only when auth is needed)
