@@ -9,33 +9,24 @@ class Api::FplTeamListsController < ApplicationController
 
   # GET /api/fpl_team_lists/1
   def show
-    respond_with query[0] if stale?(query)
+    respond_with FplTeamListSerializer.new(fpl_team_list, current_user: current_user)
   end
 
   # PUT /api/fpl_team_lists/1
   def update
     service = FplTeamLists::ProcessSubstitution.call(fpl_team_list_params.to_h, fpl_team_list, current_user)
 
-    respond_with service.errors.any? ? service : query[0]
+    respond_with service.errors.any? ? service : list_positions_query
   end
 
   private
 
   def fpl_team_list
-    @fpl_team_list ||= FplTeamList.find(params[:id])
+    @fpl_team_list ||= FplTeamList.find(params[:fpl_team_list_id] || params[:id])
   end
 
-  def query
-    @query ||= SqlQuery.results(
-      'fpl_team_lists/show',
-      list_position_details: list_position_details,
-      fpl_team_list_id: fpl_team_list.id,
-      user_id: current_user.id,
-    )
-  end
-
-  def list_position_details
-    SqlQuery.load(
+  def list_positions_query
+    SqlQuery.results(
       'fpl_team_lists/list_position_details',
       fpl_team_list_id: fpl_team_list.id,
     )

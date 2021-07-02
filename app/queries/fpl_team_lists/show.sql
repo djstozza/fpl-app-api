@@ -9,6 +9,8 @@ grouped_list_position_details AS (
 )
 
 SELECT
+rounds.deadline_time,
+waiver_deadline,
 permissions.*,
 grouped_list_position_details.list_positions
 FROM fpl_team_lists

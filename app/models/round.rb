@@ -27,5 +27,21 @@ class Round < ApplicationRecord
     next_round if next_round && !next_round.data_checked
   end
 
+  def waiver_deadline_epoch
+    deadline_time_epoch - 1.day.to_i
+  end
+
+  def waiver_deadline
+    (deadline_time.kind_of?(String) ? Time.parse(deadline_time) : deadline_time) - 1.day
+  end
+
+  def is_current?
+    return true if is_current && !data_checked
+    return false unless is_next
+
+    current_round = Round.find_by(is_current: true)
+    is_next && (!current_round || current_round.data_checked)
+  end
+
   validates :external_id, presence: true, uniqueness: true
 end

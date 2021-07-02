@@ -32,4 +32,10 @@ class FplTeamList < ApplicationRecord
   has_many :players, through: :list_positions
 
   validates :round_id, uniqueness: { scope: [:fpl_team_id] }
+
+  delegate :owner, to: :fpl_team
+  delegate :is_current?,
+           :waiver_deadline,
+           :deadline_time,
+           to: :round
 end

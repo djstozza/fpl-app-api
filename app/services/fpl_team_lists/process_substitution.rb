@@ -1,8 +1,6 @@
 # Process substitutions in the current fpl_team_list
 class FplTeamLists::ProcessSubstitution < ApplicationService
   attr_reader :fpl_team_list,
-              :fpl_team,
-              :round,
               :user,
               :out_list_position_id,
               :out_list_position,
@@ -16,8 +14,6 @@ class FplTeamLists::ProcessSubstitution < ApplicationService
 
   def initialize(data, fpl_team_list, user)
     @fpl_team_list = fpl_team_list
-    @fpl_team = fpl_team_list.fpl_team
-    @round = fpl_team_list.round
     @out_list_position_id = data[:out_list_position_id]
     @in_list_position_id = data[:in_list_position_id]
     @user = user
@@ -39,11 +35,11 @@ class FplTeamLists::ProcessSubstitution < ApplicationService
   private
 
   def user_can_substitute
-    return errors.add(:base, 'You are not authorised to perform this action') if fpl_team.owner != user
-    return errors.add(:round, 'is not current') if Round.current != round
-    return unless Time.current > round.deadline_time
+    return errors.add(:base, 'You are not authorised to perform this action') if fpl_team_list.owner != user
+    return errors.add(:base, 'Round is not current') unless fpl_team_list.is_current?
+    return unless Time.current > fpl_team_list.deadline_time
 
-    errors.add(:base, 'The deadline_time for making substitutions has passed')
+    errors.add(:base, 'The time for making substitutions has passed')
   end
 
   def valid_out_list_position

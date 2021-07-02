@@ -26,6 +26,9 @@ FactoryBot.define do
       n
     end
 
+    time = 3.days.from_now
+    deadline_time { time }
+    deadline_time_epoch { time.to_i }
     deadline_time_game_offset { 0 }
 
     trait :current do
@@ -34,10 +37,6 @@ FactoryBot.define do
       is_previous { false }
       data_checked { false }
       finished { false }
-
-      time = 3.days.from_now
-      deadline_time { time }
-      deadline_time_epoch { time.to_i }
     end
 
     trait :next do

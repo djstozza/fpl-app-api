@@ -21,6 +21,7 @@ class RoundSerializer < BaseSerializer
     id
     name
     deadline_time
+    deadline_time_epoch
     finished
     data_checked
     is_previous
@@ -30,13 +31,8 @@ class RoundSerializer < BaseSerializer
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
-      attrs[:current] = current_round_id == id
+      attrs[:current] = is_current?
+      attrs[:waiver_deadline] = waiver_deadline
     end
-  end
-
-  private
-
-  def current_round_id
-    @current_round ||= Round.current&.id
   end
 end

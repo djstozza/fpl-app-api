@@ -54,7 +54,10 @@ Rails.application.routes.draw do
     end
 
     resources :list_positions, only: [:show]
-    resources :fpl_team_lists, only: [:index, :show, :update]
+
+    resources :fpl_team_lists, only: [:index, :show, :update] do
+      resources :list_positions, only: [:index], module: 'fpl_team_lists'
+    end
 
     resources :rounds, only: [:index, :show]
     resources :positions, only: [:index]

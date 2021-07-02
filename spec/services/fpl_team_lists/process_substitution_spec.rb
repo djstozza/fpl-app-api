@@ -62,7 +62,7 @@ RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :servic
       .to change { list_position8.reload.updated_at }.by(0)
       .and change { list_position13.reload.updated_at }.by(0)
 
-    expect(subject.errors.full_messages).to contain_exactly('The deadline_time for making substitutions has passed')
+    expect(subject.errors.full_messages).to contain_exactly('The time for making substitutions has passed')
   end
 
   it 'fails if the out_list_position_id is invalid' do
