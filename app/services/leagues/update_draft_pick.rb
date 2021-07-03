@@ -112,7 +112,7 @@ class Leagues::UpdateDraftPick < Leagues::BaseService
   def player_not_already_picked
     return unless league.players.include?(player)
 
-    errors.add(:base, "#{player.first_name} #{player.last_name} has already been picked")
+    errors.add(:base, "#{player.name} has already been picked")
   end
 
   def maximum_number_of_players_from_team

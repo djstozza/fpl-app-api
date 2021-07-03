@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_21_212957) do
+ActiveRecord::Schema.define(version: 2021_07_02_133940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -227,4 +227,19 @@ ActiveRecord::Schema.define(version: 2021_06_21_212957) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "waiver_picks", force: :cascade do |t|
+    t.integer "pick_number", null: false
+    t.integer "status", default: 0, null: false
+    t.bigint "out_player_id"
+    t.bigint "in_player_id"
+    t.bigint "fpl_team_list_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["fpl_team_list_id"], name: "index_waiver_picks_on_fpl_team_list_id"
+    t.index ["in_player_id"], name: "index_waiver_picks_on_in_player_id"
+    t.index ["out_player_id"], name: "index_waiver_picks_on_out_player_id"
+  end
+
+  add_foreign_key "waiver_picks", "players", column: "in_player_id"
+  add_foreign_key "waiver_picks", "players", column: "out_player_id"
 end

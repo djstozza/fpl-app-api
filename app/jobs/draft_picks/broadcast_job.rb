@@ -5,7 +5,7 @@ class DraftPicks::BroadcastJob < ApplicationJob
     player = draft_pick.player
     user = draft_pick.owner
 
-    player_substr = "has drafted #{player&.first_name} #{player&.last_name} (#{player&.team&.short_name})"
+    player_substr = "has drafted #{player&.name} (#{player&.team&.short_name})"
     mini_draft_substr = 'has made a mini draft pick'
 
     success_str = "#{user.username} #{draft_pick.mini_draft ? mini_draft_substr : player_substr}"

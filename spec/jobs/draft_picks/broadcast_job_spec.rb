@@ -9,7 +9,7 @@ RSpec.describe DraftPicks::BroadcastJob do
     expect { described_class.perform_now(draft_pick.id) }
       .to have_broadcasted_to("league_#{draft_pick.league_id}_draft_picks").with(
         updatedAt: draft_pick.updated_at.to_i,
-        message: "#{user.username} has drafted #{player.first_name} #{player.last_name} (#{player.team.short_name})"
+        message: "#{user.username} has drafted #{player.name} (#{player.team.short_name})"
       )
   end
 

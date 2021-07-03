@@ -71,4 +71,8 @@ class Player < ApplicationRecord
   def goalkeeper?
     position.singular_name_short.downcase == 'gkp'
   end
+
+  def name
+    "#{first_name} #{last_name}"
+  end
 end

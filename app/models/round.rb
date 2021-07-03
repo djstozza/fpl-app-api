@@ -27,10 +27,6 @@ class Round < ApplicationRecord
     next_round if next_round && !next_round.data_checked
   end
 
-  def waiver_deadline_epoch
-    deadline_time_epoch - 1.day.to_i
-  end
-
   def waiver_deadline
     (deadline_time.kind_of?(String) ? Time.parse(deadline_time) : deadline_time) - 1.day
   end

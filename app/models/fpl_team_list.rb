@@ -25,15 +25,20 @@ class FplTeamList < ApplicationRecord
     defenders: 3,
     goalkeepers: 1,
   }.freeze
+
   belongs_to :round
   belongs_to :fpl_team
 
   has_many :list_positions
   has_many :players, through: :list_positions
+  has_many :waiver_picks
 
   validates :round_id, uniqueness: { scope: [:fpl_team_id] }
 
-  delegate :owner, to: :fpl_team
+  delegate :owner,
+           :league,
+           to: :fpl_team
+
   delegate :is_current?,
            :waiver_deadline,
            :deadline_time,

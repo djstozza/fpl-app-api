@@ -211,7 +211,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
       player.update(position: position)
 
       FplTeam::QUOTAS[:midfielders].times do
-        fpl_team.players << create(:player, :midfielder)
+        fpl_team.players << create(:player, position: position)
       end
 
       expect { player_draft_service }
@@ -302,7 +302,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .and enqueue_job(DraftPicks::BroadcastJob).exactly(0).times
 
       expect(player_draft_service.errors.full_messages)
-        .to contain_exactly("#{player.first_name} #{player.last_name} has already been picked")
+        .to contain_exactly("#{player.name} has already been picked")
     end
   end
 
