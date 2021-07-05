@@ -19,6 +19,8 @@ class ListPosition < ApplicationRecord
   belongs_to :fpl_team_list
   belongs_to :player
 
+  delegate :fpl_team, to: :fpl_team_list
+
   enum role: { starting: 0, substitute_1: 1, substitute_2: 2, substitute_3: 3, substitute_gkp: 4 }
 
   validates :player_id, uniqueness: { scope: [:fpl_team_list_id] }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_02_133940) do
+ActiveRecord::Schema.define(version: 2021_07_05_064358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,6 +212,17 @@ ActiveRecord::Schema.define(version: 2021_07_02_133940) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "trades", force: :cascade do |t|
+    t.bigint "out_player_id"
+    t.bigint "in_player_id"
+    t.bigint "fpl_team_list_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["fpl_team_list_id"], name: "index_trades_on_fpl_team_list_id"
+    t.index ["in_player_id"], name: "index_trades_on_in_player_id"
+    t.index ["out_player_id"], name: "index_trades_on_out_player_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "username", default: "", null: false
@@ -240,6 +251,8 @@ ActiveRecord::Schema.define(version: 2021_07_02_133940) do
     t.index ["out_player_id"], name: "index_waiver_picks_on_out_player_id"
   end
 
+  add_foreign_key "trades", "players", column: "in_player_id"
+  add_foreign_key "trades", "players", column: "out_player_id"
   add_foreign_key "waiver_picks", "players", column: "in_player_id"
   add_foreign_key "waiver_picks", "players", column: "out_player_id"
 end

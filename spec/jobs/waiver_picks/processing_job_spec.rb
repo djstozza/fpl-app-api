@@ -102,7 +102,6 @@ RSpec.describe WaiverPicks::ProcessingJob do
       .and change { fpl_team1.reload.players }.from([player1]).to([player5])
       .and change { fpl_team2.reload.players }.from([player2]).to([player6])
       .and change { fpl_team3.reload.players }.from([player3]).to([player4])
-      .and change { league.reload.players }.from([player1, player2, player3]).to([player4, player6, player5])
   end
 
   it 'returns if the round is not current' do

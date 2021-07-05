@@ -56,10 +56,14 @@ Rails.application.routes.draw do
     resources :list_positions, only: [:show]
 
     resources :fpl_team_lists, only: [:index, :show, :update] do
-      resources :list_positions, only: [:index], module: 'fpl_team_lists'
+      resources :list_positions, only: [:index], module: 'fpl_team_lists' do
+        resources :trades, only: [:create], module: :list_positions
+      end
       resources :waiver_picks, only: [:index, :create, :destroy], module: 'fpl_team_lists' do
         resource :change_order, only: [:create], module: :waiver_picks
       end
+
+      resources :trades, only: [:index], module: :fpl_team_lists
     end
 
     resources :rounds, only: [:index, :show]
