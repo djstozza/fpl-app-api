@@ -7,12 +7,16 @@ module Api::FplTeamLists
     end
 
     def create
-      service = WaiverPicks::Create.call(waiver_pick_params.to_h, fpl_team_list, current_user)
+      service = ::WaiverPicks::Create.call(waiver_pick_params.to_h, fpl_team_list, current_user)
 
       respond_with service.errors.any? ? service : waiver_picks_query
     end
 
     private
+
+    def waiver_pick
+      @waiver_pick ||= fpl_team_list.waiver_picks.find(params[:waiver_pick_id] || params[:id])
+    end
 
     def waiver_picks_query
       SqlQuery.results(

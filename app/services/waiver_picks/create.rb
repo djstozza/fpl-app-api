@@ -1,4 +1,4 @@
-class WaiverPicks::Create < ApplicationService
+class WaiverPicks::Create < WaiverPicks::BaseService
   attr_reader :fpl_team_list,
               :user,
               :out_player_id,
@@ -6,7 +6,7 @@ class WaiverPicks::Create < ApplicationService
               :in_player_id,
               :in_player
 
-  validate :user_can_substitute
+  validate :user_can_waiver_pick
   validate :valid_out_player
   validate :valid_in_player
   validate :same_positions
@@ -35,14 +35,6 @@ class WaiverPicks::Create < ApplicationService
   end
 
   private
-
-  def user_can_substitute
-    return errors.add(:base, 'You are not authorised to perform this action') if fpl_team_list.owner != user
-    return errors.add(:base, 'Round is not current') unless fpl_team_list.is_current?
-    return unless Time.current > fpl_team_list.waiver_deadline
-
-    errors.add(:base, 'The time for making waiver picks has passed')
-  end
 
   def valid_out_player
     @out_player = fpl_team_list.players.find_by(id: out_player_id)

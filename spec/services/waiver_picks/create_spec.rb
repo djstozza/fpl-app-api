@@ -56,7 +56,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     expect { subject }
       .not_to change { WaiverPick.count }
 
-    expect(subject.errors.full_messages).to contain_exactly('The time for making waiver picks has passed')
+    expect(subject.errors.full_messages).to contain_exactly('The waiver deadline has passed')
   end
 
   it 'fails if out_player_id is invalid' do
