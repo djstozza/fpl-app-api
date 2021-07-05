@@ -33,7 +33,6 @@ class WaiverPick < ApplicationRecord
     pending: 0,
     approved: 1,
     declined: 2,
-    cancelled: 3,
   }
 
   delegate :fpl_team, to: :fpl_team_list

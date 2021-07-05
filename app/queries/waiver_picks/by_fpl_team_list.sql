@@ -35,5 +35,4 @@ JOIN fpl_team_lists ON fpl_team_lists.id = waiver_picks.fpl_team_list_id
 JOIN fpl_teams ON fpl_teams.id = fpl_team_lists.fpl_team_id
 WHERE fpl_team_lists.id = :fpl_team_list_id
   AND fpl_teams.owner_id = :user_id
-  AND waiver_picks.status != 3  -- Not cancelled
 ORDER BY waiver_picks.pick_number ASC

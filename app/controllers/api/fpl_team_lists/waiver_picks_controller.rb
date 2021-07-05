@@ -12,6 +12,12 @@ module Api::FplTeamLists
       respond_with service.errors.any? ? service : waiver_picks_query
     end
 
+    def destroy
+      service = ::WaiverPicks::Destroy.call(waiver_pick, current_user)
+
+      respond_with service.errors.any? ? service : waiver_picks_query
+    end
+
     private
 
     def waiver_pick

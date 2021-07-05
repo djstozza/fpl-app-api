@@ -6,4 +6,10 @@ class WaiverPicks::BaseService < ApplicationService
 
     errors.add(:base, 'The waiver deadline has passed')
   end
+
+  def waiver_pick_is_pending
+    return if waiver_pick.pending?
+
+    errors.add(:base, 'Only pending waiver picks can be changed')
+  end
 end
