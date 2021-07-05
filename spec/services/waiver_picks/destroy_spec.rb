@@ -57,7 +57,7 @@ RSpec.describe WaiverPicks::Destroy, type: :service do
       .and change { waiver_pick3.reload.updated_at }.by(0)
       .and change { waiver_pick4.reload.updated_at }.by(0)
 
-    expect(subject.errors.full_messages).to contain_exactly('Round is not current')
+    expect(subject.errors.full_messages).to contain_exactly('The team list is not from the current round')
   end
 
   it 'fails if the deadline_time has passed' do

@@ -52,7 +52,7 @@ RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :servic
       .to change { list_position8.reload.updated_at }.by(0)
       .and change { list_position13.reload.updated_at }.by(0)
 
-    expect(subject.errors.full_messages).to contain_exactly('Round is not current')
+    expect(subject.errors.full_messages).to contain_exactly('The team list is not from the current round')
   end
 
   it 'fails if the deadline_time has passed' do

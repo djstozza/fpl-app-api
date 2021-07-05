@@ -14,3 +14,7 @@
   Players::PopulateJob:
     cron: '*/10 11-23 * * *'
     description: 'Update player stats every 10 minutes between 11am and 11pm UTC'
+
+  Rounds::RecurringWaiverDeadlineCheckingJob:
+    cron: '0 */1 * * *'
+    description: 'Enqueue the waiver processing job when the waiver deadline date has been reached'

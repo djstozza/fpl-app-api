@@ -36,7 +36,7 @@ class FplTeamLists::ProcessSubstitution < ApplicationService
 
   def user_can_substitute
     return errors.add(:base, 'You are not authorised to perform this action') if fpl_team_list.owner != user
-    return errors.add(:base, 'Round is not current') unless fpl_team_list.is_current?
+    return errors.add(:base, 'The team list is not from the current round') unless fpl_team_list.is_current?
     return unless Time.current > fpl_team_list.deadline_time
 
     errors.add(:base, 'The time for making substitutions has passed')

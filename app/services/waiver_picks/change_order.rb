@@ -47,12 +47,6 @@ class WaiverPicks::ChangeOrder < WaiverPicks::BaseService
 
   private
 
-  def waiver_pick_is_pending
-    return if waiver_pick.pending?
-
-    errors.add(:base, 'Only pending waiver picks can be changed')
-  end
-
   def valid_pick_number
     return if fpl_team_list.waiver_picks.find_by(pick_number: new_pick_number)
 

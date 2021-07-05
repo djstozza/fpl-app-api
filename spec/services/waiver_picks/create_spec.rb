@@ -47,7 +47,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     expect { subject }
       .not_to change { WaiverPick.count }
 
-    expect(subject.errors.full_messages).to contain_exactly('Round is not current')
+    expect(subject.errors.full_messages).to contain_exactly('The team list is not from the current round')
   end
 
   it 'fails if the deadline_time has passed' do
