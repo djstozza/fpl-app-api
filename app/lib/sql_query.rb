@@ -20,11 +20,6 @@ class SqlQuery
     load(name, **params).results
   end
 
-  # Execute query and stream results yielding each row
-  def self.stream(name, **params, &block)
-    load(name, **params).stream(&block)
-  end
-
   # Load a query with interpolations
   def self.load(name, **params)
     path = QUERY_DIR.join("#{name}.sql")
@@ -42,12 +37,6 @@ class SqlQuery
 
     # Results is a dumb method name, but I don't want to break open PRs just yet
     alias run results
-
-    private
-
-    def db
-      DB
-    end
   end
 
   def initialize(sql, **params)
@@ -67,11 +56,6 @@ class SqlQuery
   # Return a single field from the first row of the query
   def get(field)
     @dataset.get(field)
-  end
-
-  # Execute query and stream results yielding each row
-  def stream(&block)
-    @dataset.stream.each(&block)
   end
 
   # Called by Sequel when interpolating values. Allows safe interpolation into
