@@ -27,8 +27,12 @@ class Round < ApplicationRecord
     next_round if next_round && !next_round.data_checked
   end
 
+  def deadline_time_as_time
+    deadline_time.kind_of?(String) ? deadline_time.to_time : deadline_time
+  end
+
   def waiver_deadline
-    (deadline_time.kind_of?(String) ? Time.parse(deadline_time) : deadline_time) - 1.day
+    deadline_time_as_time - 1.day
   end
 
   def is_current?

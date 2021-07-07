@@ -5,7 +5,6 @@ RSpec.describe WaiverPicks::ProcessingJob do
   let(:round) { create :round, :current, deadline_time: 23.hours.from_now }
   let(:position) { create :position, :forward }
 
-
   let(:fpl_team1) { create :fpl_team, league: league, rank: 1 }
   let(:fpl_team_list1) { create :fpl_team_list, fpl_team: fpl_team1, round: round }
 
@@ -86,7 +85,6 @@ RSpec.describe WaiverPicks::ProcessingJob do
     fpl_team2.players << player2
     fpl_team3.players << player3
   end
-
 
   it 'approves and declines the waiver picks' do
     expect { described_class.perform_now(round.id) }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_05_064358) do
+ActiveRecord::Schema.define(version: 2021_07_06_084219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,6 +83,27 @@ ActiveRecord::Schema.define(version: 2021_07_05_064358) do
     t.bigint "player_id", null: false
     t.index ["fpl_team_id"], name: "index_fpl_teams_players_on_fpl_team_id"
     t.index ["player_id"], name: "index_fpl_teams_players_on_player_id"
+  end
+
+  create_table "inter_team_trade_groups", force: :cascade do |t|
+    t.bigint "out_fpl_team_list_id"
+    t.bigint "in_fpl_team_list_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["in_fpl_team_list_id"], name: "index_inter_team_trade_groups_on_in_fpl_team_list_id"
+    t.index ["out_fpl_team_list_id"], name: "index_inter_team_trade_groups_on_out_fpl_team_list_id"
+  end
+
+  create_table "inter_team_trades", force: :cascade do |t|
+    t.bigint "inter_team_trade_group_id"
+    t.bigint "out_player_id"
+    t.bigint "in_player_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["in_player_id"], name: "index_inter_team_trades_on_in_player_id"
+    t.index ["inter_team_trade_group_id"], name: "index_inter_team_trades_on_inter_team_trade_group_id"
+    t.index ["out_player_id"], name: "index_inter_team_trades_on_out_player_id"
   end
 
   create_table "leagues", force: :cascade do |t|
@@ -251,6 +272,10 @@ ActiveRecord::Schema.define(version: 2021_07_05_064358) do
     t.index ["out_player_id"], name: "index_waiver_picks_on_out_player_id"
   end
 
+  add_foreign_key "inter_team_trade_groups", "fpl_team_lists", column: "in_fpl_team_list_id"
+  add_foreign_key "inter_team_trade_groups", "fpl_team_lists", column: "out_fpl_team_list_id"
+  add_foreign_key "inter_team_trades", "players", column: "in_player_id"
+  add_foreign_key "inter_team_trades", "players", column: "out_player_id"
   add_foreign_key "trades", "players", column: "in_player_id"
   add_foreign_key "trades", "players", column: "out_player_id"
   add_foreign_key "waiver_picks", "players", column: "in_player_id"
