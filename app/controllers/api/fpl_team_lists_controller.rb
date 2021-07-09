@@ -32,6 +32,14 @@ class Api::FplTeamListsController < ApplicationController
     )
   end
 
+  def inter_team_trade_groups_query
+    SqlQuery.load(
+      'inter_team_trade_groups/by_fpl_team_list',
+      fpl_team_list_id: fpl_team_list.id,
+      user_id: current_user.id,
+    )
+  end
+
   def fpl_team_lists
     ::FplTeamList.where(fpl_team_id: fpl_team_list_params[:fpl_team_id]).includes(:round).order('rounds.deadline_time')
   end

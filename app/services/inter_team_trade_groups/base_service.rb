@@ -91,9 +91,9 @@ class InterTeamTradeGroups::BaseService < ApplicationService
   def valid_team_quota_in_fpl_team
     in_players = in_fpl_team_list.players.where.not(id: inter_team_trade_group.in_players)
     in_players.where.not(id: in_player) if in_player
-    in_teams = in_players.map(&:team)
+    in_teams = in_players.includes(:team).map(&:team)
 
-    out_teams = inter_team_trade_group.out_players.map(&:team)
+    out_teams = inter_team_trade_group.out_players.includes(:team).map(&:team)
     out_teams << out_player.team if out_player
     teams = out_teams + in_teams
 

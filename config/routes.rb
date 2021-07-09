@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :inter_team_trades
-  resources :inter_team_trade_groups
   require 'sidekiq/web'
   require 'sidekiq-scheduler/web'
   mount Sidekiq::Web => '/sidekiq'
@@ -66,6 +64,15 @@ Rails.application.routes.draw do
       end
 
       resources :trades, only: [:index], module: :fpl_team_lists
+      resources :inter_team_trade_groups, only: [:index, :create], module: :fpl_team_lists do
+        resource :submit, only: [:create], module: :inter_team_trade_groups
+        resource :add_trade, only: [:create], module: :inter_team_trade_groups
+        resource :approve, only: [:create], module: :inter_team_trade_groups
+        resource :decline, only: [:create], module: :inter_team_trade_groups
+        resource :cancel, only: [:create], module: :inter_team_trade_groups
+      end
+
+      resources :inter_team_trades, only: [:destroy], module: :fpl_team_lists
     end
 
     resources :rounds, only: [:index, :show]
