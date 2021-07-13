@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_06_084219) do
+ActiveRecord::Schema.define(version: 2021_07_10_001138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,22 @@ ActiveRecord::Schema.define(version: 2021_07_06_084219) do
     t.index ["player_id"], name: "index_list_positions_on_player_id"
   end
 
+  create_table "mini_draft_picks", force: :cascade do |t|
+    t.integer "pick_number"
+    t.integer "season", null: false
+    t.boolean "passed", default: false, null: false
+    t.bigint "out_player_id"
+    t.bigint "in_player_id"
+    t.bigint "fpl_team_id"
+    t.bigint "league_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["fpl_team_id"], name: "index_mini_draft_picks_on_fpl_team_id"
+    t.index ["in_player_id"], name: "index_mini_draft_picks_on_in_player_id"
+    t.index ["league_id"], name: "index_mini_draft_picks_on_league_id"
+    t.index ["out_player_id"], name: "index_mini_draft_picks_on_out_player_id"
+  end
+
   create_table "players", force: :cascade do |t|
     t.integer "chance_of_playing_next_round"
     t.integer "chance_of_playing_this_round"
@@ -204,6 +220,7 @@ ActiveRecord::Schema.define(version: 2021_07_06_084219) do
     t.integer "external_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "mini_draft", default: false, null: false
   end
 
   create_table "teams", force: :cascade do |t|
@@ -276,6 +293,8 @@ ActiveRecord::Schema.define(version: 2021_07_06_084219) do
   add_foreign_key "inter_team_trade_groups", "fpl_team_lists", column: "out_fpl_team_list_id"
   add_foreign_key "inter_team_trades", "players", column: "in_player_id"
   add_foreign_key "inter_team_trades", "players", column: "out_player_id"
+  add_foreign_key "mini_draft_picks", "players", column: "in_player_id"
+  add_foreign_key "mini_draft_picks", "players", column: "out_player_id"
   add_foreign_key "trades", "players", column: "in_player_id"
   add_foreign_key "trades", "players", column: "out_player_id"
   add_foreign_key "waiver_picks", "players", column: "in_player_id"

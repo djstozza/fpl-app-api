@@ -55,9 +55,6 @@ mini_draft_facets AS (
     )
   ) AS mini_draft
   FROM draft_picks
-  LEFT JOIN players ON draft_picks.player_id = players.id
-  LEFT JOIN positions ON players.position_id = positions.id
-  LEFT JOIN teams ON players.team_id = teams.id
   JOIN fpl_teams ON fpl_teams.id = draft_picks.fpl_team_id
   GROUP BY draft_picks.league_id
 )

@@ -3,7 +3,6 @@
 # supplied parameters. This uses an independent connection from ActiveRecord.
 
 class SqlQuery
-
   DB = Sequel.connect(ActiveRecord::Base.connection_config)
   DB.extension :pg_streaming, :pg_array, :pg_json
   Sequel.extension(:pg_array_ops)

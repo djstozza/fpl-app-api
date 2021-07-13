@@ -28,6 +28,7 @@ class League < ApplicationRecord
   has_many :players, through: :fpl_teams
   has_many :users, through: :fpl_teams, source: :owner
   has_many :fpl_team_lists, through: :fpl_teams
+  has_many :mini_draft_picks
   has_many :waiver_picks, through: :fpl_team_lists
   has_many :draft_picks
 

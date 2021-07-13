@@ -4,6 +4,7 @@ require_relative 'boot'
 
 require 'rails'
 # Pick the frameworks you want:
+require 'draper'
 require 'active_model/railtie'
 require 'active_job/railtie'
 require 'active_record/railtie'
@@ -38,6 +39,8 @@ module FplAppApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # config.autoload_paths << Rails.root.join('app/decorators')
 
     config.active_job.queue_adapter = :sidekiq
   end

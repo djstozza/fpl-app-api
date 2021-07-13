@@ -11,6 +11,7 @@
 #  is_current                :boolean
 #  is_next                   :boolean
 #  is_previous               :boolean
+#  mini_draft                :boolean          default(FALSE), not null
 #  name                      :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
@@ -37,6 +38,15 @@ FactoryBot.define do
       is_previous { false }
       data_checked { false }
       finished { false }
+    end
+
+    trait :mini_draft do
+      is_current { true }
+      is_next { false }
+      is_previous { false }
+      data_checked { false }
+      finished { false }
+      mini_draft { true }
     end
 
     trait :next do

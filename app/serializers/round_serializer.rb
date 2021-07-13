@@ -11,6 +11,7 @@
 #  is_current                :boolean
 #  is_next                   :boolean
 #  is_previous               :boolean
+#  mini_draft                :boolean          default(FALSE), not null
 #  name                      :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null

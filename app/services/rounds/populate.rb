@@ -18,11 +18,25 @@ class Rounds::Populate < BasePopulateService
         is_next: round_json['is_next'],
       )
     end
+
+    mini_draft_rounds
   end
 
   private
 
   def response
     @response ||= ::HTTParty.get(bootstrap_static_url)['events']
+  end
+
+  def mini_draft_rounds
+    return if Round.where(mini_draft: true).any?
+
+    rounds = Round.order(:deadline_time)
+
+    summer_mini_draft_round = rounds.where('deadline_time > ?', Round.summer_mini_draft_deadline).first
+    summer_mini_draft_round&.update!(mini_draft: true)
+
+    winter_mini_draft_round = rounds.where('deadline_time > ?', Round.winter_mini_draft_deadline).first
+    winter_mini_draft_round&.update!(mini_draft: true)
   end
 end

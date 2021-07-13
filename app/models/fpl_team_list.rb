@@ -42,5 +42,6 @@ class FplTeamList < ApplicationRecord
   delegate :is_current?,
            :waiver_deadline,
            :deadline_time,
+           :mini_draft,
            to: :round
 end

@@ -59,6 +59,15 @@ RSpec.describe WaiverPicks::Create, type: :service do
     expect(subject.errors.full_messages).to contain_exactly('The waiver deadline has passed')
   end
 
+  it 'fails if the round is a mini_draft round' do
+    round.update(mini_draft: true)
+
+    expect { subject }
+      .not_to change { WaiverPick.count }
+
+    expect(subject.errors.full_messages).to contain_exactly('You cannot make waiver picks during the mini draft')
+  end
+
   it 'fails if out_player_id is invalid' do
     data[:out_player_id] = 'invalid'
 

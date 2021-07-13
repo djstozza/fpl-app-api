@@ -48,6 +48,12 @@ Rails.application.routes.draw do
         end
       end
       resources :fpl_teams, only: [:index], controller: 'leagues/fpl_teams'
+      resources :mini_draft_picks, only: [:index], module: :leagues do
+        collection do
+          resources :status, only: [:index], module: :mini_draft_picks, as: :mini_draft_picks_status
+          resources :facets, only: [:index], module: :mini_draft_picks, as: :mini_draft_picks_facets
+        end
+      end
     end
     resources :fpl_teams, only: [:index, :show, :update] do
       resources :fpl_team_lists, module: 'fpl_teams', only: [:index, :show]
@@ -58,6 +64,7 @@ Rails.application.routes.draw do
     resources :fpl_team_lists, only: [:index, :show, :update] do
       resources :list_positions, only: [:index], module: 'fpl_team_lists' do
         resources :trades, only: [:create], module: :list_positions
+        resources :mini_draft_picks, only: [:create], module: :list_positions
       end
       resources :waiver_picks, only: [:index, :create, :destroy], module: 'fpl_team_lists' do
         resource :change_order, only: [:create], module: :waiver_picks
