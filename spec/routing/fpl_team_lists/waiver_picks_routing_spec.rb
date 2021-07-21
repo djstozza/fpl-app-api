@@ -13,9 +13,9 @@ RSpec.describe Api::FplTeamLists::WaiverPicksController, type: :routing do
     end
 
 
-    it 'routes to #create' do
+    it 'does not route to #create' do
       expect(post: 'api/fpl_team_lists/1/waiver_picks')
-        .to route_to('api/fpl_team_lists/waiver_picks#create', fpl_team_list_id: '1')
+        .not_to route_to('api/fpl_team_lists/waiver_picks#create', fpl_team_list_id: '1')
     end
 
     it 'routes to #update via PUT' do

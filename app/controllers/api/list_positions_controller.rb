@@ -9,6 +9,6 @@ class Api::ListPositionsController < ApplicationController
   private
 
   def list_position
-    @list_position = ListPosition.find(params[:id])
+    @list_position = ListPosition.find(params[:list_position_id] || params[:id])
   end
 end

@@ -1,20 +1,20 @@
 class WaiverPicks::Create < WaiverPicks::BaseService
   attr_reader :fpl_team_list,
               :user,
-              :out_player_id,
               :out_player,
               :in_player_id,
               :in_player
 
   validate :user_can_waiver_pick
-  validate :valid_out_player
   validate :valid_in_player
   validate :same_positions
   validate :maximum_number_of_players_from_team
   validate :waiver_pick_is_unique
 
-  def initialize(data, fpl_team_list, user)
-    @out_player_id = data[:out_player_id]
+  def initialize(data, list_position, user)
+    @list_position = list_position
+    @fpl_team_list = list_position.fpl_team_list
+    @out_player = list_position.player
     @in_player_id = data[:in_player_id]
     @fpl_team_list = fpl_team_list
     @user = user
@@ -36,13 +36,6 @@ class WaiverPicks::Create < WaiverPicks::BaseService
 
   private
 
-  def valid_out_player
-    @out_player = fpl_team_list.players.find_by(id: out_player_id)
-    return if @out_player.present?
-
-    errors.add(:base, 'The player you have selected to waiver out is not part of your team')
-  end
-
   def valid_in_player
     @in_player = Player.find_by(id: in_player_id)
     errors.add(:base, 'The player you have selected to waiver in does not exist') if @in_player.blank?
@@ -60,9 +53,9 @@ class WaiverPicks::Create < WaiverPicks::BaseService
   end
 
   def maximum_number_of_players_from_team
-    return if in_player.blank? || out_player.blank?
+    return if in_player.blank?
 
-    team_ids = fpl_team_list.players.where.not(id: out_player_id).pluck(:team_id)
+    team_ids = fpl_team_list.players.where.not(id: out_player).pluck(:team_id)
     team_ids << in_player.team_id
 
     return if team_ids.count(in_player.team_id) <= FplTeam::QUOTAS[:team]

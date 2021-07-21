@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe WaiverPicks::Create, type: :service do
-  subject(:service) { described_class.call(data, fpl_team_list, user) }
+  subject(:service) { described_class.call(data, list_position, user) }
   let(:user) { create :user }
   let(:fpl_team) { create :fpl_team, owner: user }
   let(:round) { create :round, :current }
@@ -12,7 +12,6 @@ RSpec.describe WaiverPicks::Create, type: :service do
   let(:player2) { create :player, position: position }
   let(:data) do
     {
-      out_player_id: player1.id,
       in_player_id: player2.id,
     }
   end
@@ -66,16 +65,6 @@ RSpec.describe WaiverPicks::Create, type: :service do
       .not_to change { WaiverPick.count }
 
     expect(subject.errors.full_messages).to contain_exactly('You cannot make waiver picks during the mini draft')
-  end
-
-  it 'fails if out_player_id is invalid' do
-    data[:out_player_id] = 'invalid'
-
-    expect { subject }
-      .not_to change { WaiverPick.count }
-
-    expect(subject.errors.full_messages)
-      .to contain_exactly('The player you have selected to waiver out is not part of your team')
   end
 
   it 'fails if the in_player_id is invalid' do

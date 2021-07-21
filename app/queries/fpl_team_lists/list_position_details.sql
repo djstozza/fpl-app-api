@@ -6,7 +6,10 @@ JSONB_BUILD_OBJECT(
   'first_name', first_name,
   'last_name', last_name
 ) AS player,
-singular_name_short AS position,
+JSONB_BUILD_OBJECT(
+  'id', positions.id::TEXT,
+  'singular_name_short', singular_name_short
+) AS position,
 CASE
   WHEN singular_name_short = 'FWD' THEN 0
   WHEN singular_name_short = 'MID' THEN 1

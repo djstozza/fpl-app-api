@@ -113,7 +113,10 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'last_name' => player3.last_name,
             ),
             'role_str' => 'Starting',
-            'position' => player3.position.singular_name_short,
+            'position' => a_hash_including(
+              'id' => player3.position.to_param,
+              'singular_name_short' => player3.position.singular_name_short,
+            ),
             'team' => a_hash_including(
               'id' => team3.to_param,
               'short_name' => team3.short_name,
@@ -137,7 +140,10 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'last_name' => player1.last_name,
             ),
             'role_str' => 'Starting',
-            'position' => player1.position.singular_name_short,
+            'position' => a_hash_including(
+              'id' => player1.position.to_param,
+              'singular_name_short' => player1.position.singular_name_short,
+            ),
             'team' => a_hash_including(
               'id' => team1.to_param,
               'short_name' => team1.short_name,
@@ -160,7 +166,10 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'last_name' => player1.last_name,
             ),
             'role_str' => 'Starting',
-            'position' => player1.position.singular_name_short,
+            'position' => a_hash_including(
+              'id' => player1.position.to_param,
+              'singular_name_short' => player1.position.singular_name_short,
+            ),
             'team' => a_hash_including(
               'id' => team1.to_param,
               'short_name' => team1.short_name,
@@ -191,7 +200,10 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'short_name' => fixture2.home_team.short_name,
             ),
             'role_str' => 'S1',
-            'position' => player2.position.singular_name_short,
+            'position' => a_hash_including(
+              'id' => player2.position.to_param,
+              'singular_name_short' => player2.position.singular_name_short,
+            ),
             'minutes' => 90,
             'total_points' => 8,
             'goals_scored' => 0,
@@ -215,7 +227,10 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'short_name' => fixture4.away_team.short_name,
             ),
             'role_str' => 'S2',
-            'position' => player4.position.singular_name_short,
+            'position' => a_hash_including(
+              'id' => player4.position.to_param,
+              'singular_name_short' => player4.position.singular_name_short,
+            ),
             'leg' => 'H',
           ),
         ],

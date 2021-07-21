@@ -128,7 +128,10 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'last_name' => player2.last_name,
             ),
             'role_str' => 'Starting',
-            'position' => player2.position.singular_name_short,
+            'position' => a_hash_including(
+              'id' => player2.position.to_param,
+              'singular_name_short'=>player2.position.singular_name_short,
+            ),
             'team' => a_hash_including(
               'id' => team2.to_param,
               'short_name' => team2.short_name,
@@ -145,7 +148,10 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               'last_name' => player1.last_name,
             ),
             'role_str' => 'S1',
-            'position' => player1.position.singular_name_short,
+            'position' => a_hash_including(
+              'id' => player1.position.to_param,
+              'singular_name_short'=>player1.position.singular_name_short,
+            ),
             'team' => a_hash_including(
               'id' => team1.to_param,
               'short_name' => team1.short_name,

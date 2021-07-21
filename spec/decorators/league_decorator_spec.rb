@@ -12,7 +12,7 @@ RSpec.describe LeagueDecorator, :no_transaction do
 
   describe '#current_mini_draft_pick' do
     context 'summer' do
-      before { round.update(deadline_time: Round.mini_draft_deadline + 1.week) }
+      before { round.update(deadline_time: Round.summer_mini_draft_deadline + 1.week) }
 
       it 'returns the current_mini_draft_pick' do
         travel_to round.deadline_time_as_time - 3.days do

@@ -1,6 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe 'fpl_team_lists/:fpl_team_list_id/list_positions/:list_position_id/trades', :no_transaction, type: :request do
+RSpec.describe(
+  'fpl_team_lists/:fpl_team_list_id/list_positions/:list_position_id/trades',
+  :no_transaction,
+  type: :request
+) do
   let(:round) { create :round, :current, deadline_time: 23.hours.from_now }
   let(:fpl_team) { create :fpl_team }
   let(:fpl_team_list) { create :fpl_team_list, fpl_team: fpl_team, round: round }
