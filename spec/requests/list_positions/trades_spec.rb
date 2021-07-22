@@ -1,10 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe(
-  'fpl_team_lists/:fpl_team_list_id/list_positions/:list_position_id/trades',
-  :no_transaction,
-  type: :request
-) do
+RSpec.describe 'list_positions/:list_position_id/trades', :no_transaction, type: :request do
   let(:round) { create :round, :current, deadline_time: 23.hours.from_now }
   let(:fpl_team) { create :fpl_team }
   let(:fpl_team_list) { create :fpl_team_list, fpl_team: fpl_team, round: round }
@@ -21,7 +17,7 @@ RSpec.describe(
   describe 'POST /create' do
     it 'successfully processes the trade' do
       expect {
-        api.post api_fpl_team_list_list_position_trades_url(fpl_team_list, list_position),
+        api.post api_list_position_trades_url(list_position),
                  params: { trade: { in_player_id: player2.id } }
       }
       .to change { Trade.count }.from(0).to(1)
@@ -60,7 +56,7 @@ RSpec.describe(
       fpl_team_list.fpl_team.update(owner: create(:user))
 
       expect {
-        api.post api_fpl_team_list_list_position_trades_url(fpl_team_list, list_position),
+        api.post api_list_position_trades_url(list_position),
                  params: { trade: { in_player_id: player2.id } }
       }
       .to change { Trade.count }.by(0)

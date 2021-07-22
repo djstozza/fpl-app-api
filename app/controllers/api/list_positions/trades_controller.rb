@@ -1,6 +1,5 @@
-module Api::FplTeamLists
-  class ListPositions::TradesController < ListPositionsController
-    load_resource :fpl_team_list
+module Api::ListPositions
+  class TradesController < Api::ListPositionsController
     load_resource :list_position
 
     def create
@@ -14,7 +13,7 @@ module Api::FplTeamLists
     def query
       SqlQuery.run(
         'trades/by_fpl_team_list',
-        fpl_team_list_id: fpl_team_list.id,
+        fpl_team_list_id: list_position.fpl_team_list_id,
         user_id: current_user.id,
       )
     end
