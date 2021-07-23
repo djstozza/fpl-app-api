@@ -62,12 +62,12 @@ Rails.application.routes.draw do
     resources :list_positions, only: [:show] do
       resources :waiver_picks, only: [:create], module: :list_positions
       resources :trades, only: [:create], module: :list_positions
+      resources :tradeable_list_positions, only: [:index], module: :list_positions
     end
 
     resources :fpl_team_lists, only: [:index, :show, :update] do
       resources :list_positions, only: [:index], module: 'fpl_team_lists' do
         resources :mini_draft_picks, only: [:create], module: :list_positions
-
       end
       resources :waiver_picks, only: [:index, :destroy], module: 'fpl_team_lists' do
         resource :change_order, only: [:create], module: :waiver_picks
