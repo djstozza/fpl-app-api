@@ -55,6 +55,8 @@ trade_groups AS (
   status,
   JSONB_BUILD_OBJECT(
     'id', inter_team_trade_groups.id::TEXT,
+    'out_fpl_team_list_id', out_fpl_team_list_id::TEXT,
+    'in_fpl_team_list_id', in_fpl_team_list_id::TEXT,
     'out_fpl_team',
     JSONB_BUILD_OBJECT(
       'id', out_fpl_team.id::TEXT,
@@ -85,7 +87,6 @@ trade_groups AS (
   JOIN fpl_team_lists in_fpl_team_list ON inter_team_trade_groups.in_fpl_team_list_id = in_fpl_team_list.id
   JOIN fpl_teams in_fpl_team ON in_fpl_team_list.fpl_team_id = in_fpl_team.id
   WHERE status != 5 -- Not cancelled
-  ORDER BY status
 ),
 
 out_trade_groups_arr AS (

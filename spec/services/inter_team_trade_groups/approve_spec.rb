@@ -59,7 +59,8 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
       .and change { list_position2.reload.player }.from(player2).to(player4)
       .and change { list_position3.reload.player }.from(player3).to(player1)
       .and change { list_position4.reload.player }.from(player4).to(player2)
-      .and change { fpl_team1.reload.players }.from([player1, player2]).to([player3, player4])
+      .and change { fpl_team1.reload.players }
+      .from(contain_exactly(player1, player2)).to(contain_exactly(player3, player4))
   end
 
   it 'fails if the user is not the fpl_team owner' do

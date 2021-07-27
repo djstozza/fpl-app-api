@@ -44,231 +44,227 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
 
       expect(api.response).to have_http_status(:success)
 
-      expect(api.data['out_trade_groups']).to match(
-        [
-          a_hash_including(
-            'id' => inter_team_trade_group1.to_param,
-            'status' => 'Pending',
-            'trades' => contain_exactly(
-              a_hash_including(
-                'id' => inter_team_trade1.to_param,
-                'in_team' => a_hash_including(
-                  'id' => inter_team_trade1.in_player.team.to_param,
-                  'short_name' => inter_team_trade1.in_player.team.short_name,
-                ),
-                'out_team' => a_hash_including(
-                  'id' => inter_team_trade1.out_player.team.to_param,
-                  'short_name' => inter_team_trade1.out_player.team.short_name,
-                ),
-                'position' => inter_team_trade1.out_player.position.singular_name_short,
-                'in_player' => a_hash_including(
-                  'id' => inter_team_trade1.in_player.to_param,
-                  'last_name' => inter_team_trade1.in_player.last_name,
-                  'first_name' => inter_team_trade1.in_player.first_name,
-                ),
-                'out_player' => a_hash_including(
-                  'id' => inter_team_trade1.out_player.to_param,
-                  'last_name' => inter_team_trade1.out_player.last_name,
-                  'first_name' => inter_team_trade1.out_player.first_name,
-                ),
+      expect(api.data['out_trade_groups']).to contain_exactly(
+        a_hash_including(
+          'id' => inter_team_trade_group1.to_param,
+          'status' => 'Pending',
+          'trades' => contain_exactly(
+            a_hash_including(
+              'id' => inter_team_trade1.to_param,
+              'in_team' => a_hash_including(
+                'id' => inter_team_trade1.in_player.team.to_param,
+                'short_name' => inter_team_trade1.in_player.team.short_name,
               ),
-            ),
-            'can_cancel' => true,
-            'can_submit' => true,
-            'can_approve' => false,
-            'in_fpl_team' => a_hash_including(
-              'id' => inter_team_trade_group1.in_fpl_team.to_param,
-              'name' => inter_team_trade_group1.in_fpl_team.name,
-            ),
-            'out_fpl_team' => a_hash_including(
-              'id' => fpl_team_list.fpl_team.to_param,
-              'name' => fpl_team_list.fpl_team.name,
+              'out_team' => a_hash_including(
+                'id' => inter_team_trade1.out_player.team.to_param,
+                'short_name' => inter_team_trade1.out_player.team.short_name,
+              ),
+              'position' => inter_team_trade1.out_player.position.singular_name_short,
+              'in_player' => a_hash_including(
+                'id' => inter_team_trade1.in_player.to_param,
+                'last_name' => inter_team_trade1.in_player.last_name,
+                'first_name' => inter_team_trade1.in_player.first_name,
+              ),
+              'out_player' => a_hash_including(
+                'id' => inter_team_trade1.out_player.to_param,
+                'last_name' => inter_team_trade1.out_player.last_name,
+                'first_name' => inter_team_trade1.out_player.first_name,
+              ),
             ),
           ),
-          a_hash_including(
-            'id' => inter_team_trade_group2.to_param,
-            'status' => 'Submitted',
-            'trades' => contain_exactly(
-              a_hash_including(
-                'id' => inter_team_trade2.to_param,
-                'in_team' => a_hash_including(
-                  'id' => inter_team_trade2.in_player.team.to_param,
-                  'short_name' => inter_team_trade2.in_player.team.short_name,
-                ),
-                'out_team' => a_hash_including(
-                  'id' => inter_team_trade2.out_player.team.to_param,
-                  'short_name' => inter_team_trade2.out_player.team.short_name,
-                ),
-                'position' => inter_team_trade2.out_player.position.singular_name_short,
-                'in_player' => a_hash_including(
-                  'id' => inter_team_trade2.in_player.to_param,
-                  'last_name' => inter_team_trade2.in_player.last_name,
-                  'first_name' => inter_team_trade2.in_player.first_name,
-                ),
-                'out_player' => a_hash_including(
-                  'id' => inter_team_trade2.out_player.to_param,
-                  'last_name' => inter_team_trade2.out_player.last_name,
-                  'first_name' => inter_team_trade2.out_player.first_name,
-                ),
+          'can_cancel' => true,
+          'can_submit' => true,
+          'can_approve' => false,
+          'in_fpl_team' => a_hash_including(
+            'id' => inter_team_trade_group1.in_fpl_team.to_param,
+            'name' => inter_team_trade_group1.in_fpl_team.name,
+          ),
+          'out_fpl_team' => a_hash_including(
+            'id' => fpl_team_list.fpl_team.to_param,
+            'name' => fpl_team_list.fpl_team.name,
+          ),
+        ),
+        a_hash_including(
+          'id' => inter_team_trade_group2.to_param,
+          'status' => 'Submitted',
+          'trades' => contain_exactly(
+            a_hash_including(
+              'id' => inter_team_trade2.to_param,
+              'in_team' => a_hash_including(
+                'id' => inter_team_trade2.in_player.team.to_param,
+                'short_name' => inter_team_trade2.in_player.team.short_name,
               ),
-              a_hash_including(
-                'id' => inter_team_trade3.to_param,
-                'in_team' => a_hash_including(
-                  'id' => inter_team_trade3.in_player.team.to_param,
-                  'short_name' => inter_team_trade3.in_player.team.short_name,
-                ),
-                'out_team' => a_hash_including(
-                  'id' => inter_team_trade3.out_player.team.to_param,
-                  'short_name' => inter_team_trade3.out_player.team.short_name,
-                ),
-                'position' => inter_team_trade3.out_player.position.singular_name_short,
-                'in_player' => a_hash_including(
-                  'id' => inter_team_trade3.in_player.to_param,
-                  'last_name' => inter_team_trade3.in_player.last_name,
-                  'first_name' => inter_team_trade3.in_player.first_name,
-                ),
-                'out_player' => a_hash_including(
-                  'id' => inter_team_trade3.out_player.to_param,
-                  'last_name' => inter_team_trade3.out_player.last_name,
-                  'first_name' => inter_team_trade3.out_player.first_name,
-                ),
+              'out_team' => a_hash_including(
+                'id' => inter_team_trade2.out_player.team.to_param,
+                'short_name' => inter_team_trade2.out_player.team.short_name,
+              ),
+              'position' => inter_team_trade2.out_player.position.singular_name_short,
+              'in_player' => a_hash_including(
+                'id' => inter_team_trade2.in_player.to_param,
+                'last_name' => inter_team_trade2.in_player.last_name,
+                'first_name' => inter_team_trade2.in_player.first_name,
+              ),
+              'out_player' => a_hash_including(
+                'id' => inter_team_trade2.out_player.to_param,
+                'last_name' => inter_team_trade2.out_player.last_name,
+                'first_name' => inter_team_trade2.out_player.first_name,
               ),
             ),
-            'can_cancel' => true,
-            'can_submit' => false,
-            'can_approve' => false,
-            'in_fpl_team' => a_hash_including(
-              'id' => inter_team_trade_group2.in_fpl_team.to_param,
-              'name' => inter_team_trade_group2.in_fpl_team.name,
-            ),
-            'out_fpl_team' => a_hash_including(
-              'id' => fpl_team_list.fpl_team.to_param,
-              'name' => fpl_team_list.fpl_team.name,
+            a_hash_including(
+              'id' => inter_team_trade3.to_param,
+              'in_team' => a_hash_including(
+                'id' => inter_team_trade3.in_player.team.to_param,
+                'short_name' => inter_team_trade3.in_player.team.short_name,
+              ),
+              'out_team' => a_hash_including(
+                'id' => inter_team_trade3.out_player.team.to_param,
+                'short_name' => inter_team_trade3.out_player.team.short_name,
+              ),
+              'position' => inter_team_trade3.out_player.position.singular_name_short,
+              'in_player' => a_hash_including(
+                'id' => inter_team_trade3.in_player.to_param,
+                'last_name' => inter_team_trade3.in_player.last_name,
+                'first_name' => inter_team_trade3.in_player.first_name,
+              ),
+              'out_player' => a_hash_including(
+                'id' => inter_team_trade3.out_player.to_param,
+                'last_name' => inter_team_trade3.out_player.last_name,
+                'first_name' => inter_team_trade3.out_player.first_name,
+              ),
             ),
           ),
-          a_hash_including(
-            'id' => inter_team_trade_group5.to_param,
-            'status' => 'Approved',
-            'trades' => contain_exactly(
-              a_hash_including(
-                'id' => inter_team_trade6.to_param,
-                'in_team' => a_hash_including(
-                  'id' => inter_team_trade6.in_player.team.to_param,
-                  'short_name' => inter_team_trade6.in_player.team.short_name,
-                ),
-                'out_team' => a_hash_including(
-                  'id' => inter_team_trade6.out_player.team.to_param,
-                  'short_name' => inter_team_trade6.out_player.team.short_name,
-                ),
-                'position' => inter_team_trade6.out_player.position.singular_name_short,
-                'in_player' => a_hash_including(
-                  'id' => inter_team_trade6.in_player.to_param,
-                  'last_name' => inter_team_trade6.in_player.last_name,
-                  'first_name' => inter_team_trade6.in_player.first_name,
-                ),
-                'out_player' => a_hash_including(
-                  'id' => inter_team_trade6.out_player.to_param,
-                  'last_name' => inter_team_trade6.out_player.last_name,
-                  'first_name' => inter_team_trade6.out_player.first_name,
-                ),
+          'can_cancel' => true,
+          'can_submit' => false,
+          'can_approve' => false,
+          'in_fpl_team' => a_hash_including(
+            'id' => inter_team_trade_group2.in_fpl_team.to_param,
+            'name' => inter_team_trade_group2.in_fpl_team.name,
+          ),
+          'out_fpl_team' => a_hash_including(
+            'id' => fpl_team_list.fpl_team.to_param,
+            'name' => fpl_team_list.fpl_team.name,
+          ),
+        ),
+        a_hash_including(
+          'id' => inter_team_trade_group5.to_param,
+          'status' => 'Approved',
+          'trades' => contain_exactly(
+            a_hash_including(
+              'id' => inter_team_trade6.to_param,
+              'in_team' => a_hash_including(
+                'id' => inter_team_trade6.in_player.team.to_param,
+                'short_name' => inter_team_trade6.in_player.team.short_name,
+              ),
+              'out_team' => a_hash_including(
+                'id' => inter_team_trade6.out_player.team.to_param,
+                'short_name' => inter_team_trade6.out_player.team.short_name,
+              ),
+              'position' => inter_team_trade6.out_player.position.singular_name_short,
+              'in_player' => a_hash_including(
+                'id' => inter_team_trade6.in_player.to_param,
+                'last_name' => inter_team_trade6.in_player.last_name,
+                'first_name' => inter_team_trade6.in_player.first_name,
+              ),
+              'out_player' => a_hash_including(
+                'id' => inter_team_trade6.out_player.to_param,
+                'last_name' => inter_team_trade6.out_player.last_name,
+                'first_name' => inter_team_trade6.out_player.first_name,
               ),
             ),
-            'can_cancel' => false,
-            'can_submit' => false,
-            'can_approve' => false,
-            'in_fpl_team' => a_hash_including(
-              'id' => inter_team_trade_group5.in_fpl_team.to_param,
-              'name' => inter_team_trade_group5.in_fpl_team.name,
-            ),
-            'out_fpl_team' => a_hash_including(
-              'id' => fpl_team_list.fpl_team.to_param,
-              'name' => fpl_team_list.fpl_team.name,
-            ),
           ),
-        ]
+          'can_cancel' => false,
+          'can_submit' => false,
+          'can_approve' => false,
+          'in_fpl_team' => a_hash_including(
+            'id' => inter_team_trade_group5.in_fpl_team.to_param,
+            'name' => inter_team_trade_group5.in_fpl_team.name,
+          ),
+          'out_fpl_team' => a_hash_including(
+            'id' => fpl_team_list.fpl_team.to_param,
+            'name' => fpl_team_list.fpl_team.name,
+          ),
+        ),
       )
 
-      expect(api.data['in_trade_groups']).to match(
-        [
-          a_hash_including(
-            'id' => inter_team_trade_group3.to_param,
-            'status' => 'Submitted',
-            'trades' => contain_exactly(
-              a_hash_including(
-                'id' => inter_team_trade4.to_param,
-                'in_team' => a_hash_including(
-                  'id' => inter_team_trade4.in_player.team.to_param,
-                  'short_name' => inter_team_trade4.in_player.team.short_name,
-                ),
-                'out_team' => a_hash_including(
-                  'id' => inter_team_trade4.out_player.team.to_param,
-                  'short_name' => inter_team_trade4.out_player.team.short_name,
-                ),
-                'position' => inter_team_trade4.out_player.position.singular_name_short,
-                'in_player' => a_hash_including(
-                  'id' => inter_team_trade4.in_player.to_param,
-                  'last_name' => inter_team_trade4.in_player.last_name,
-                  'first_name' => inter_team_trade4.in_player.first_name,
-                ),
-                'out_player' => a_hash_including(
-                  'id' => inter_team_trade4.out_player.to_param,
-                  'last_name' => inter_team_trade4.out_player.last_name,
-                  'first_name' => inter_team_trade4.out_player.first_name,
-                ),
+      expect(api.data['in_trade_groups']).to contain_exactly(
+        a_hash_including(
+          'id' => inter_team_trade_group3.to_param,
+          'status' => 'Submitted',
+          'trades' => contain_exactly(
+            a_hash_including(
+              'id' => inter_team_trade4.to_param,
+              'in_team' => a_hash_including(
+                'id' => inter_team_trade4.in_player.team.to_param,
+                'short_name' => inter_team_trade4.in_player.team.short_name,
+              ),
+              'out_team' => a_hash_including(
+                'id' => inter_team_trade4.out_player.team.to_param,
+                'short_name' => inter_team_trade4.out_player.team.short_name,
+              ),
+              'position' => inter_team_trade4.out_player.position.singular_name_short,
+              'in_player' => a_hash_including(
+                'id' => inter_team_trade4.in_player.to_param,
+                'last_name' => inter_team_trade4.in_player.last_name,
+                'first_name' => inter_team_trade4.in_player.first_name,
+              ),
+              'out_player' => a_hash_including(
+                'id' => inter_team_trade4.out_player.to_param,
+                'last_name' => inter_team_trade4.out_player.last_name,
+                'first_name' => inter_team_trade4.out_player.first_name,
               ),
             ),
-            'can_cancel' => false,
-            'can_submit' => false,
-            'can_approve' => true,
-            'in_fpl_team' => a_hash_including(
-              'id' => fpl_team_list.fpl_team.to_param,
-              'name' => fpl_team_list.fpl_team.name,
-            ),
-            'out_fpl_team' => a_hash_including(
-              'id' => inter_team_trade_group3.out_fpl_team.to_param,
-              'name' => inter_team_trade_group3.out_fpl_team.name,
-            ),
           ),
-          a_hash_including(
-            'id' => inter_team_trade_group4.to_param,
-            'status' => 'Declined',
-            'trades' => contain_exactly(
-              a_hash_including(
-                'id' => inter_team_trade5.to_param,
-                'in_team' => a_hash_including(
-                  'id' => inter_team_trade5.in_player.team.to_param,
-                  'short_name' => inter_team_trade5.in_player.team.short_name,
-                ),
-                'out_team' => a_hash_including(
-                  'id' => inter_team_trade5.out_player.team.to_param,
-                  'short_name' => inter_team_trade5.out_player.team.short_name,
-                ),
-                'position' => inter_team_trade5.out_player.position.singular_name_short,
-                'in_player' => a_hash_including(
-                  'id' => inter_team_trade5.in_player.to_param,
-                  'last_name' =>  inter_team_trade5.in_player.last_name,
-                  'first_name' => inter_team_trade5.in_player.first_name,
-                ),
-                'out_player' => a_hash_including(
-                  'id' => inter_team_trade5.out_player.to_param,
-                  'last_name' => inter_team_trade5.out_player.last_name,
-                  'first_name' => inter_team_trade5.out_player.first_name,
-                ),
+          'can_cancel' => false,
+          'can_submit' => false,
+          'can_approve' => true,
+          'in_fpl_team' => a_hash_including(
+            'id' => fpl_team_list.fpl_team.to_param,
+            'name' => fpl_team_list.fpl_team.name,
+          ),
+          'out_fpl_team' => a_hash_including(
+            'id' => inter_team_trade_group3.out_fpl_team.to_param,
+            'name' => inter_team_trade_group3.out_fpl_team.name,
+          ),
+        ),
+        a_hash_including(
+          'id' => inter_team_trade_group4.to_param,
+          'status' => 'Declined',
+          'trades' => contain_exactly(
+            a_hash_including(
+              'id' => inter_team_trade5.to_param,
+              'in_team' => a_hash_including(
+                'id' => inter_team_trade5.in_player.team.to_param,
+                'short_name' => inter_team_trade5.in_player.team.short_name,
+              ),
+              'out_team' => a_hash_including(
+                'id' => inter_team_trade5.out_player.team.to_param,
+                'short_name' => inter_team_trade5.out_player.team.short_name,
+              ),
+              'position' => inter_team_trade5.out_player.position.singular_name_short,
+              'in_player' => a_hash_including(
+                'id' => inter_team_trade5.in_player.to_param,
+                'last_name' =>  inter_team_trade5.in_player.last_name,
+                'first_name' => inter_team_trade5.in_player.first_name,
+              ),
+              'out_player' => a_hash_including(
+                'id' => inter_team_trade5.out_player.to_param,
+                'last_name' => inter_team_trade5.out_player.last_name,
+                'first_name' => inter_team_trade5.out_player.first_name,
               ),
             ),
-            'can_cancel' => false,
-            'can_submit' => false,
-            'can_approve' => false,
-            'in_fpl_team' => a_hash_including(
-              'id' => fpl_team_list.fpl_team.to_param,
-              'name' => fpl_team_list.fpl_team.name,
-            ),
-            'out_fpl_team' => a_hash_including(
-              'id' => inter_team_trade_group4.out_fpl_team.to_param,
-              'name' => inter_team_trade_group4.out_fpl_team.name,
-            ),
           ),
-        ],
+          'can_cancel' => false,
+          'can_submit' => false,
+          'can_approve' => false,
+          'in_fpl_team' => a_hash_including(
+            'id' => fpl_team_list.fpl_team.to_param,
+            'name' => fpl_team_list.fpl_team.name,
+          ),
+          'out_fpl_team' => a_hash_including(
+            'id' => inter_team_trade_group4.out_fpl_team.to_param,
+            'name' => inter_team_trade_group4.out_fpl_team.name,
+          ),
+        ),
       )
     end
 
