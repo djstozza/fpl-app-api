@@ -12,10 +12,6 @@ class BaseSerializer < SimpleDelegator
     @includes = includes
   end
 
-  def to_json(*args)
-    as_json.to_json(*args)
-  end
-
   def as_json(*args)
     object ? stringify_ids(serializable_hash(*args)) : nil
   end

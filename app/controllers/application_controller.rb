@@ -11,10 +11,6 @@ class ApplicationController < ActionController::API
   include ::ResourceLoading
   include ErrorSerialization
 
-  rescue_from ActiveRecord::RecordInvalid do |exception|
-    respond_with exception.record
-  end
-
   private
 
   def respond_with(resource, **meta)
