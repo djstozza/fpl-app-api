@@ -14,7 +14,20 @@ module Api::FplTeamLists
       respond_with service.errors.any? ? service : inter_team_trade_groups_query.result
     end
 
+    def show
+      respond_with query.get(:trade_group_hash)
+    end
+
     private
+
+    def query
+       SqlQuery.load(
+         'inter_team_trade_groups/show',
+         trade_groups: trade_groups,
+         inter_team_trade_group_id: inter_team_trade_group.id,
+         user_id: current_user.id,
+       )
+    end
 
     def permitted_params
       params.require(:inter_team_trade_group).permit(

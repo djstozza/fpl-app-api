@@ -75,7 +75,7 @@ Rails.application.routes.draw do
       end
 
       resources :trades, only: [:index], module: :fpl_team_lists
-      resources :inter_team_trade_groups, only: [:index, :create], module: :fpl_team_lists do
+      resources :inter_team_trade_groups, only: [:index, :show, :create], module: :fpl_team_lists do
         resource :submit, only: [:create], module: :inter_team_trade_groups
         resource :add_trade, only: [:create], module: :inter_team_trade_groups
         resource :approve, only: [:create], module: :inter_team_trade_groups

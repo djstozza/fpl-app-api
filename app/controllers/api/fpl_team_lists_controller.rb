@@ -32,9 +32,14 @@ class Api::FplTeamListsController < ApplicationController
     )
   end
 
+  def trade_groups
+    SqlQuery.load('inter_team_trade_groups/base', user_id: current_user.id)
+  end
+
   def inter_team_trade_groups_query
     SqlQuery.load(
       'inter_team_trade_groups/by_fpl_team_list',
+      trade_groups: trade_groups,
       fpl_team_list_id: fpl_team_list.id,
       user_id: current_user.id,
     )

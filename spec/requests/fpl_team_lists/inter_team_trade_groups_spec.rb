@@ -381,4 +381,58 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
       )
     end
   end
+
+  describe 'GET /show' do
+    let(:fpl_team_list) { create :fpl_team_list }
+    let(:inter_team_trade_group) { create(:inter_team_trade_group, out_fpl_team_list: fpl_team_list) }
+    let!(:inter_team_trade) { create :inter_team_trade, inter_team_trade_group: inter_team_trade_group }
+
+    before { api.authenticate(fpl_team_list.owner) }
+
+    it 'returns the inter_team_trade_group' do
+      api.get api_fpl_team_list_inter_team_trade_group_url(fpl_team_list, inter_team_trade_group)
+
+      expect(api.response).to have_http_status(:success)
+
+      expect(api.data).to include(
+        'id' => inter_team_trade_group.to_param,
+        'status' => 'Pending',
+        'trades' => contain_exactly(
+          a_hash_including(
+            'id' => inter_team_trade.to_param,
+            'in_team' => a_hash_including(
+              'id' => inter_team_trade.in_player.team.to_param,
+              'short_name' => inter_team_trade.in_player.team.short_name,
+            ),
+            'out_team' => a_hash_including(
+              'id' => inter_team_trade.out_player.team.to_param,
+              'short_name' => inter_team_trade.out_player.team.short_name,
+            ),
+            'position' => inter_team_trade.out_player.position.singular_name_short,
+            'in_player' => a_hash_including(
+              'id' => inter_team_trade.in_player.to_param,
+              'last_name' => inter_team_trade.in_player.last_name,
+              'first_name' => inter_team_trade.in_player.first_name,
+            ),
+            'out_player' => a_hash_including(
+              'id' => inter_team_trade.out_player.to_param,
+              'last_name' => inter_team_trade.out_player.last_name,
+              'first_name' => inter_team_trade.out_player.first_name,
+            ),
+          ),
+        ),
+        'can_cancel' => true,
+        'can_submit' => true,
+        'can_approve' => false,
+        'in_fpl_team' => a_hash_including(
+          'id' => inter_team_trade_group.in_fpl_team.to_param,
+          'name' => inter_team_trade_group.in_fpl_team.name,
+        ),
+        'out_fpl_team' => a_hash_including(
+          'id' => fpl_team_list.fpl_team.to_param,
+          'name' => fpl_team_list.fpl_team.name,
+        ),
+      )
+    end
+  end
 end
