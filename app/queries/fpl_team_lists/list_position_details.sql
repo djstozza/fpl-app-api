@@ -93,4 +93,5 @@ JOIN teams
   OR (fixtures.team_h_id = teams.id AND teams.id != opposition_team.id)
   OR (fixtures.team_a_id = teams.id AND teams.id != opposition_team.id)
 WHERE fpl_team_lists.id = :fpl_team_list_id
+  AND (:excluded_player_ids IS NULL OR players.id NOT IN :excluded_player_ids)
 ORDER BY role ASC, display_order, players.id ASC, fixtures.id ASC

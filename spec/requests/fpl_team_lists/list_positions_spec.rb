@@ -236,5 +236,17 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
         ],
       )
     end
+
+    it 'excludes players listed in excluded_player_ids' do
+      api.get api_fpl_team_list_list_positions_url(fpl_team_list),
+              params: { filter: { excluded_player_ids: "#{player1.to_param},#{player4.to_param}" } }
+
+      expect(api.data).to contain_exactly(
+
+          a_hash_including('id' => list_position2.to_param),
+          a_hash_including('id' => list_position3.to_param),
+
+      )
+    end
   end
 end

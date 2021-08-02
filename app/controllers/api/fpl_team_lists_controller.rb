@@ -29,6 +29,7 @@ class Api::FplTeamListsController < ApplicationController
     SqlQuery.results(
       'fpl_team_lists/list_position_details',
       fpl_team_list_id: fpl_team_list.id,
+      excluded_player_ids: Array(filter_params[:excluded_player_ids]&.split(',').presence).compact
     )
   end
 
@@ -50,6 +51,12 @@ class Api::FplTeamListsController < ApplicationController
   end
 
   def fpl_team_list_params
-    params.require(:fpl_team_list).permit(:fpl_team_id, :out_list_position_id, :in_list_position_id)
+    params
+      .require(:fpl_team_list)
+      .permit(:fpl_team_id, :out_list_position_id, :in_list_position_id)
+  end
+
+  def filter_params
+    params.fetch(:filter, {}).permit(:excluded_player_ids)
   end
 end
