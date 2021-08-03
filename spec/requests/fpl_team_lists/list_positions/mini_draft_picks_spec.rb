@@ -29,11 +29,11 @@ RSpec.describe(
       travel_to round.deadline_time_as_time - 3.days do
         api.authenticate user
 
-        expect {
+        expect do
           api.post api_fpl_team_list_list_position_mini_draft_picks_url(fpl_team_list, list_position),
                    params: { mini_draft_pick: { in_player_id: player2.id } }
-        }
-        .to change { MiniDraftPick.count }.from(0).to(1)
+        end
+        .to change(MiniDraftPick, :count).from(0).to(1)
         .and change { list_position.reload.player }.from(player1).to(player2)
         .and change { fpl_team1.reload.players }.from([player1]).to([player2])
 
@@ -64,10 +64,11 @@ RSpec.describe(
       travel_to round.deadline_time_as_time - 3.days do
         api.authenticate user
 
-        expect {
+        expect do
           api.post api_fpl_team_list_list_position_mini_draft_picks_url(fpl_team_list, list_position),
                    params: { mini_draft_pick: { passed: true } }
-        }.to change { MiniDraftPick.count }.from(0).to(1)
+        end
+        .to change(MiniDraftPick, :count).from(0).to(1)
 
         expect(MiniDraftPick.first).to have_attributes(
           pick_number: 1,
@@ -103,10 +104,11 @@ RSpec.describe(
         create :mini_draft_pick, :passed, pick_number: 4, season: season, fpl_team: fpl_team3
         create :mini_draft_pick, :passed, pick_number: 5, season: season, fpl_team: fpl_team2
 
-        expect {
+        expect do
           api.post api_fpl_team_list_list_position_mini_draft_picks_url(fpl_team_list, list_position),
                    params: { mini_draft_pick: { passed: true } }
-        }.to change { MiniDraftPick.count }.from(5).to(6)
+        end
+        .to change(MiniDraftPick, :count).from(5).to(6)
 
         expect(api.response).to have_http_status(:success)
 
@@ -129,10 +131,11 @@ RSpec.describe(
       travel_to round.deadline_time_as_time - 3.days do
         api.authenticate user
 
-        expect {
+        expect do
           api.post api_fpl_team_list_list_position_mini_draft_picks_url(fpl_team_list, list_position),
                    params: { mini_draft_pick: { passed: true } }
-        }.not_to change { MiniDraftPick.count }
+        end
+        .not_to change(MiniDraftPick, :count)
 
         expect(api.response).to have_http_status(:unprocessable_entity)
 
@@ -143,13 +146,13 @@ RSpec.describe(
     end
   end
 
-  context 'summer' do
+  context 'when summer mini draft' do
     before { round.update(deadline_time: Round.summer_mini_draft_deadline + 1.week) }
 
     include_examples 'create mini_draft_picks', 'summer'
   end
 
-  context 'winter' do
+  context 'when winter mini draft' do
     before { round.update(deadline_time: Round.winter_mini_draft_deadline + 1.week) }
 
     include_examples 'create mini_draft_picks', 'winter'

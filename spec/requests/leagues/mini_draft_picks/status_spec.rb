@@ -55,13 +55,13 @@ RSpec.describe 'api/leagues/league_id/mini_draft_picks/status', :no_transaction,
     end
   end
 
-  context 'summer' do
+  context 'when summer mini draft' do
     before { round.update(deadline_time: Round.summer_mini_draft_deadline + 1.week) }
 
     include_examples 'status', 'summer'
   end
 
-  context 'winter' do
+  context 'when winter mini draft' do
     before { round.update(deadline_time: Round.winter_mini_draft_deadline + 1.week) }
 
     include_examples 'status', 'winter'

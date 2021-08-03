@@ -16,7 +16,7 @@ module Api::ListPositions
         position_id: list_position.position.id,
         out_fpl_team_list_id: list_position.fpl_team_list_id,
         in_fpl_team_list_id: filter_params[:in_fpl_team_list_id],
-        excluded_player_ids: Array(filter_params[:excluded_player_ids]&.split(',').presence).compact,
+        excluded_player_ids: compacted_params(filter_params[:excluded_player_ids]),
       )
     end
 

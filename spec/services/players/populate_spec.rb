@@ -12,7 +12,7 @@ RSpec.describe Players::Populate, type: :service do
     end
 
     it 'creates players' do
-      expect { described_class.call }.to change { Player.count }.from(0).to(11)
+      expect { described_class.call }.to change(Player, :count).from(0).to(11)
 
       player = Player.first
       expect(player.attributes).to include(
@@ -34,7 +34,7 @@ RSpec.describe Players::Populate, type: :service do
     end
 
     it 'updates existing players' do
-      player = build(:player, :midfielder, total_points: 0, team: Team.last,  external_id: 4)
+      player = build(:player, :midfielder, total_points: 0, team: Team.last, external_id: 4)
       player.save
 
       expect { described_class.call }

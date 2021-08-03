@@ -21,12 +21,12 @@ module Api::FplTeamLists
     private
 
     def query
-       SqlQuery.load(
-         'inter_team_trade_groups/show',
-         trade_groups: trade_groups,
-         inter_team_trade_group_id: inter_team_trade_group.id,
-         user_id: current_user.id,
-       )
+      SqlQuery.load(
+        'inter_team_trade_groups/show',
+        trade_groups: trade_groups,
+        inter_team_trade_group_id: inter_team_trade_group.id,
+        user_id: current_user.id,
+      )
     end
 
     def permitted_params

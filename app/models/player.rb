@@ -47,6 +47,7 @@
 #
 # Indexes
 #
+#  index_players_on_external_id          (external_id) UNIQUE
 #  index_players_on_id_and_first_name    (id,first_name)
 #  index_players_on_id_and_goals_scored  (id,goals_scored)
 #  index_players_on_id_and_last_name     (id,last_name)
@@ -69,7 +70,7 @@ class Player < ApplicationRecord
   scope :outfielders, -> { joins(:position).where('positions.singular_name_short != ?', 'GKP') }
 
   def goalkeeper?
-    position.singular_name_short.downcase == 'gkp'
+    position.singular_name_short.casecmp('gkp').zero?
   end
 
   def name

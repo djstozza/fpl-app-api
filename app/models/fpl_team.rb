@@ -14,8 +14,11 @@
 #
 # Indexes
 #
-#  index_fpl_teams_on_league_id  (league_id)
-#  index_fpl_teams_on_owner_id   (owner_id)
+#  index_fpl_teams_on_draft_pick_number_and_league_id       (draft_pick_number,league_id) UNIQUE
+#  index_fpl_teams_on_league_id                             (league_id)
+#  index_fpl_teams_on_mini_draft_pick_number_and_league_id  (mini_draft_pick_number,league_id) UNIQUE
+#  index_fpl_teams_on_name                                  (name) UNIQUE
+#  index_fpl_teams_on_owner_id                              (owner_id)
 #
 class FplTeam < ApplicationRecord
   QUOTAS = {
@@ -27,7 +30,7 @@ class FplTeam < ApplicationRecord
     players: 15,
   }.freeze
 
-  belongs_to :owner, class_name: 'User', foreign_key: :owner_id
+  belongs_to :owner, class_name: 'User'
   belongs_to :league
   has_many :draft_picks
   has_and_belongs_to_many :players

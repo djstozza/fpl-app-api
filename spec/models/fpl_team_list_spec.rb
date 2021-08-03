@@ -21,14 +21,14 @@ require 'rails_helper'
 
 RSpec.describe FplTeamList, type: :model do
   it 'has a valid factory' do
-    expect(build :fpl_team_list).to be_valid
+    expect(build(:fpl_team_list)).to be_valid
   end
 
   it 'validates round and fpl_team uniqueness' do
     fpl_team_list = create :fpl_team_list
 
-    expect(create :fpl_team_list, fpl_team: fpl_team_list.fpl_team).to be_valid
-    expect(create :fpl_team_list, round: fpl_team_list.round).to be_valid
-    expect(build :fpl_team_list, round: fpl_team_list.round, fpl_team: fpl_team_list.fpl_team).not_to be_valid
+    expect(create(:fpl_team_list, fpl_team: fpl_team_list.fpl_team)).to be_valid
+    expect(create(:fpl_team_list, round: fpl_team_list.round)).to be_valid
+    expect(build(:fpl_team_list, round: fpl_team_list.round, fpl_team: fpl_team_list.fpl_team)).not_to be_valid
   end
 end

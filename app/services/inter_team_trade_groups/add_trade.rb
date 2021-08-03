@@ -7,7 +7,7 @@ class InterTeamTradeGroups::AddTrade < InterTeamTradeGroups::BaseService
   validate :valid_team_quota_in_fpl_team
   validate :unique_in_player_in_group
   validate :unique_out_player_in_group
-  validate :is_pending
+  validate :pending?
 
   def initialize(data, inter_team_trade_group, user)
     @inter_team_trade_group = inter_team_trade_group

@@ -13,7 +13,6 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe 'api/list_positions', :no_transaction, type: :request do
-
   let(:fpl_team_list) { create :fpl_team_list }
 
   let!(:list_position1) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
@@ -28,7 +27,7 @@ RSpec.describe 'api/list_positions', :no_transaction, type: :request do
   before { api.authenticate(fpl_team_list.fpl_team.owner) }
 
   describe 'GET /show' do
-    context '3 forwards, 4 defenders, 3 midfielders' do
+    context 'when 3 forwards, 4 defenders, 3 midfielders' do
       let!(:list_position9) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
       let!(:list_position10) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
       let!(:list_position11) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
@@ -87,7 +86,7 @@ RSpec.describe 'api/list_positions', :no_transaction, type: :request do
       end
     end
 
-    context '1 forward, 5 midfielders, 4 defenders' do
+    context 'when 1 forward, 5 midfielders, 4 defenders' do
       let!(:list_position9) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
       let!(:list_position10) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
       let!(:list_position11) { create :list_position, :starting, :midfielder, fpl_team_list_id: fpl_team_list.id }
@@ -159,7 +158,7 @@ RSpec.describe 'api/list_positions', :no_transaction, type: :request do
       end
     end
 
-    context '3 forwards, 2 midfielders, 5 defenders' do
+    context 'when 3 forwards, 2 midfielders, 5 defenders' do
       let!(:list_position9) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
       let!(:list_position10) { create :list_position, :starting, :forward, fpl_team_list_id: fpl_team_list.id }
       let!(:list_position11) { create :list_position, :starting, :defender, fpl_team_list_id: fpl_team_list.id }

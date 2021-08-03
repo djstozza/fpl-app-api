@@ -23,7 +23,7 @@ class FplTeamListSerializer < BaseSerializer
     cumulative_rank
     round_rank
     total_score
-  ]
+  ].freeze
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|

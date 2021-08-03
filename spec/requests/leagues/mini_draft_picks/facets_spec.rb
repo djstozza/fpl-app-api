@@ -11,96 +11,96 @@ RSpec.describe 'api/leagues/league_id/mini_draft_picks/facets', :no_transaction,
 
   before { api.authenticate fpl_team1.owner }
 
-    describe 'GET /index' do
-      it 'renders a list of the mini draft_picks by season' do
-        api.get api_league_mini_draft_picks_facets_url(league), params: { mini_draft_pick: { season: 'summer' } }
+  describe 'GET /index' do
+    it 'renders a list of the mini draft_picks by season' do
+      api.get api_league_mini_draft_picks_facets_url(league), params: { mini_draft_pick: { season: 'summer' } }
 
-        expect(api.response).to have_http_status(:success)
-        expect(api.data).to include(
-          'out_teams' => contain_exactly(
-            a_hash_including(
-              'value' => mini_draft_pick1.out_player.team.to_param,
-              'label' => mini_draft_pick1.out_player.team.short_name,
-            ),
+      expect(api.response).to have_http_status(:success)
+      expect(api.data).to include(
+        'out_teams' => contain_exactly(
+          a_hash_including(
+            'value' => mini_draft_pick1.out_player.team.to_param,
+            'label' => mini_draft_pick1.out_player.team.short_name,
           ),
-          'in_teams' => contain_exactly(
-            a_hash_including(
-              'value' => mini_draft_pick1.in_player.team.to_param,
-              'label' => mini_draft_pick1.in_player.team.short_name,
-            ),
+        ),
+        'in_teams' => contain_exactly(
+          a_hash_including(
+            'value' => mini_draft_pick1.in_player.team.to_param,
+            'label' => mini_draft_pick1.in_player.team.short_name,
           ),
-          'fpl_teams' => containing_exactly(
-            a_hash_including(
-              'label' => fpl_team1.name,
-              'value' => fpl_team1.to_param,
-            ),
-            a_hash_including(
-              'label' => fpl_team2.name,
-              'value' => fpl_team2.to_param,
-            ),
+        ),
+        'fpl_teams' => containing_exactly(
+          a_hash_including(
+            'label' => fpl_team1.name,
+            'value' => fpl_team1.to_param,
           ),
-          'positions' => contain_exactly(
-            a_hash_including(
-              'value' => mini_draft_pick1.out_player.position.to_param,
-              'label' => mini_draft_pick1.out_player.position.singular_name_short,
-            ),
+          a_hash_including(
+            'label' => fpl_team2.name,
+            'value' => fpl_team2.to_param,
           ),
-          'passed' => contain_exactly(
-            a_hash_including(
-              'value' => false,
-              'label' => 'No',
-            ),
-            a_hash_including(
-              'value' => true,
-              'label' => 'Yes',
-            ),
-          )
+        ),
+        'positions' => contain_exactly(
+          a_hash_including(
+            'value' => mini_draft_pick1.out_player.position.to_param,
+            'label' => mini_draft_pick1.out_player.position.singular_name_short,
+          ),
+        ),
+        'passed' => contain_exactly(
+          a_hash_including(
+            'value' => false,
+            'label' => 'No',
+          ),
+          a_hash_including(
+            'value' => true,
+            'label' => 'Yes',
+          ),
         )
+      )
 
-        api.get api_league_mini_draft_picks_facets_url(league), params: { mini_draft_pick: { season: 'winter' } }
+      api.get api_league_mini_draft_picks_facets_url(league), params: { mini_draft_pick: { season: 'winter' } }
 
-        expect(api.response).to have_http_status(:success)
+      expect(api.response).to have_http_status(:success)
 
-        expect(api.data).to include(
-          'out_teams' => contain_exactly(
-            a_hash_including(
-              'value' => mini_draft_pick4.out_player.team.to_param,
-              'label' => mini_draft_pick4.out_player.team.short_name,
-            ),
+      expect(api.data).to include(
+        'out_teams' => contain_exactly(
+          a_hash_including(
+            'value' => mini_draft_pick4.out_player.team.to_param,
+            'label' => mini_draft_pick4.out_player.team.short_name,
           ),
-          'in_teams' => contain_exactly(
-            a_hash_including(
-              'value' => mini_draft_pick4.in_player.team.to_param,
-              'label' => mini_draft_pick4.in_player.team.short_name,
-            ),
+        ),
+        'in_teams' => contain_exactly(
+          a_hash_including(
+            'value' => mini_draft_pick4.in_player.team.to_param,
+            'label' => mini_draft_pick4.in_player.team.short_name,
           ),
-          'fpl_teams' => containing_exactly(
-            a_hash_including(
-              'label' => fpl_team1.name,
-              'value' => fpl_team1.to_param,
-            ),
-            a_hash_including(
-              'label' => fpl_team2.name,
-              'value' => fpl_team2.to_param,
-            ),
+        ),
+        'fpl_teams' => containing_exactly(
+          a_hash_including(
+            'label' => fpl_team1.name,
+            'value' => fpl_team1.to_param,
           ),
-          'positions' => contain_exactly(
-            a_hash_including(
-              'value' => mini_draft_pick4.out_player.position.to_param,
-              'label' => mini_draft_pick4.out_player.position.singular_name_short,
-            ),
+          a_hash_including(
+            'label' => fpl_team2.name,
+            'value' => fpl_team2.to_param,
           ),
-          'passed' => contain_exactly(
-            a_hash_including(
-              'value' => false,
-              'label' => 'No',
-            ),
-            a_hash_including(
-              'value' => true,
-              'label' => 'Yes',
-            ),
-          )
+        ),
+        'positions' => contain_exactly(
+          a_hash_including(
+            'value' => mini_draft_pick4.out_player.position.to_param,
+            'label' => mini_draft_pick4.out_player.position.singular_name_short,
+          ),
+        ),
+        'passed' => contain_exactly(
+          a_hash_including(
+            'value' => false,
+            'label' => 'No',
+          ),
+          a_hash_including(
+            'value' => true,
+            'label' => 'Yes',
+          ),
         )
-      end
+      )
     end
+  end
 end

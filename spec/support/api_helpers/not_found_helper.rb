@@ -4,9 +4,9 @@ RSpec.shared_examples 'not found' do |klass|
     plural = klass.pluralize
 
     api.get "/api/#{plural}/#{id}"
-    expect(api.response).to have_http_status(200)
+    expect(api.response).to have_http_status(:success)
 
     api.get "/api/#{plural}/#{id + 1}"
-    expect(api.response).to have_http_status(404)
+    expect(api.response).to have_http_status(:not_found)
   end
 end

@@ -12,12 +12,12 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "/api/positions", type: :request do
-  describe "GET /index" do
+RSpec.describe '/api/positions', type: :request do
+  describe 'GET /index' do
     let!(:position1) { create :position, :forward }
     let!(:position2) { create :position, :defender }
 
-    it "renders a successful response" do
+    it 'renders a successful response' do
       api.get api_positions_url
 
       expect(response).to be_successful

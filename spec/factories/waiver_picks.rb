@@ -13,9 +13,10 @@
 #
 # Indexes
 #
-#  index_waiver_picks_on_fpl_team_list_id  (fpl_team_list_id)
-#  index_waiver_picks_on_in_player_id      (in_player_id)
-#  index_waiver_picks_on_out_player_id     (out_player_id)
+#  index_waiver_picks_on_fpl_team_list_id                  (fpl_team_list_id)
+#  index_waiver_picks_on_in_player_id                      (in_player_id)
+#  index_waiver_picks_on_out_player_id                     (out_player_id)
+#  index_waiver_picks_on_pick_number_and_fpl_team_list_id  (pick_number,fpl_team_list_id) UNIQUE
 #
 # Foreign Keys
 #

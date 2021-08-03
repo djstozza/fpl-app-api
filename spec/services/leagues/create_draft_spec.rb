@@ -2,12 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Leagues::CreateDraft, type: :service do
   subject(:service) { described_class.call(league, user) }
+
   let(:user) { create :user }
   let(:league) { create :league, owner: user, status: 'draft_picks_generated' }
 
-  context 'fpl_team quota reached' do
+  context 'when fpl_team quota has been reached' do
     before do
-      (League::MIN_FPL_TEAM_QUOTA).times do |i|
+      League::MIN_FPL_TEAM_QUOTA.times do |i|
         create(:fpl_team, league: league, draft_pick_number: i + 1)
       end
     end
@@ -22,8 +23,8 @@ RSpec.describe Leagues::CreateDraft, type: :service do
       league.update(owner: create(:user))
 
       expect { service }
-        .to change { league.reload.updated_at }.by(0)
-        .and change { league.draft_picks.count }.by(0)
+        .to not_change { league.reload.updated_at }
+        .and not_change { league.draft_picks.count }
 
       expect(service.errors.full_messages).to contain_exactly(
         'You are not authorised to perform this action'
@@ -34,8 +35,8 @@ RSpec.describe Leagues::CreateDraft, type: :service do
       league.update(status: 'initialized')
 
       expect { service }
-        .to change { league.reload.updated_at }.by(0)
-        .and change { league.draft_picks.count }.by(0)
+        .to not_change { league.reload.updated_at }
+        .and not_change { league.draft_picks.count }
 
       expect(service.errors.full_messages).to contain_exactly(
         'You cannot create a draft at this time',
@@ -43,7 +44,7 @@ RSpec.describe Leagues::CreateDraft, type: :service do
     end
   end
 
-  context 'fpl_team quota not reached' do
+  context 'when fpl_team quota has not been reached' do
     before do
       (League::MIN_FPL_TEAM_QUOTA - 1).times do
         create(:fpl_team, league: league)
@@ -52,8 +53,8 @@ RSpec.describe Leagues::CreateDraft, type: :service do
 
     it 'fails if the fpl_team quota has not been reached' do
       expect { service }
-        .to change { league.reload.updated_at }.by(0)
-        .and change { league.draft_picks.count }.by(0)
+        .to not_change { league.reload.updated_at }
+        .and not_change { league.draft_picks.count }
 
       expect(service.errors.full_messages).to contain_exactly(
         "There must be at least #{League::MIN_FPL_TEAM_QUOTA} teams present"

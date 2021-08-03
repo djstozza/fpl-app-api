@@ -17,7 +17,7 @@ RSpec.describe 'api/leagues/league_id/create_drafts', type: :request do
   let!(:league) { create :league, owner: user, status: 'draft_picks_generated' }
 
   before do
-    (League::MIN_FPL_TEAM_QUOTA).times do
+    League::MIN_FPL_TEAM_QUOTA.times do
       create(:fpl_team, league: league)
     end
   end

@@ -9,8 +9,10 @@ class MiniDraftPicks::Process < ApplicationService
               :league,
               :user
 
+  validate :user_is_owner
+  validate :mini_draft?
   validate :user_can_mini_draft
-  validate :is_next_fpl_team
+  validate :next_fpl_team?
   validate :valid_in_player, if: :in_player_id
   validate :maximum_number_of_players_from_team, if: :in_player_id
   validate :same_positions, if: :in_player_id
@@ -42,6 +44,10 @@ class MiniDraftPicks::Process < ApplicationService
 
     return errors.megre!(current_mini_draft_pick.errors) if current_mini_draft_pick.errors.any?
 
+    update_list_position_and_fpl_team
+  end
+
+  def update_list_position_and_fpl_team
     list_position.update(player: in_player)
     fpl_team.players.delete(out_player)
     fpl_team.players << in_player
@@ -51,20 +57,26 @@ class MiniDraftPicks::Process < ApplicationService
     current_mini_draft_pick.update(passed: true)
   end
 
-  def is_next_fpl_team
+  def next_fpl_team?
     return if league.current_mini_draft_pick.fpl_team == fpl_team
 
     errors.add(:base, 'It is not your turn to make a mini draft pick')
   end
 
   def user_can_mini_draft
-    return errors.add(:base, 'You are not authorised to perform this action') unless fpl_team.owner == user
-    return errors.add(:base, 'The mini draft is not active') unless fpl_team_list.mini_draft
-    return errors.add(:base, 'The round is not current') unless fpl_team_list.is_current?
+    return errors.add(:base, 'The round is not current') unless fpl_team_list.current?
     return errors.add(:base, 'The mini draft is not open yet') unless Time.current > Round.mini_draft_deadline
     return unless Time.current > fpl_team_list.waiver_deadline
 
     errors.add(:base, 'The mini draft is now closed')
+  end
+
+  def user_is_owner
+    errors.add(:base, 'You are not authorised to perform this action') unless fpl_team.owner == user
+  end
+
+  def mini_draft?
+    errors.add(:base, 'The mini draft is not active') unless fpl_team_list.mini_draft
   end
 
   def valid_in_player
@@ -78,16 +90,16 @@ class MiniDraftPicks::Process < ApplicationService
 
   def maximum_number_of_players_from_team
     return if in_player.blank?
-
-    team_ids = fpl_team_list.players.where.not(id: out_player.id).pluck(:team_id)
-    team_ids << in_player.team_id
-
     return if team_ids.count(in_player.team_id) <= FplTeam::QUOTAS[:team]
 
     errors.add(
       :base,
       "You can't have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{in_player.team.short_name})",
     )
+  end
+
+  def team_ids
+    fpl_team_list.players.where.not(id: out_player.id).pluck(:team_id) << in_player.team_id
   end
 
   def same_positions

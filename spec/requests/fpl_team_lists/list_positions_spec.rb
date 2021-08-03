@@ -70,8 +70,8 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
             'assists' => 0,
             'clean_sheets' => 1,
             'bonus' => 2,
-          }
-        ]
+          },
+        ],
       )
     end
     let(:player3) do
@@ -89,8 +89,8 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
             'assists' => 0,
             'clean_sheets' => 0,
             'bonus' => 0,
-          }
-        ]
+          },
+        ],
       )
     end
     let(:player4) { create :player, :forward, team: team4 }
@@ -242,10 +242,8 @@ RSpec.describe 'fpl_teams/:fpl_team_id/fpl_team_lists', :no_transaction, type: :
               params: { filter: { excluded_player_ids: "#{player1.to_param},#{player4.to_param}" } }
 
       expect(api.data).to contain_exactly(
-
-          a_hash_including('id' => list_position2.to_param),
-          a_hash_including('id' => list_position3.to_param),
-
+        a_hash_including('id' => list_position2.to_param),
+        a_hash_including('id' => list_position3.to_param),
       )
     end
   end

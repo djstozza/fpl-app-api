@@ -17,6 +17,10 @@
 #  updated_at                :datetime         not null
 #  external_id               :integer
 #
+# Indexes
+#
+#  index_rounds_on_external_id  (external_id) UNIQUE
+#
 FactoryBot.define do
   factory :round do
     sequence :name do |n|

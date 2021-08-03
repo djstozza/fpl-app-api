@@ -24,6 +24,6 @@ require 'rails_helper'
 
 RSpec.describe Trade, type: :model do
   it 'has a valid factory' do
-    expect(build :trade).to be_valid
+    expect(build(:trade)).to be_valid
   end
 end

@@ -28,7 +28,7 @@ module APIHelpers
       }
     end
 
-    [:get, :post, :put, :delete].each do |http_method|
+    %i[get post put delete].each do |http_method|
       define_method(http_method) { |*args| process(http_method, *args) }
     end
 
@@ -66,11 +66,10 @@ module APIHelpers
       Time.zone.parse(data.dig(*attrs))
     end
 
-  private
+    private
 
     def fetch_result(key)
       @results[response][key] ||= yield
     end
-
   end
 end

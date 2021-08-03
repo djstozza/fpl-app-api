@@ -12,7 +12,7 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "aoi/leagues/league_id/joins", type: :request do
+RSpec.describe 'api/leagues/league_id/joins', type: :request do
   let!(:user) { create :user }
   let!(:league) { create :league }
 
@@ -20,10 +20,11 @@ RSpec.describe "aoi/leagues/league_id/joins", type: :request do
     it 'creates a new fpl_team' do
       api.authenticate(user)
 
-      expect {
+      expect do
         api.post api_leagues_join_url,
                  params: { league: { fpl_team_name: 'New fpl_team', code: league.code, name: league.name } }
-      }.to change { FplTeam.count }.from(0).to(1)
+      end
+      .to change(FplTeam, :count).from(0).to(1)
 
       expect(api.data).to contain_exactly(
         a_hash_including(

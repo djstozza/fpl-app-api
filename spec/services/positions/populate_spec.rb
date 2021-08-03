@@ -7,7 +7,7 @@ RSpec.describe Positions::Populate, type: :service do
     before { stub_bootstrap_static_request }
 
     it 'creates positions' do
-      expect { described_class.call }.to change { Position.count }.from(0).to(4)
+      expect { described_class.call }.to change(Position, :count).from(0).to(4)
       expect(Position.first.attributes).to include(
         'external_id' => 1,
         'plural_name' => 'Goalkeepers',

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
   subject(:service) { described_class.call(data, inter_team_trade_group, user) }
+
   let(:round) { create :round, :current }
   let(:user) { create :user }
   let(:fpl_team1) { create :fpl_team, owner: user }
@@ -46,7 +47,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
 
   it 'successfully creates the trade group and trade' do
     expect { service }
-      .to change { InterTeamTrade.count }.from(1).to(2)
+      .to change(InterTeamTrade, :count).from(1).to(2)
 
     expect(service.inter_team_trade).to have_attributes(
       inter_team_trade_group: service.inter_team_trade_group,
@@ -59,7 +60,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     fpl_team1.update(owner: create(:user))
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(subject.errors.full_messages).to contain_exactly('You are not authorised to perform this action')
   end
@@ -68,7 +69,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     round.update(data_checked: true)
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(subject.errors.full_messages).to contain_exactly('This trade is not from the current round')
   end
@@ -77,7 +78,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     round.update(deadline_time: 1.minute.ago)
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(subject.errors.full_messages).to contain_exactly('The trade window is now closed')
   end
@@ -86,7 +87,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     data[:out_player_id] = 'invalid'
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(subject.errors.full_messages)
       .to contain_exactly('The player you have selected to trade out is not part of your team')
@@ -96,7 +97,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     data[:in_player_id] = 'invalid'
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(subject.errors.full_messages)
       .to contain_exactly("The player you have selected to trade in is not part of #{fpl_team2.name}")
@@ -106,7 +107,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     player4.update(position: create(:position, :midfielder))
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(subject.errors.full_messages).to contain_exactly('Players being traded must have the same positions')
   end
@@ -117,7 +118,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     end
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(service.errors.full_messages).to contain_exactly(
       "You can't have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player4.team.short_name})",
@@ -130,7 +131,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     end
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(service.errors.full_messages).to contain_exactly(
       "#{fpl_team2.name} can't have more than #{FplTeam::QUOTAS[:team]} players from the same team " \
@@ -142,7 +143,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     data[:out_player_id] = player1.id
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(service.errors.full_messages).to contain_exactly("The proposed trade already includes #{player1.name}")
   end
@@ -151,7 +152,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     data[:in_player_id] = player3.id
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(service.errors.full_messages).to contain_exactly("The proposed trade already includes #{player3.name}")
   end
@@ -160,7 +161,7 @@ RSpec.describe InterTeamTradeGroups::AddTrade, type: :service do
     inter_team_trade_group.update(status: 'approved')
 
     expect { subject }
-      .to change { InterTeamTrade.count }.by(0)
+      .to not_change { InterTeamTrade.count }
 
     expect(service.errors.full_messages).to contain_exactly('Changes can no longer be made to the proposed trade')
   end

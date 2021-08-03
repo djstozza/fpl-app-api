@@ -40,47 +40,47 @@ RSpec.describe(
 
   describe 'POST /create' do
     it 'changes the status of the inter_team_trade_group to declined' do
-      expect {
+      expect do
         api.post api_fpl_team_list_inter_team_trade_group_decline_url(fpl_team_list2, inter_team_trade_group)
-      }
+      end
       .to change { inter_team_trade_group.reload.status }.from('submitted').to('declined')
 
       expect(api.response).to have_http_status(:success)
 
       expect(api.data['in_trade_groups']).to contain_exactly(
         a_hash_including(
-         'id' => inter_team_trade_group.to_param,
-         'status' => 'Declined',
-         'trades' => contain_exactly(
-           a_hash_including(
-             'id' => inter_team_trade.to_param,
-             'in_team' => a_hash_including(
-               'id' => player2.team.to_param,
-               'short_name' => player2.team.short_name,
-             ),
-             'out_team' => a_hash_including(
-               'id' => player1.team.to_param,
-               'short_name' => player1.team.short_name,
-             ),
-             'position' => position.singular_name_short,
-             'in_player' => a_hash_including(
-               'id' => player2.to_param,
-               'last_name' => player2.last_name,
-               'first_name' => player2.first_name,
-             ),
-             'out_player' => a_hash_including(
-               'id' => player1.to_param,
-               'last_name' => player1.last_name,
-               'first_name' => player1.first_name,
-             ),
-           ),
-         ),
-         'can_cancel' => false,
-         'can_submit' => false,
-         'can_approve' => false,
-         'in_fpl_team' => a_hash_including(
-           'id' => fpl_team2.to_param,
-           'name' => fpl_team2.name,
+          'id' => inter_team_trade_group.to_param,
+          'status' => 'Declined',
+          'trades' => contain_exactly(
+            a_hash_including(
+              'id' => inter_team_trade.to_param,
+              'in_team' => a_hash_including(
+                'id' => player2.team.to_param,
+                'short_name' => player2.team.short_name,
+              ),
+              'out_team' => a_hash_including(
+                'id' => player1.team.to_param,
+                'short_name' => player1.team.short_name,
+              ),
+              'position' => position.singular_name_short,
+              'in_player' => a_hash_including(
+                'id' => player2.to_param,
+                'last_name' => player2.last_name,
+                'first_name' => player2.first_name,
+              ),
+              'out_player' => a_hash_including(
+                'id' => player1.to_param,
+                'last_name' => player1.last_name,
+                'first_name' => player1.first_name,
+              ),
+            ),
+          ),
+          'can_cancel' => false,
+          'can_submit' => false,
+          'can_approve' => false,
+          'in_fpl_team' => a_hash_including(
+            'id' => fpl_team2.to_param,
+            'name' => fpl_team2.name,
           ),
           'out_fpl_team' => a_hash_including(
             'id' => fpl_team1.to_param,
@@ -94,10 +94,9 @@ RSpec.describe(
     it 'returns a 422 if there is an error' do
       fpl_team2.update(owner: create(:user))
 
-      expect {
+      expect do
         api.post api_fpl_team_list_inter_team_trade_group_decline_url(fpl_team_list2, inter_team_trade_group)
-      }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      end.to not_change { inter_team_trade_group.reload.updated_at }
 
       expect(response).to have_http_status(:unprocessable_entity)
 

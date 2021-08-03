@@ -16,7 +16,6 @@ class Users::BaseService < ApplicationService
     generate_jwt
   end
 
-
   private
 
   def password_is_correct

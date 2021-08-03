@@ -15,13 +15,12 @@ RSpec.configure do |config|
     @database_cleaner_strategy = :truncation
   end
 
-  config.before(:example) do
+  config.before do
     DatabaseCleaner.strategy = @database_cleaner_strategy || :transaction
     DatabaseCleaner.start
   end
 
-  config.append_after(:example) do
+  config.append_after do
     DatabaseCleaner.clean
   end
-
 end

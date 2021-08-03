@@ -2,7 +2,7 @@ module Api::Players
   class HistoryPastController < Api::PlayersController
     # GET /api/players/1/history
     def index
-      respond_with  SqlQuery.run(
+      respond_with SqlQuery.run(
         'players/history_past',
         player_id: params[:player_id],
         sort: SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', '))

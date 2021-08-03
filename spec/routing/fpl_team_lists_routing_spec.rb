@@ -11,7 +11,6 @@ RSpec.describe Api::FplTeamListsController, type: :routing do
         .to route_to('api/fpl_team_lists#show', id: '1')
     end
 
-
     it 'routes to #create' do
       expect(post: 'api/fpl_team_lists')
         .not_to route_to('api/fpl_team_lists#create')

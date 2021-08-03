@@ -15,10 +15,11 @@
 #
 # Indexes
 #
-#  index_mini_draft_picks_on_fpl_team_id    (fpl_team_id)
-#  index_mini_draft_picks_on_in_player_id   (in_player_id)
-#  index_mini_draft_picks_on_league_id      (league_id)
-#  index_mini_draft_picks_on_out_player_id  (out_player_id)
+#  index_mini_draft_picks_on_fpl_team_id                           (fpl_team_id)
+#  index_mini_draft_picks_on_in_player_id                          (in_player_id)
+#  index_mini_draft_picks_on_league_id                             (league_id)
+#  index_mini_draft_picks_on_out_player_id                         (out_player_id)
+#  index_mini_draft_picks_on_pick_number_and_league_id_and_season  (pick_number,league_id,season) UNIQUE
 #
 # Foreign Keys
 #
@@ -29,8 +30,8 @@ require 'rails_helper'
 
 RSpec.describe MiniDraftPick, type: :model do
   it 'has a valid factory' do
-    expect(build :mini_draft_pick).to be_valid
-    expect(build :mini_draft_pick, :passed).to be_valid
+    expect(build(:mini_draft_pick)).to be_valid
+    expect(build(:mini_draft_pick, :passed)).to be_valid
   end
 
   it 'validates pick number uniquness' do
@@ -39,8 +40,7 @@ RSpec.describe MiniDraftPick, type: :model do
     expect { create :mini_draft_pick, pick_number: mini_draft_pick.pick_number, league: mini_draft_pick.league }
       .to raise_error(ActiveRecord::RecordInvalid, /Pick number has already been taken/)
 
-
-    expect(create :mini_draft_pick, :winter, pick_number: mini_draft_pick.pick_number, league: mini_draft_pick.league)
+    expect(create(:mini_draft_pick, :winter, pick_number: mini_draft_pick.pick_number, league: mini_draft_pick.league))
       .to be_valid
   end
 

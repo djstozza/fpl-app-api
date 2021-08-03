@@ -19,20 +19,20 @@ require 'rails_helper'
 
 RSpec.describe ListPosition, type: :model do
   it 'has a valid factory' do
-    expect(build :list_position, :starting, :forward).to be_valid
-    expect(build :list_position, :starting, :midfielder).to be_valid
-    expect(build :list_position, :starting, :defender).to be_valid
-    expect(build :list_position, :starting, :goalkeeper).to be_valid
-    expect(build :list_position, :substitute_1, :forward).to be_valid
-    expect(build :list_position, :substitute_1, :midfielder).to be_valid
-    expect(build :list_position, :substitute_1, :defender).to be_valid
-    expect(build :list_position, :substitute_2, :forward).to be_valid
-    expect(build :list_position, :substitute_2, :midfielder).to be_valid
-    expect(build :list_position, :substitute_2, :defender).to be_valid
-    expect(build :list_position, :substitute_3, :forward).to be_valid
-    expect(build :list_position, :substitute_3, :midfielder).to be_valid
-    expect(build :list_position, :substitute_3, :defender).to be_valid
-    expect(build :list_position, :substitute_gkp).to be_valid
+    expect(build(:list_position, :starting, :forward)).to be_valid
+    expect(build(:list_position, :starting, :midfielder)).to be_valid
+    expect(build(:list_position, :starting, :defender)).to be_valid
+    expect(build(:list_position, :starting, :goalkeeper)).to be_valid
+    expect(build(:list_position, :substitute_1, :forward)).to be_valid
+    expect(build(:list_position, :substitute_1, :midfielder)).to be_valid
+    expect(build(:list_position, :substitute_1, :defender)).to be_valid
+    expect(build(:list_position, :substitute_2, :forward)).to be_valid
+    expect(build(:list_position, :substitute_2, :midfielder)).to be_valid
+    expect(build(:list_position, :substitute_2, :defender)).to be_valid
+    expect(build(:list_position, :substitute_3, :forward)).to be_valid
+    expect(build(:list_position, :substitute_3, :midfielder)).to be_valid
+    expect(build(:list_position, :substitute_3, :defender)).to be_valid
+    expect(build(:list_position, :substitute_gkp)).to be_valid
   end
 
   describe '#valid_substitute_gkp' do

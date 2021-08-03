@@ -54,16 +54,16 @@ class WaiverPicks::Create < WaiverPicks::BaseService
 
   def maximum_number_of_players_from_team
     return if in_player.blank?
-
-    team_ids = fpl_team_list.players.where.not(id: out_player).pluck(:team_id)
-    team_ids << in_player.team_id
-
     return if team_ids.count(in_player.team_id) <= FplTeam::QUOTAS[:team]
 
     errors.add(
       :base,
       "You can't have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{in_player.team.short_name})",
     )
+  end
+
+  def team_ids
+    @team_ids ||= fpl_team_list.players.where.not(id: out_player).pluck(:team_id) << in_player.team_id
   end
 
   def waiver_pick_is_unique

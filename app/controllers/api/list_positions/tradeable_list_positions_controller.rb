@@ -15,12 +15,19 @@ module Api::ListPositions
         round_id: list_position.round.id,
         league_id: list_position.league.id,
         position_id: list_position.position.id,
-        in_fpl_team_list_id: filter_params[:in_fpl_team_list_id],
-        excluded_player_ids: Array(filter_params[:excluded_player_ids]&.split(',').presence).compact,
-        fpl_team_id: Array(filter_params[:fpl_team_id]&.split(',').presence).compact,
-        team_id: Array(filter_params[:team_id]&.split(',').presence).compact,
-        sort: sort_query
+        sort: sort_query,
+        **filter_query_params,
       )
+    end
+
+    def filter_query_params
+      {
+        in_fpl_team_list_id: filter_params[:in_fpl_team_list_id],
+        excluded_player_ids: compacted_params(filter_params[:excluded_player_ids]),
+        fpl_team_id: compacted_params(filter_params[:fpl_team_id]),
+        team_id: compacted_params(filter_params[:team_id]),
+
+      }
     end
 
     def filter_params

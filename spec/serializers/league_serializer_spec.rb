@@ -13,16 +13,19 @@
 #
 # Indexes
 #
+#  index_leagues_on_name      (name) UNIQUE
 #  index_leagues_on_owner_id  (owner_id)
 #
 require 'rails_helper'
 
 RSpec.describe LeagueSerializer, type: :serializer do
+  subject(:serializer_with_owner) { described_class.new(league, current_user: league.owner).as_json }
+
+  let(:serializer) { described_class.new(league).as_json }
   let(:league) { create :league }
   let(:user) { create :user }
-  subject(:serializer) { described_class.new(league).as_json }
-  subject(:serializer_without_owner) { described_class.new(league, current_user: user).as_json }
-  subject(:serializer_with_owner) { described_class.new(league, current_user: league.owner).as_json }
+
+  let(:serializer_without_owner) { described_class.new(league, current_user: user).as_json }
 
   describe '#show_draft_pick_column' do
     it 'is false if the league is initialized' do
@@ -116,6 +119,7 @@ RSpec.describe LeagueSerializer, type: :serializer do
     end
 
     it 'is false if the status is draft_picks_generated' do
+      league.update(status: 'draft_picks_generated')
       expect(serializer).to include(can_go_to_draft: false)
     end
 

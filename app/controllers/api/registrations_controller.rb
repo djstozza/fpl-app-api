@@ -1,6 +1,5 @@
 # Handle user sign ups
 class Api::RegistrationsController < Devise::RegistrationsController
-
   def create
     service = Users::SignUp.new(sign_up_params)
     token = service.call

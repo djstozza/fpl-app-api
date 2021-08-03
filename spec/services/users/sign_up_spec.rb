@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Users::SignUp, type: :service do
   it 'creates a user and generates a token on call' do
-    service = described_class.new({
+    service = described_class.new(
       email: 'user@example.com',
       username: 'user1',
       password: 'password',
-    })
+    )
 
     token = service.call
     decoded_jwt = JWT.decode(token, Rails.application.secrets.secret_key_base)[0]
@@ -36,11 +36,11 @@ RSpec.describe Users::SignUp, type: :service do
   end
 
   it 'fails if the email is invalid' do
-    service = described_class.new({
+    service = described_class.new(
       email: 'invalid',
       username: 'user1',
       password: 'password',
-    })
+    )
 
     service.call
 

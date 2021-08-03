@@ -36,7 +36,7 @@ RSpec.describe 'api/users', type: :request do
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'Email is invalid', 'source' => 'email'),
-        a_hash_including('detail' => "Username can't be blank", 'source'=> 'username'),
+        a_hash_including('detail' => "Username can't be blank", 'source' => 'username'),
       )
     end
   end

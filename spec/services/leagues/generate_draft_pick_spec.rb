@@ -2,12 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Leagues::GenerateDraftPick, type: :service do
   subject(:service) { described_class.call(league, user) }
+
   let(:user) { create :user }
   let(:league) { create :league, owner: user, status: 'initialized' }
 
-  context 'fpl_team quota reached' do
+  context 'when fpl_team quota reached' do
     before do
-      (League::MIN_FPL_TEAM_QUOTA).times do
+      League::MIN_FPL_TEAM_QUOTA.times do
         create(:fpl_team, league: league)
       end
     end
@@ -48,7 +49,7 @@ RSpec.describe Leagues::GenerateDraftPick, type: :service do
     end
   end
 
-  context 'fpl_team quota not reached' do
+  context 'when fpl_team quota not reached' do
     before do
       (League::MIN_FPL_TEAM_QUOTA - 1).times do
         create(:fpl_team, league: league)

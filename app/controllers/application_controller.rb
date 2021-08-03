@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 require 'application_responder'
 
 class ApplicationController < ActionController::API
@@ -31,7 +30,7 @@ class ApplicationController < ActionController::API
   end
 
   # If user has not signed in, return unauthorized response (called only when auth is needed)
-  def authenticate_user!(options = {})
+  def authenticate_user!(_options = {})
     head :unauthorized unless signed_in?
   end
 
@@ -47,6 +46,10 @@ class ApplicationController < ActionController::API
 
   def sort_query
     SqlQuery.lit(sort_params.to_h.map { |k, v| "#{k} #{v}" }.join(', '))
+  end
+
+  def compacted_params(param)
+    Array(param&.split(',').presence).compact
   end
 
   def total_query(subquery)

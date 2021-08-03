@@ -105,81 +105,81 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/waiver_picks', :no_transaction,
 
     it 'destroys the waiver pick and updates the waiver pick order' do
       expect { api.delete api_fpl_team_list_waiver_pick_url(fpl_team_list, waiver_pick1) }
-        .to change { WaiverPick.count }.from(4).to(3)
+        .to change(WaiverPick, :count).from(4).to(3)
         .and change { waiver_pick2.reload.pick_number }.from(2).to(1)
         .and change { waiver_pick3.reload.pick_number }.from(3).to(2)
         .and change { waiver_pick4.reload.pick_number }.from(4).to(3)
 
-        expect(response).to have_http_status(:success)
-        expect(api.data).to match(
-          [
-            a_hash_including(
-              'id' => waiver_pick2.to_param,
-              'out_player' => a_hash_including(
-                'id' => waiver_pick2.out_player.to_param,
-              ),
-              'out_team' => a_hash_including(
-                'id' => waiver_pick2.out_player.team.to_param,
-              ),
-              'in_player' => a_hash_including(
-                'id' => waiver_pick2.in_player.to_param,
-              ),
-              'in_team' => a_hash_including(
-                'id' => waiver_pick2.in_player.team.to_param,
-              ),
-              'status' => 'Pending',
-              'pick_number' => 1,
-              'position' => waiver_pick2.out_player.position.singular_name_short,
+      expect(response).to have_http_status(:success)
+      expect(api.data).to match(
+        [
+          a_hash_including(
+            'id' => waiver_pick2.to_param,
+            'out_player' => a_hash_including(
+              'id' => waiver_pick2.out_player.to_param,
             ),
-            a_hash_including(
-              'id' => waiver_pick3.to_param,
-              'out_player' => a_hash_including(
-                'id' => waiver_pick3.out_player.to_param,
-              ),
-              'out_team' => a_hash_including(
-                'id' => waiver_pick3.out_player.team.to_param,
-              ),
-              'in_player' => a_hash_including(
-                'id' => waiver_pick3.in_player.to_param,
-              ),
-              'in_team' => a_hash_including(
-                'id' => waiver_pick3.in_player.team.to_param,
-              ),
-              'status' => 'Pending',
-              'pick_number' => 2,
-              'position' => waiver_pick3.out_player.position.singular_name_short,
+            'out_team' => a_hash_including(
+              'id' => waiver_pick2.out_player.team.to_param,
             ),
-            a_hash_including(
-              'id' => waiver_pick4.to_param,
-              'out_player' => a_hash_including(
-                'id' => waiver_pick4.out_player.to_param,
-              ),
-              'out_team' => a_hash_including(
-                'id' => waiver_pick4.out_player.team.to_param,
-              ),
-              'in_player' => a_hash_including(
-                'id' => waiver_pick4.in_player.to_param,
-              ),
-              'in_team' => a_hash_including(
-                'id' => waiver_pick4.in_player.team.to_param,
-              ),
-              'status' => 'Pending',
-              'pick_number' => 3,
-              'position' => waiver_pick4.out_player.position.singular_name_short,
+            'in_player' => a_hash_including(
+              'id' => waiver_pick2.in_player.to_param,
             ),
-          ],
-        )
+            'in_team' => a_hash_including(
+              'id' => waiver_pick2.in_player.team.to_param,
+            ),
+            'status' => 'Pending',
+            'pick_number' => 1,
+            'position' => waiver_pick2.out_player.position.singular_name_short,
+          ),
+          a_hash_including(
+            'id' => waiver_pick3.to_param,
+            'out_player' => a_hash_including(
+              'id' => waiver_pick3.out_player.to_param,
+            ),
+            'out_team' => a_hash_including(
+              'id' => waiver_pick3.out_player.team.to_param,
+            ),
+            'in_player' => a_hash_including(
+              'id' => waiver_pick3.in_player.to_param,
+            ),
+            'in_team' => a_hash_including(
+              'id' => waiver_pick3.in_player.team.to_param,
+            ),
+            'status' => 'Pending',
+            'pick_number' => 2,
+            'position' => waiver_pick3.out_player.position.singular_name_short,
+          ),
+          a_hash_including(
+            'id' => waiver_pick4.to_param,
+            'out_player' => a_hash_including(
+              'id' => waiver_pick4.out_player.to_param,
+            ),
+            'out_team' => a_hash_including(
+              'id' => waiver_pick4.out_player.team.to_param,
+            ),
+            'in_player' => a_hash_including(
+              'id' => waiver_pick4.in_player.to_param,
+            ),
+            'in_team' => a_hash_including(
+              'id' => waiver_pick4.in_player.team.to_param,
+            ),
+            'status' => 'Pending',
+            'pick_number' => 3,
+            'position' => waiver_pick4.out_player.position.singular_name_short,
+          ),
+        ],
+      )
     end
 
     it 'returns an error if invalid' do
       fpl_team_list.fpl_team.update(owner: create(:user))
 
       expect { api.delete api_fpl_team_list_waiver_pick_url(fpl_team_list, waiver_pick1) }
-        .to change { WaiverPick.count }.by(0)
-        .and change { waiver_pick1.reload.updated_at }.by(0)
-        .and change { waiver_pick2.reload.updated_at }.by(0)
-        .and change { waiver_pick3.reload.updated_at }.by(0)
-        .and change { waiver_pick4.reload.updated_at }.by(0)
+        .to not_change { WaiverPick.count }
+        .and not_change { waiver_pick1.reload.updated_at }
+        .and not_change { waiver_pick2.reload.updated_at }
+        .and not_change { waiver_pick3.reload.updated_at }
+        .and not_change { waiver_pick4.reload.updated_at }
 
       expect(response).to have_http_status(:unprocessable_entity)
 

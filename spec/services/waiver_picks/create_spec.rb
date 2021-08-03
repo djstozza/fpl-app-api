@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe WaiverPicks::Create, type: :service do
   subject(:service) { described_class.call(data, list_position, user) }
+
   let(:user) { create :user }
   let(:fpl_team) { create :fpl_team, owner: user }
   let(:round) { create :round, :current }
@@ -18,7 +19,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
 
   it 'successfully creates the waiver_pick' do
     expect { service }
-      .to change { WaiverPick.count }.from(0).to(1)
+      .to change(WaiverPick, :count).from(0).to(1)
 
     waiver_pick = WaiverPick.first
 
@@ -35,7 +36,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     fpl_team.update(owner: create(:user))
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(subject.errors.full_messages).to contain_exactly('You are not authorised to perform this action')
   end
@@ -44,7 +45,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     round.update(data_checked: true)
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(subject.errors.full_messages).to contain_exactly('The team list is not from the current round')
   end
@@ -53,7 +54,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     round.update(deadline_time: 23.hours.from_now)
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(subject.errors.full_messages).to contain_exactly('The waiver deadline has passed')
   end
@@ -62,7 +63,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     round.update(mini_draft: true)
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(subject.errors.full_messages).to contain_exactly('You cannot make waiver picks during the mini draft')
   end
@@ -71,7 +72,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     data[:in_player_id] = 'invalid'
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(subject.errors.full_messages).to contain_exactly('The player you have selected to waiver in does not exist')
   end
@@ -80,7 +81,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     player2.update(position: create(:position, :midfielder))
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(subject.errors.full_messages).to contain_exactly('Players being waivered must have the same positions')
   end
@@ -91,7 +92,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     end
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(service.errors.full_messages).to contain_exactly(
       "You can't have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player2.team.short_name})",
@@ -102,7 +103,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     existing_waiver_pick = create(:waiver_pick, fpl_team_list: fpl_team_list, out_player: player1, in_player: player2)
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(service.errors.full_messages).to contain_exactly(
       "Duplicate waiver pick - (Pick number: #{existing_waiver_pick.pick_number} Out: #{player1.name}, " \
@@ -115,7 +116,7 @@ RSpec.describe WaiverPicks::Create, type: :service do
     other_fpl_team.players << player2
 
     expect { subject }
-      .not_to change { WaiverPick.count }
+      .not_to change(WaiverPick, :count)
 
     expect(service.errors.full_messages).to contain_exactly(
       'The player you have selected to waiver in is already part of a team in your league'

@@ -14,6 +14,10 @@
 #  updated_at          :datetime         not null
 #  external_id         :integer
 #
+# Indexes
+#
+#  index_positions_on_external_id  (external_id) UNIQUE
+#
 class Position < ApplicationRecord
   validates :external_id, presence: true, uniqueness: true
 

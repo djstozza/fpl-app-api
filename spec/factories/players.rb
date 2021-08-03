@@ -47,6 +47,7 @@
 #
 # Indexes
 #
+#  index_players_on_external_id          (external_id) UNIQUE
 #  index_players_on_id_and_first_name    (id,first_name)
 #  index_players_on_id_and_goals_scored  (id,goals_scored)
 #  index_players_on_id_and_last_name     (id,last_name)
@@ -74,9 +75,8 @@ FactoryBot.define do
     history { [] }
     history_past { [] }
 
-
     trait :with_history do
-      history {
+      history do
         fixture ||= create :fixture
         [
           {
@@ -108,12 +108,12 @@ FactoryBot.define do
             'ict_index' => '10.6',
             'value' => 120,
             'transfers_balance' => 0,
-            'selected' => 2823465,
+            'selected' => 2_823_465,
             'transfers_in' => 0,
-            'transfers_out' => 0
-          }
+            'transfers_out' => 0,
+          },
         ]
-      }
+      end
     end
 
     trait :forward do

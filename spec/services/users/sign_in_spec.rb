@@ -37,10 +37,10 @@ RSpec.describe Users::SignIn, type: :service do
   end
 
   it 'fails if the email is invalid' do
-    service = described_class.new({
+    service = described_class.new(
       email: 'some@user.com',
       password: user.password,
-    })
+    )
 
     service.call
 

@@ -13,9 +13,11 @@
 #
 # Indexes
 #
-#  index_draft_picks_on_fpl_team_id  (fpl_team_id)
-#  index_draft_picks_on_league_id    (league_id)
-#  index_draft_picks_on_player_id    (player_id)
+#  index_draft_picks_on_fpl_team_id                (fpl_team_id)
+#  index_draft_picks_on_league_id                  (league_id)
+#  index_draft_picks_on_pick_number_and_league_id  (pick_number,league_id) UNIQUE
+#  index_draft_picks_on_player_id                  (player_id)
+#  index_draft_picks_on_player_id_and_league_id    (player_id,league_id) UNIQUE
 #
 FactoryBot.define do
   factory :draft_pick do

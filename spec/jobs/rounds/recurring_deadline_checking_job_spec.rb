@@ -41,7 +41,7 @@ RSpec.describe Rounds::RecurringDeadlineCheckingJob do
     end
   end
 
-  describe '#check_waiver_deadline' do
+  describe '#check_deadline_time' do
     it 'triggers the inter team trade group expire job' do
       travel_to round.deadline_time_as_time.beginning_of_day do
         expect { described_class.perform_now }

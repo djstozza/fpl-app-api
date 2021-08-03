@@ -10,15 +10,19 @@ class LeagueDecorator < Draper::Decorator
   def next_fpl_team
     return if ordered_fpl_teams.blank?
 
-    divider = next_mini_draft_pick_number % (2 * fpl_team_count)
-
-    index = divider == 0 ? divider : divider - 1
-
-    if index < fpl_team_count
-      ordered_fpl_teams[index % fpl_team_count]
+    if fpl_team_index < fpl_team_count
+      ordered_fpl_teams[fpl_team_index % fpl_team_count]
     else
-      ordered_fpl_teams.reverse[index % fpl_team_count]
+      ordered_fpl_teams.reverse[fpl_team_index % fpl_team_count]
     end
+  end
+
+  def fpl_team_divider
+    next_mini_draft_pick_number % (2 * fpl_team_count)
+  end
+
+  def fpl_team_index
+    fpl_team_divider.zero? ? fpl_team_divider : fpl_team_divider - 1
   end
 
   def mini_draft_status_hash(fpl_team, user)
@@ -41,7 +45,7 @@ class LeagueDecorator < Draper::Decorator
   end
 
   def seasonal_mini_draft_picks
-    @mini_draft_picks ||= mini_draft_picks.where(season: season).order(:pick_number)
+    @seasonal_mini_draft_picks ||= mini_draft_picks.where(season: season).order(:pick_number)
   end
 
   def active_fpl_teams
@@ -57,8 +61,11 @@ class LeagueDecorator < Draper::Decorator
   end
 
   def ordered_fpl_teams
-    @ordered_fpl_teams ||= season == 'summer' ? active_fpl_teams.order(mini_draft_pick_number: :asc)
-      : active_fpl_teams.order(rank: :desc)
+    @ordered_fpl_teams ||= if season == 'summer'
+                             active_fpl_teams.order(mini_draft_pick_number: :asc)
+                           else
+                             active_fpl_teams.order(rank: :desc)
+                           end
   end
 
   def fpl_team_count

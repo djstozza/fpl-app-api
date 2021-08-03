@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Trades::Process, type: :service do
   subject(:service) { described_class.call(data, list_position, user) }
+
   let(:user) { create :user }
   let(:fpl_team) { create :fpl_team, owner: user }
   let(:round) { create :round, :current, deadline_time: 1.hour.from_now }
@@ -18,7 +19,7 @@ RSpec.describe Trades::Process, type: :service do
 
   it 'successfully processes the trade' do
     expect { service }
-      .to change { Trade.count }.from(0).to(1)
+      .to change(Trade, :count).from(0).to(1)
       .and change { list_position.reload.player }.from(player1).to(player2)
       .and change { fpl_team.reload.players }.from([player1]).to([player2])
       .and change { fpl_team.league.reload.players }.from([player1]).to([player2])
@@ -36,8 +37,8 @@ RSpec.describe Trades::Process, type: :service do
     fpl_team.update(owner: create(:user))
 
     expect { subject }
-      .to change { Trade.count }.by(0)
-      .and change { list_position.reload.updated_at }.by(0)
+      .to not_change { Trade.count }
+      .and not_change { list_position.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('You are not authorised to perform this action')
   end
@@ -46,8 +47,8 @@ RSpec.describe Trades::Process, type: :service do
     round.update(data_checked: true)
 
     expect { subject }
-      .to change { Trade.count }.by(0)
-      .and change { list_position.reload.updated_at }.by(0)
+      .to not_change { Trade.count }
+      .and not_change { list_position.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The team list is not from the current round')
   end
@@ -56,8 +57,8 @@ RSpec.describe Trades::Process, type: :service do
     round.update(deadline_time: 1.minute.ago)
 
     expect { subject }
-      .to change { Trade.count }.by(0)
-      .and change { list_position.reload.updated_at }.by(0)
+      .to not_change { Trade.count }
+      .and not_change { list_position.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The trade window is now closed')
   end
@@ -66,8 +67,8 @@ RSpec.describe Trades::Process, type: :service do
     data[:in_player_id] = 'invalid'
 
     expect { subject }
-      .to change { Trade.count }.by(0)
-      .and change { list_position.reload.updated_at }.by(0)
+      .to not_change { Trade.count }
+      .and not_change { list_position.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The player you have selected to waiver in does not exist')
   end
@@ -76,8 +77,8 @@ RSpec.describe Trades::Process, type: :service do
     player2.update(position: create(:position, :midfielder))
 
     expect { subject }
-      .to change { Trade.count }.by(0)
-      .and change { list_position.reload.updated_at }.by(0)
+      .to not_change { Trade.count }
+      .and not_change { list_position.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('Players must have the same positions')
   end
@@ -88,8 +89,8 @@ RSpec.describe Trades::Process, type: :service do
     end
 
     expect { subject }
-      .to change { Trade.count }.by(0)
-      .and change { list_position.reload.updated_at }.by(0)
+      .to not_change { Trade.count }
+      .and not_change { list_position.reload.updated_at }
 
     expect(service.errors.full_messages).to contain_exactly(
       "You can't have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player2.team.short_name})",
@@ -101,8 +102,8 @@ RSpec.describe Trades::Process, type: :service do
     other_fpl_team.players << player2
 
     expect { subject }
-      .to change { Trade.count }.by(0)
-      .and change { list_position.reload.updated_at }.by(0)
+      .to not_change { Trade.count }
+      .and not_change { list_position.reload.updated_at }
 
     expect(service.errors.full_messages).to contain_exactly(
       'The player you have selected to trade in is already part of a team in your league'

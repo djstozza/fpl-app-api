@@ -47,6 +47,7 @@
 #
 # Indexes
 #
+#  index_players_on_external_id          (external_id) UNIQUE
 #  index_players_on_id_and_first_name    (id,first_name)
 #  index_players_on_id_and_goals_scored  (id,goals_scored)
 #  index_players_on_id_and_last_name     (id,last_name)
@@ -84,8 +85,8 @@ class PlayerSerializer < BaseSerializer
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
-      attrs[:has_history] = history.count > 0 if includes[:history]
-      attrs[:has_history_past] = history_past.count > 0 if includes[:history_past]
+      attrs[:has_history] = history.any? if includes[:history]
+      attrs[:has_history_past] = history_past.any? if includes[:history_past]
       attrs[:position] = serialized_position
       attrs[:team] = serialized_team if includes[:team]
     end

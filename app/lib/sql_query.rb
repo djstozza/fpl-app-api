@@ -64,5 +64,4 @@ class SqlQuery
   def sql_literal(*)
     @dataset.sql
   end
-
 end

@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe FplTeams::ProcessInitialLineup, type: :service do
+  subject(:service) { described_class.call(fpl_team) }
+
   let(:fpl_team) { create :fpl_team }
   let!(:current_round) { create :round, :current }
   let!(:next_round) { create :round, :next }
-  subject(:service) { described_class.call(fpl_team) }
   let!(:forward1) { create :player, :forward, ict_index: 30 }
   let!(:forward2) { create :player, :forward, ict_index: 4 }
   let!(:forward3) { create :player, :forward, ict_index: 300 }
@@ -27,7 +28,7 @@ RSpec.describe FplTeams::ProcessInitialLineup, type: :service do
 
   it 'populates the first lineup for an fpl_team for the current round' do
     expect { service }
-      .to change { ListPosition.count }.from(0).to(15)
+      .to change(ListPosition, :count).from(0).to(15)
 
     fpl_team_list = service.fpl_team_list
     expect(fpl_team_list.round).to eq(current_round)
@@ -66,9 +67,8 @@ RSpec.describe FplTeams::ProcessInitialLineup, type: :service do
   it 'populates the initial lineup with the next round if there is no current round' do
     current_round.update(is_current: false)
 
-
     expect { service }
-      .to change { ListPosition.count }.from(0).to(15)
+      .to change(ListPosition, :count).from(0).to(15)
 
     fpl_team_list = service.fpl_team_list
     expect(fpl_team_list.round).to eq(next_round)

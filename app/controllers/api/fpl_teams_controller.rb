@@ -1,7 +1,7 @@
 class Api::FplTeamsController < ApplicationController
   before_action :authenticate_user!
 
-  load_resource :fpl_team, only: [:show, :update]
+  load_resource :fpl_team, only: %i[show update]
 
   # GET api/fpl_teams
   def index

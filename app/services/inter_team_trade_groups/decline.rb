@@ -1,6 +1,6 @@
 class InterTeamTradeGroups::Decline < InterTeamTradeGroups::BaseService
   validate :user_can_approve
-  validate :is_submitted
+  validate :submitted?
 
   def initialize(inter_team_trade_group, user)
     @inter_team_trade_group = inter_team_trade_group
@@ -18,7 +18,7 @@ class InterTeamTradeGroups::Decline < InterTeamTradeGroups::BaseService
 
   private
 
-  def is_submitted
+  def submitted?
     return if inter_team_trade_group.submitted?
 
     errors.add(:base, 'You can only decline submitted trade proposals')

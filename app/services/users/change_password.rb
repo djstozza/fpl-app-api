@@ -21,7 +21,7 @@ class Users::ChangePassword < Users::BaseService
   private
 
   def valid_new_password
-    return unless new_password === password
+    return unless new_password == password
 
     errors.add(:new_password, 'must be different from your current password')
   end

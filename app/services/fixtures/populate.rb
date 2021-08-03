@@ -1,5 +1,20 @@
 # Populate fixtures service
 class Fixtures::Populate < BasePopulateService
+  ATTRS = %w[
+    kickoff_time
+    code
+    team_h_score
+    team_a_score
+    stats
+    started
+    finished
+    provisional_start_time
+    finished_provisional
+    minutes
+    team_h_difficulty
+    team_a_difficulty
+  ].freeze
+
   def initialize(round = nil)
     @round = round
   end
@@ -19,18 +34,7 @@ class Fixtures::Populate < BasePopulateService
         round: round,
         home_team: home_team,
         away_team: away_team,
-        kickoff_time: fixture_json['kickoff_time'],
-        code: fixture_json['code'],
-        team_h_score: fixture_json['team_h_score'],
-        team_a_score: fixture_json['team_a_score'],
-        stats: fixture_json['stats'],
-        started: fixture_json['started'],
-        finished: fixture_json['finished'],
-        provisional_start_time: fixture_json['provisional_start_time'],
-        finished_provisional: fixture_json['finished_provisional'],
-        minutes: fixture_json['minutes'],
-        team_h_difficulty: fixture_json['team_h_difficulty'],
-        team_a_difficulty: fixture_json['team_a_difficulty']
+        **fixture_json.slice(*ATTRS),
       )
     end
   end

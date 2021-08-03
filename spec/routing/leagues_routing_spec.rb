@@ -10,7 +10,6 @@ RSpec.describe Api::LeaguesController, type: :routing do
       expect(get: 'api/leagues/1').to route_to('api/leagues#show', id: '1')
     end
 
-
     it 'routes to #create' do
       expect(post: 'api/leagues').to route_to('api/leagues#create')
     end

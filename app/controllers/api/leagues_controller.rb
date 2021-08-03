@@ -1,7 +1,7 @@
 class Api::LeaguesController < ApplicationController
   before_action :authenticate_user!
 
-  load_resource :league, only: [:show, :update]
+  load_resource :league, only: %i[show update]
 
   # GET /api/leagues
   def index

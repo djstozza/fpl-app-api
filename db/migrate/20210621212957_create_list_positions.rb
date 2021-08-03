@@ -7,6 +7,6 @@ class CreateListPositions < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    add_index :list_positions, [:player_id, :fpl_team_list_id], unique: true
+    add_index :list_positions, %i[player_id fpl_team_list_id], unique: true
   end
 end

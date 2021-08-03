@@ -28,6 +28,10 @@
 #  updated_at            :datetime         not null
 #  external_id           :integer
 #
+# Indexes
+#
+#  index_teams_on_external_id  (external_id) UNIQUE
+#
 FactoryBot.define do
   factory :team do
     sequence :external_id do |n|

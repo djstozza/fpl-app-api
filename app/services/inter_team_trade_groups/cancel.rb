@@ -1,6 +1,6 @@
 class InterTeamTradeGroups::Cancel < InterTeamTradeGroups::BaseService
   validate :user_can_trade
-  validate :is_still_active
+  validate :still_active?
 
   def initialize(inter_team_trade_group, user)
     @inter_team_trade_group = inter_team_trade_group
@@ -18,7 +18,7 @@ class InterTeamTradeGroups::Cancel < InterTeamTradeGroups::BaseService
 
   private
 
-  def is_still_active
+  def still_active?
     return if inter_team_trade_group.submitted? || inter_team_trade_group.pending?
 
     errors.add(:base, 'You cannot cancel this trade proposal, as it has already been processed')

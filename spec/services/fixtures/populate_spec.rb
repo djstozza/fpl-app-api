@@ -10,27 +10,39 @@ RSpec.describe Fixtures::Populate, type: :service do
     Teams::Populate.call
   end
 
-
   describe '#call - all round fixtures' do
     before { stub_fixture_request }
 
     it 'creates fixtures' do
-      expect { described_class.call }.to change { Fixture.count }.from(0).to(18)
+      expect { described_class.call }.to change(Fixture, :count).from(0).to(18)
 
       fixture = Fixture.first
 
       expect(fixture.attributes).to include(
         'external_id' => 2,
-        "team_h_difficulty" => 3,
-        "team_a_difficulty" => 2,
-        "minutes"=>90,
-        "started"=>true,
-        "finished"=>true,
-        "stats"=> including(
+        'team_h_difficulty' => 3,
+        'team_a_difficulty' => 2,
+        'minutes' => 90,
+        'started' => true,
+        'finished' => true,
+        'stats' => including(
           {
-            "identifier"=>"goals_scored",
-            "a"=>[{ "value"=>1, "element"=>4 }, { "value"=>1, "element"=>6 }, { "value"=>1, "element"=>494 }],
-            "h"=>[],
+            'identifier' => 'goals_scored',
+            'a' => [
+              {
+                'value' => 1,
+                'element' => 4,
+              },
+              {
+                'value' => 1,
+                'element' => 6,
+              },
+              {
+                'value' => 1,
+                'element' => 494,
+              },
+            ],
+            'h' => [],
           }
         )
       )
@@ -68,8 +80,8 @@ RSpec.describe Fixtures::Populate, type: :service do
 
       expect { described_class.call(round_1) }
         .to change { fixture_2.reload.finished }.from(false).to(true)
-        .and change { fixture_1.reload.updated_at }.by(0)
-        .and change { fixture_3.reload.updated_at }.by(0)
+        .and not_change { fixture_1.reload.updated_at }
+        .and not_change { fixture_3.reload.updated_at }
     end
   end
 end

@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
 
 require 'fileutils'
 require_relative '../lib/initialization_runner'
@@ -21,23 +20,23 @@ FileUtils.chdir APP_ROOT do
 
   run_part(:bundle)
 
-  if ARGV.include?("--reset")
+  if ARGV.include?('--reset')
     run_part(:dropdb) do
-      print_heading "Dropping database"
+      print_heading 'Dropping database'
       system! 'bin/rails db:drop'
     end
   end
 
   run_part(:createdb) do
-    print_heading "Creating database"
+    print_heading 'Creating database'
     system! 'bin/rails db:create'
   end
 
   run_part(:setupdb) do
-    print_heading "Preparing database"
+    print_heading 'Preparing database'
     system! 'bin/rails db:migrate'
 
-    print_heading "Seeding database"
+    print_heading 'Seeding database'
 
     require 'active_support/time'
     seeding_began_at = Time.current

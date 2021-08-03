@@ -13,6 +13,7 @@
 #
 # Indexes
 #
+#  index_leagues_on_name      (name) UNIQUE
 #  index_leagues_on_owner_id  (owner_id)
 #
 FactoryBot.define do

@@ -14,8 +14,11 @@
 #
 # Indexes
 #
-#  index_fpl_teams_on_league_id  (league_id)
-#  index_fpl_teams_on_owner_id   (owner_id)
+#  index_fpl_teams_on_draft_pick_number_and_league_id       (draft_pick_number,league_id) UNIQUE
+#  index_fpl_teams_on_league_id                             (league_id)
+#  index_fpl_teams_on_mini_draft_pick_number_and_league_id  (mini_draft_pick_number,league_id) UNIQUE
+#  index_fpl_teams_on_name                                  (name) UNIQUE
+#  index_fpl_teams_on_owner_id                              (owner_id)
 #
 FactoryBot.define do
   factory :fpl_team do

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe WaiverPicks::Approve, type: :service do
   subject(:service) { described_class.call(waiver_pick) }
+
   let(:user) { create :user }
   let(:fpl_team) { create :fpl_team, owner: user }
   let(:round) { create :round, :current, deadline_time: 23.hours.from_now }
@@ -26,8 +27,8 @@ RSpec.describe WaiverPicks::Approve, type: :service do
     round.update(data_checked: true)
 
     expect { subject }
-      .to change { list_position.reload.updated_at }.by(0)
-      .and change { waiver_pick.reload.updated_at }.by(0)
+      .to not_change { list_position.reload.updated_at }
+      .and not_change { waiver_pick.reload.updated_at }
 
     expect(fpl_team.reload.players).to include(player1)
     expect(fpl_team.reload.players).not_to include(player2)
@@ -41,8 +42,8 @@ RSpec.describe WaiverPicks::Approve, type: :service do
     round.update(deadline_time: 2.days.from_now)
 
     expect { subject }
-      .to change { list_position.reload.updated_at }.by(0)
-      .and change { waiver_pick.reload.updated_at }.by(0)
+      .to not_change { list_position.reload.updated_at }
+      .and not_change { waiver_pick.reload.updated_at }
 
     expect(fpl_team.reload.players).to include(player1)
     expect(fpl_team.reload.players).not_to include(player2)
@@ -56,22 +57,20 @@ RSpec.describe WaiverPicks::Approve, type: :service do
     fpl_team.players << player2
 
     expect { subject }
-      .to change { list_position.reload.updated_at }.by(0)
-      .and change { waiver_pick.reload.updated_at }.by(0)
+      .to not_change { list_position.reload.updated_at }
+      .and not_change { waiver_pick.reload.updated_at }
 
     expect(fpl_team.reload.players).to include(player1, player2)
     expect(fpl_team.league.reload.players).to include(player1, player2)
   end
 
-
   it 'does not update the waiver pick if the in_player is already part of the league' do
     another_fpl_team = create(:fpl_team, league: fpl_team.league)
     another_fpl_team.players << player2
 
-
     expect { subject }
-      .to change { list_position.reload.updated_at }.by(0)
-      .and change { waiver_pick.reload.updated_at }.by(0)
+      .to not_change { list_position.reload.updated_at }
+      .and not_change { waiver_pick.reload.updated_at }
 
     expect(fpl_team.reload.players).to include(player1)
     expect(fpl_team.reload.players).not_to include(player2)
@@ -82,8 +81,8 @@ RSpec.describe WaiverPicks::Approve, type: :service do
     waiver_pick.update(status: 'approved')
 
     expect { subject }
-    .to change { list_position.reload.updated_at }.by(0)
-    .and change { waiver_pick.reload.updated_at }.by(0)
+    .to not_change { list_position.reload.updated_at }
+    .and not_change { waiver_pick.reload.updated_at }
 
     expect(fpl_team.reload.players).to include(player1)
     expect(fpl_team.reload.players).not_to include(player2)

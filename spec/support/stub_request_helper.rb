@@ -8,7 +8,7 @@ module StubRequestHelper
       .and_return(
         status: 200,
         body: file_fixture('bootstrap_static.json').read,
-        headers: { 'Content-Type'=> 'application/json' },
+        headers: { 'Content-Type' => 'application/json' },
       )
   end
 
@@ -17,7 +17,7 @@ module StubRequestHelper
       .and_return(
         status: 200,
         body: file_fixture('fixtures.json').read,
-        headers: { 'Content-Type'=> 'application/json' },
+        headers: { 'Content-Type' => 'application/json' },
       )
   end
 
@@ -26,7 +26,7 @@ module StubRequestHelper
       .and_return(
         status: 200,
         body: file_fixture("fixtures_#{round_external_id}.json").read,
-        headers: { 'Content-Type'=> 'application/json' },
+        headers: { 'Content-Type' => 'application/json' },
       )
   end
 
@@ -35,7 +35,7 @@ module StubRequestHelper
       .and_return(
         status: 200,
         body: file_fixture("element_summary_#{external_id}.json").read,
-        headers: { 'Content-Type'=> 'application/json' },
+        headers: { 'Content-Type' => 'application/json' },
       )
   end
 end

@@ -23,13 +23,22 @@ class InterTeamTradeGroups::Create < InterTeamTradeGroups::BaseService
   def call
     return unless valid?
 
+    update_inter_team_trade_group
+    update_inter_team_trade
+  end
+
+  private
+
+  def update_inter_team_trade_group
     inter_team_trade_group.update(
       out_fpl_team_list: out_fpl_team_list,
       in_fpl_team_list: in_fpl_team_list,
     )
 
     errors.merge!(inter_team_trade_group.errors)
+  end
 
+  def update_inter_team_trade
     inter_team_trade.update(
       out_player: out_player,
       in_player: in_player,

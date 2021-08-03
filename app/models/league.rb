@@ -13,6 +13,7 @@
 #
 # Indexes
 #
+#  index_leagues_on_name      (name) UNIQUE
 #  index_leagues_on_owner_id  (owner_id)
 #
 class League < ApplicationRecord
@@ -23,7 +24,7 @@ class League < ApplicationRecord
   # 15 player picks per team & 1 mini draft pick
   PICKS_PER_TEAM = FplTeam::QUOTAS[:players] + 1
 
-  belongs_to :owner, class_name: 'User', foreign_key: :owner_id
+  belongs_to :owner, class_name: 'User'
   has_many :fpl_teams
   has_many :players, through: :fpl_teams
   has_many :users, through: :fpl_teams, source: :owner
@@ -54,7 +55,7 @@ class League < ApplicationRecord
     draft? || live?
   end
 
-  def has_incomplete_draft_picks?
+  def incomplete_draft_picks?
     draft_picks.any? && draft_picks.where(mini_draft: false, player_id: nil).any?
   end
 end

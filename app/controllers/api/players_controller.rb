@@ -45,7 +45,7 @@ class Api::PlayersController < ApplicationController
   end
 
   def sort_params
-    permitted =  params.fetch(:sort, {}).permit(
+    permitted = params.fetch(:sort, {}).permit(
       :last_name,
       :first_name,
       'teams.short_name',

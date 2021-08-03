@@ -1,9 +1,9 @@
 class InterTeamTradeGroups::Submit < InterTeamTradeGroups::BaseService
   validate :user_can_trade
-  validate :is_pending
+  validate :pending?
   validate :no_duplicate_trades
   validate :all_out_players_tradeable
-  validate :alL_in_players_tradeable
+  validate :all_in_players_tradeable
   validate :valid_team_quota_out_fpl_team
   validate :valid_team_quota_in_fpl_team
 

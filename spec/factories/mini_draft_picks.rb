@@ -15,10 +15,11 @@
 #
 # Indexes
 #
-#  index_mini_draft_picks_on_fpl_team_id    (fpl_team_id)
-#  index_mini_draft_picks_on_in_player_id   (in_player_id)
-#  index_mini_draft_picks_on_league_id      (league_id)
-#  index_mini_draft_picks_on_out_player_id  (out_player_id)
+#  index_mini_draft_picks_on_fpl_team_id                           (fpl_team_id)
+#  index_mini_draft_picks_on_in_player_id                          (in_player_id)
+#  index_mini_draft_picks_on_league_id                             (league_id)
+#  index_mini_draft_picks_on_out_player_id                         (out_player_id)
+#  index_mini_draft_picks_on_pick_number_and_league_id_and_season  (pick_number,league_id,season) UNIQUE
 #
 # Foreign Keys
 #

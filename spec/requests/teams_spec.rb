@@ -32,7 +32,7 @@ RSpec.describe '/api/teams', type: :request do
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      api.get api_teams_url, params: { sort: { name: 'asc'} }
+      api.get api_teams_url, params: { sort: { name: 'asc' } }
 
       expect(response).to be_successful
 
@@ -52,9 +52,9 @@ RSpec.describe '/api/teams', type: :request do
   end
 
   describe 'GET /show', :no_transaction do
-    include_examples 'not found', 'team'
-
-    let(:team3) { build :team }
+    let!(:player1) { create :player, :forward, team: team1 }
+    let!(:player2) { create :player, :midfielder, team: team1 }
+    let!(:team3) { build :team }
 
     let!(:fixture1) do
       create(
@@ -86,8 +86,7 @@ RSpec.describe '/api/teams', type: :request do
       )
     end
 
-    let!(:player1) { create :player, :forward, team: team1 }
-    let!(:player2) { create :player, :midfielder, team: team1 }
+    include_examples 'not found', 'team'
 
     it 'renders a successful response' do
       api.get api_team_url(team1)
@@ -111,13 +110,13 @@ RSpec.describe '/api/teams', type: :request do
 
     it 'caches against the request' do
       api.get api_team_url(team1)
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:success)
 
       etag = api.response.headers['ETag']
       last_modified = api.response.headers['Last-Modified']
 
       get_request_with_caching(team1, etag, last_modified)
-      expect(api.response).to have_http_status(304)
+      expect(api.response).to have_http_status(:not_modified)
 
       etag = api.response.headers['ETag']
       last_modified = api.response.headers['Last-Modified']
@@ -125,7 +124,7 @@ RSpec.describe '/api/teams', type: :request do
       team1.update!(updated_at: 10.minutes.from_now)
 
       get_request_with_caching(team1, etag, last_modified)
-      expect(api.response).to have_http_status(200)
+      expect(api.response).to have_http_status(:success)
     end
   end
 

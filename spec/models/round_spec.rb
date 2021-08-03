@@ -17,6 +17,10 @@
 #  updated_at                :datetime         not null
 #  external_id               :integer
 #
+# Indexes
+#
+#  index_rounds_on_external_id  (external_id) UNIQUE
+#
 require 'rails_helper'
 
 RSpec.describe Round, type: :model do
@@ -28,36 +32,35 @@ RSpec.describe Round, type: :model do
     expect(build(:round, :future)).to be_valid
   end
 
-  describe '#is_current?' do
+  describe '#current?' do
     let!(:round) { create :round, :current }
 
-
     it 'is true if is_current = true and data_checked = false' do
-      expect(round.is_current?).to eq(true)
+      expect(round.current?).to eq(true)
     end
 
     it 'is false if is_current = true and data_checked = true' do
       round.update(data_checked: true)
 
-      expect(round.is_current?).to eq(false)
+      expect(round.current?).to eq(false)
     end
 
     it 'is false if is_current = false' do
       round.update(is_current: false)
 
-      expect(round.is_current?).to eq(false)
+      expect(round.current?).to eq(false)
     end
 
     it 'is true if is_next = true if no round with is_current = true or if it is data_checked' do
       next_round = create(:round, :next)
 
-      expect(next_round.is_current?).to eq(false)
+      expect(next_round.current?).to eq(false)
 
       round.update(data_checked: true)
-      expect(next_round.is_current?).to eq(true)
+      expect(next_round.current?).to eq(true)
 
       round.update(is_current: false, data_checked: false)
-      expect(next_round.is_current?).to eq(true)
+      expect(next_round.current?).to eq(true)
     end
   end
 end

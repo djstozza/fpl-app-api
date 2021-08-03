@@ -14,6 +14,8 @@
 #  index_inter_team_trades_on_in_player_id               (in_player_id)
 #  index_inter_team_trades_on_inter_team_trade_group_id  (inter_team_trade_group_id)
 #  index_inter_team_trades_on_out_player_id              (out_player_id)
+#  unique_in_player                                      (in_player_id,inter_team_trade_group_id) UNIQUE
+#  unique_out_player                                     (out_player_id,inter_team_trade_group_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -23,7 +25,7 @@
 require 'rails_helper'
 
 RSpec.describe InterTeamTrade, type: :model do
-  it ('has a valid factory') do
-    expect(build :inter_team_trade).to be_valid
+  it 'has a valid factory' do
+    expect(build(:inter_team_trade)).to be_valid
   end
 end

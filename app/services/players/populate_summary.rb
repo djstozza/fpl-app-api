@@ -1,6 +1,5 @@
 # Populate player summary service
 class Players::PopulateSummary < BasePopulateService
-
   def initialize(player)
     @player = player
   end
@@ -21,6 +20,6 @@ class Players::PopulateSummary < BasePopulateService
   end
 
   def history
-    response['history'].select { |history| history['minutes'] > 0 }
+    response['history'].select { |history| history['minutes'].positive? }
   end
 end

@@ -5,11 +5,10 @@ RSpec.configure do |config|
 
   if config.files_to_run.many?
     config.before(:suite) do
-
       DatabaseCleaner.clean_with(:truncation)
       DatabaseCleaner.cleaning { FactoryBot.lint(traits: true) }
 
-      puts RSpec::Core::Formatters::ConsoleCodes.wrap("✔︎ Linted factories", :success)
+      puts RSpec::Core::Formatters::ConsoleCodes.wrap('✔︎ Linted factories', :success)
     end
   end
 end
@@ -40,7 +39,6 @@ module FactoryBot
         relation = evaluation.object.class
         relation.first or @create_strategy.result(evaluation)
       end
-
     end
   end
 

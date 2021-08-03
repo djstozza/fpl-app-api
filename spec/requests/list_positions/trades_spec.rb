@@ -16,11 +16,11 @@ RSpec.describe 'list_positions/:list_position_id/trades', :no_transaction, type:
 
   describe 'POST /create' do
     it 'successfully processes the trade' do
-      expect {
+      expect do
         api.post api_list_position_trades_url(list_position),
                  params: { trade: { in_player_id: player2.id } }
-      }
-      .to change { Trade.count }.from(0).to(1)
+      end
+      .to change(Trade, :count).from(0).to(1)
       .and change { list_position.reload.player }.from(player1).to(player2)
       .and change { fpl_team.reload.players }.from([player1]).to([player2])
       .and change { fpl_team.league.reload.players }.from([player1]).to([player2])
@@ -55,12 +55,12 @@ RSpec.describe 'list_positions/:list_position_id/trades', :no_transaction, type:
     it 'returns an error if invalid' do
       fpl_team_list.fpl_team.update(owner: create(:user))
 
-      expect {
+      expect do
         api.post api_list_position_trades_url(list_position),
                  params: { trade: { in_player_id: player2.id } }
-      }
-      .to change { Trade.count }.by(0)
-      .and change { list_position.reload.updated_at }.by(0)
+      end
+      .to not_change { Trade.count }
+      .and not_change { list_position.reload.updated_at }
 
       expect(response).to have_http_status(:unprocessable_entity)
 

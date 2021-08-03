@@ -47,6 +47,7 @@
 #
 # Indexes
 #
+#  index_players_on_external_id          (external_id) UNIQUE
 #  index_players_on_id_and_first_name    (id,first_name)
 #  index_players_on_id_and_goals_scored  (id,goals_scored)
 #  index_players_on_id_and_last_name     (id,last_name)
@@ -57,10 +58,11 @@
 require 'rails_helper'
 
 RSpec.describe PlayerSerializer, type: :serializer do
-  let!(:player)  { create :player }
+  let!(:player) { create :player }
+
   describe '.has_history' do
     it 'returns true if the history attribute count is > 0' do
-      player.update(history: [double('history')])
+      player.update(history: [instance_double('history')])
 
       expect(described_class.new(player, history: true).as_json).to include(has_history: true)
     end
@@ -72,7 +74,7 @@ RSpec.describe PlayerSerializer, type: :serializer do
 
   describe '.has_history_past' do
     it 'returns true if the history attribute count is > 0' do
-      player.update(history_past: [double('history_past')])
+      player.update(history_past: [instance_double('history_past')])
 
       expect(described_class.new(player, history_past: true).as_json).to include(has_history_past: true)
     end

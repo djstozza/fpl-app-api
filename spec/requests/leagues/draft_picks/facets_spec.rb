@@ -14,7 +14,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks/facets', :no_transaction, type
 
     expect(api.data).to include(
       'positions' => containing_exactly(
-          a_hash_including(
+        a_hash_including(
           'label' => draft_pick1.player.position.singular_name_short,
           'value' => draft_pick1.player.position.to_param,
         ),

@@ -13,15 +13,15 @@ RSpec.describe 'list_positions/:list_position_id/waiver_picks', :no_transaction,
     let!(:list_position) { create :list_position, fpl_team_list: fpl_team_list, player: player1 }
 
     it 'creates a new waiver_pick' do
-      expect {
+      expect do
         api.post api_list_position_waiver_picks_url(list_position),
                  params: {
                    waiver_pick: {
                      in_player_id: player2.id,
                    },
                  }
-      }.to change { fpl_team_list.waiver_picks.count }.from(0).to(1)
-
+      end
+      .to change { fpl_team_list.waiver_picks.count }.from(0).to(1)
 
       expect(response).to have_http_status(:success)
 
@@ -49,14 +49,15 @@ RSpec.describe 'list_positions/:list_position_id/waiver_picks', :no_transaction,
     it 'returns an error if invalid' do
       fpl_team_list.fpl_team.update(owner: create(:user))
 
-      expect {
+      expect do
         api.post api_list_position_waiver_picks_url(list_position),
                  params: {
                    waiver_pick: {
                      in_player_id: player2.id,
                    },
                  }
-      }.not_to change { WaiverPick.count }
+      end
+      .not_to change(WaiverPick, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
 
@@ -65,5 +66,4 @@ RSpec.describe 'list_positions/:list_position_id/waiver_picks', :no_transaction,
       )
     end
   end
-
 end

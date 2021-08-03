@@ -2,7 +2,7 @@ class InterTeamTradeGroups::RemoveTrade < InterTeamTradeGroups::BaseService
   attr_reader :inter_team_trade, :inter_team_trade_group, :out_fpl_team_list, :user
 
   validate :user_can_trade
-  validate :is_pending
+  validate :pending?
 
   def initialize(inter_team_trade, user)
     @inter_team_trade = inter_team_trade

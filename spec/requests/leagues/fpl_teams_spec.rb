@@ -32,8 +32,8 @@ RSpec.describe 'api/leagues/league_id/fpl_teams', type: :request do
               'id' => user.to_param,
               'email' => user.email,
               'username' => user.username,
-            )
-          )
+            ),
+          ),
         ],
       )
     end

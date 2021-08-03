@@ -28,6 +28,10 @@
 #  updated_at            :datetime         not null
 #  external_id           :integer
 #
+# Indexes
+#
+#  index_teams_on_external_id  (external_id) UNIQUE
+#
 class Team < ApplicationRecord
   has_many :home_fixtures, class_name: 'Fixture', foreign_key: :team_h_id
   has_many :away_fixtures, class_name: 'Fixture', foreign_key: :team_a_id

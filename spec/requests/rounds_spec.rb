@@ -71,7 +71,7 @@ RSpec.describe '/api/rounds', :no_transaction, type: :request do
   end
 
   describe 'GET /show', :no_transaction do
-    include_examples 'not found', 'round'
+    let(:first_round) { Round.first }
 
     before do
       stub_bootstrap_static_request
@@ -84,15 +84,15 @@ RSpec.describe '/api/rounds', :no_transaction, type: :request do
       stub_fixture_request
 
       Fixtures::Populate.call
-
-      @round = Round.first
     end
 
+    include_examples 'not found', 'round'
+
     it 'renders a successful response' do
-      api.get api_round_url(@round)
+      api.get api_round_url(first_round)
 
       expect(api.data).to include(
-        'id' => @round.to_param,
+        'id' => first_round.to_param,
         'is_current' => false,
         'is_next' => false,
         'is_previous' => false,
@@ -130,7 +130,7 @@ RSpec.describe '/api/rounds', :no_transaction, type: :request do
                   {
                     'value' => 1,
                     'player' => a_hash_including('last_name' => 'Magalhães'),
-                  }
+                  },
                 ],
                 'home' => [],
                 'identifier' => 'goals_scored',
@@ -141,7 +141,7 @@ RSpec.describe '/api/rounds', :no_transaction, type: :request do
                   {
                     'value' => 3,
                     'player' => a_hash_including('last_name' => 'Borges Da Silva'),
-                  }
+                  },
                 ],
                 'home' => [],
                 'identifier' => 'assists',
@@ -154,38 +154,38 @@ RSpec.describe '/api/rounds', :no_transaction, type: :request do
     end
 
     it 'caches against the request' do
-      api.get api_round_url(@round)
+      api.get api_round_url(first_round)
 
-      expect(api.response).to have_http_status(200)
+      expect(api.response).to have_http_status(:success)
 
       etag = api.response.headers['ETag']
       last_modified = api.response.headers['Last-Modified']
 
       get_request_with_caching(etag, last_modified)
-      expect(api.response).to have_http_status(304)
+      expect(api.response).to have_http_status(:not_modified)
 
       etag = api.response.headers['ETag']
       last_modified = api.response.headers['Last-Modified']
 
-      @round.update!(updated_at: 10.minutes.from_now)
+      first_round.update!(updated_at: 10.minutes.from_now)
 
       get_request_with_caching(etag, last_modified)
-      expect(api.response).to have_http_status(200)
+      expect(api.response).to have_http_status(:success)
 
       etag = api.response.headers['ETag']
       last_modified = api.response.headers['Last-Modified']
 
-      @round.fixtures.first.update!(updated_at: 20.minutes.from_now)
+      first_round.fixtures.first.update!(updated_at: 20.minutes.from_now)
 
       get_request_with_caching(etag, last_modified)
-      expect(api.response).to have_http_status(200)
+      expect(api.response).to have_http_status(:success)
     end
   end
 
   private
 
   def get_request_with_caching(etag, last_modified)
-    api.get api_round_url(@round),
+    api.get api_round_url(first_round),
             headers: {
               'HTTP_IF_NONE_MATCH' => etag,
               'HTTP_IF_MODIFIED_SINCE' => last_modified,

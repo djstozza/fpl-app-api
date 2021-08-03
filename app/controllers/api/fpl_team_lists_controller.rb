@@ -1,6 +1,6 @@
 class Api::FplTeamListsController < ApplicationController
   before_action :authenticate_user!
-  load_resource :fpl_team_list, only: [:show, :update]
+  load_resource :fpl_team_list, only: %i[show update]
 
   # GET /api/fpl_team_lists
   def index
@@ -29,7 +29,7 @@ class Api::FplTeamListsController < ApplicationController
     SqlQuery.results(
       'fpl_team_lists/list_position_details',
       fpl_team_list_id: fpl_team_list.id,
-      excluded_player_ids: Array(filter_params[:excluded_player_ids]&.split(',').presence).compact
+      excluded_player_ids: compacted_params(filter_params[:excluded_player_ids]),
     )
   end
 

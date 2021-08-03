@@ -20,13 +20,11 @@ RSpec.describe 'list_positions/:list_position_id/tradeable_list_position_facets'
   let(:player4) { create :player, position: position1 }
   let(:player5) { create :player, position: position2 }
 
-
   let!(:list_position1) { create :list_position, player: player1, fpl_team_list: fpl_team_list1 }
   let!(:list_position2) { create :list_position, player: player2, fpl_team_list: fpl_team_list2 }
   let!(:list_position3) { create :list_position, player: player3, fpl_team_list: fpl_team_list2 }
   let!(:list_position4) { create :list_position, player: player4, fpl_team_list: fpl_team_list3 }
   let!(:list_position5) { create :list_position, player: player5, fpl_team_list: fpl_team_list3 }
-
 
   before { api.authenticate(fpl_team1.owner) }
 

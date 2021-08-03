@@ -17,20 +17,24 @@
 #  updated_at                :datetime         not null
 #  external_id               :integer
 #
+# Indexes
+#
+#  index_rounds_on_external_id  (external_id) UNIQUE
+#
 class Round < ApplicationRecord
   has_many :fixtures
 
   validates :external_id, presence: true, uniqueness: true
 
   def deadline_time_as_time
-    deadline_time.kind_of?(String) ? deadline_time.to_time : deadline_time
+    deadline_time.is_a?(String) ? deadline_time.in_time_zone : deadline_time
   end
 
   def waiver_deadline
     deadline_time_as_time - 1.day
   end
 
-  def is_current?
+  def current?
     return true if is_current && !data_checked
     return false unless is_next
 

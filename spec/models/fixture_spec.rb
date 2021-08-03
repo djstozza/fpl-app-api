@@ -24,9 +24,10 @@
 #
 # Indexes
 #
-#  index_fixtures_on_round_id   (round_id)
-#  index_fixtures_on_team_a_id  (team_a_id)
-#  index_fixtures_on_team_h_id  (team_h_id)
+#  index_fixtures_on_external_id  (external_id) UNIQUE
+#  index_fixtures_on_round_id     (round_id)
+#  index_fixtures_on_team_a_id    (team_a_id)
+#  index_fixtures_on_team_h_id    (team_h_id)
 #
 require 'rails_helper'
 

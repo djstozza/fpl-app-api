@@ -1,6 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe 'fpl_team_lists/:fpl_team_list_id/waiver_picks/:waiver_pick_id/change_orders', :no_transaction, type: :request do
+RSpec.describe(
+  'fpl_team_lists/:fpl_team_list_id/waiver_picks/:waiver_pick_id/change_orders',
+  :no_transaction,
+  type: :request
+) do
   let(:round) { create :round, :current }
   let(:fpl_team_list) { create :fpl_team_list, round: round }
   let!(:waiver_pick1) { create :waiver_pick, pick_number: 1, fpl_team_list: fpl_team_list }
@@ -12,15 +16,14 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/waiver_picks/:waiver_pick_id/ch
 
   describe 'POST /create' do
     it 'successfully changes the order' do
-      expect {
+      expect do
         api.post api_fpl_team_list_waiver_pick_change_order_url(fpl_team_list, waiver_pick1),
                  params: { waiver_pick: { new_pick_number: 3 } }
-      }
+      end
       .to change { waiver_pick1.reload.pick_number }.from(1).to(3)
       .and change { waiver_pick2.reload.pick_number }.from(2).to(1)
       .and change { waiver_pick3.reload.pick_number }.from(3).to(2)
-      .and change { waiver_pick4.reload.updated_at }.by(0)
-
+      .and not_change { waiver_pick4.reload.updated_at }
 
       expect(response).to have_http_status(:success)
       expect(api.data).to match(
@@ -104,10 +107,8 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/waiver_picks/:waiver_pick_id/ch
     it 'returns an error if invalid' do
       fpl_team_list.fpl_team.update(owner: create(:user))
 
-
-        api.post api_fpl_team_list_waiver_pick_change_order_url(fpl_team_list, waiver_pick1),
-                 params: { waiver_pick: { new_pick_number: 3 } }
-
+      api.post api_fpl_team_list_waiver_pick_change_order_url(fpl_team_list, waiver_pick1),
+               params: { waiver_pick: { new_pick_number: 3 } }
 
       expect(response).to have_http_status(:unprocessable_entity)
 

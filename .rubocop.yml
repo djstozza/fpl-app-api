@@ -18,6 +18,7 @@ AllCops:
     - 'public/**/*'
     - 'tmp/**/*'
     - 'vendor/**/*'
+    - 'db/schema.rb'
 
 Bundler/OrderedGems:
   Enabled: false
@@ -28,3 +29,108 @@ Rails:
 Rails/ApplicationRecord:
   Exclude:
     - 'db/migrate/*.rb' # Migrations can need pristine AR classes
+
+Style/TrailingCommaInArguments:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*' # Take advantage of RSpec's composable matcher style
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    # Specs and Rake files are actually excluded in the default rules, but this
+    # is ignored when run in some contexts (e.g. SublimeLinter), so re-
+    # iterate the exclusions here:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*'
+    # Some migrations can be very long, but this is acceptable:
+    - 'db/migrate/*.rb'
+    # Routes and environment configuration files can have many lines in their
+    # blocks, and this is acceptable:
+    - 'config/routes.rb'
+    - 'config/environments/*.rb'
+    # Setup files can have long blocks
+    - 'bin/**/*'
+  CountAsOne: ['array', 'hash', 'heredoc'] # Don't penalise multiline hashes, arrays, heredoc
+  ExcludedMethods:
+    - 'sort_params'
+
+
+Layout/MultilineMethodCallIndentation:
+  Exclude:
+    - 'spec/**/*' # Composable matchers intentionally break this
+
+RSpec/LetSetup:
+  Enabled: false
+
+Metrics/MethodLength:
+  Exclude:
+    # Migrations can be long, but don't really need to be broken down into
+    # smaller methods:
+    - 'db/migrate/*.rb'
+  Max: 15 # Default 10 is too stringent, also Metrics/AbcSize helps keep method
+          # size in check (see https://github.com/bbatsov/rubocop/pull/1370#issuecomment-63924440)
+  CountAsOne: ['array', 'hash', 'heredoc'] # Don't penalise multiline hashes, arrays, heredoc
+  ExcludedMethods:
+    - 'sort_params'
+
+Metrics/AbcSize:
+  Exclude:
+    # Migrations can be long, but don't really need to be broken down into
+    # smaller methods:
+    - 'db/migrate/*.rb'
+    - 'app/serializers/*.rb'
+  CountAsOne: ['array', 'hash', 'heredoc'] # Don't penalise multiline hashes, arrays, heredoc
+
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Rails/InverseOf:
+  Enabled: false
+
+Rails/HasAndBelongsToMany:
+  Enabled: false
+
+Rails/BulkChangeTable:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false

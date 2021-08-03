@@ -94,7 +94,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks', :no_transaction, type: :requ
 
       api.get api_league_draft_picks_path(league), params: {
         filter: {
-          fpl_team_id: "#{draft_pick1.fpl_team.to_param},#{draft_pick2.fpl_team.to_param}"
+          fpl_team_id: "#{draft_pick1.fpl_team.to_param},#{draft_pick2.fpl_team.to_param}",
         },
       }
 

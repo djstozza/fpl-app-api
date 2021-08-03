@@ -32,7 +32,7 @@ class Leagues::UpdateDraftPick < Leagues::BaseService
 
     DraftPicks::BroadcastJob.perform_later(draft_pick.id)
 
-    return if league.has_incomplete_draft_picks?
+    return if league.incomplete_draft_picks?
 
     Leagues::ActivateJob.perform_later(league.id)
   end
@@ -116,12 +116,12 @@ class Leagues::UpdateDraftPick < Leagues::BaseService
   end
 
   def maximum_number_of_players_from_team
-   return if fpl_team.teams.empty?
-   return if fpl_team.players.where(team: player.team).count < FplTeam::QUOTAS[:team]
+    return if fpl_team.teams.empty?
+    return if fpl_team.players.where(team: player.team).count < FplTeam::QUOTAS[:team]
 
-   errors.add(
-     :base,
-     "You cannot have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player.team.name})"
-   )
+    errors.add(
+      :base,
+      "You cannot have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player.team.name})"
+    )
   end
 end

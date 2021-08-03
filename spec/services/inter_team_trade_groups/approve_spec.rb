@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe InterTeamTradeGroups::Approve, type: :service do
   subject(:service) { described_class.call(inter_team_trade_group, user) }
+
   let(:round) { create :round, :current }
   let(:user) { create :user }
   let(:fpl_team1) { create :fpl_team }
@@ -67,7 +68,7 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
     fpl_team2.update(owner: create(:user))
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('You are not authorised to perform this action')
   end
@@ -76,7 +77,7 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
     round.update(data_checked: true)
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('This trade is not from the current round')
   end
@@ -85,7 +86,7 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
     round.update(deadline_time: 1.minute.ago)
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The trade window is now closed')
   end
@@ -94,7 +95,7 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
     list_position1.update(player: create(:player))
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(subject.errors.full_messages)
       .to contain_exactly("Not all the players in this proposed trade are in your team: #{player1.name}")
@@ -104,7 +105,7 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
     list_position3.update(player: create(:player))
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(subject.errors.full_messages)
       .to contain_exactly("Not all the players in this proposed trade are in #{fpl_team2.name}: #{player3.name}")
@@ -116,7 +117,7 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
     end
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(service.errors.full_messages).to contain_exactly(
       "You can't have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player4.team.short_name})",
@@ -129,7 +130,7 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
     end
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(service.errors.full_messages).to contain_exactly(
       "#{fpl_team2.name} can't have more than #{FplTeam::QUOTAS[:team]} players from the same team " \
@@ -141,7 +142,7 @@ RSpec.describe InterTeamTradeGroups::Approve, type: :service do
     inter_team_trade_group.update(status: 'approved')
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(service.errors.full_messages).to contain_exactly('You can only approve submitted trade proposals')
   end

@@ -11,7 +11,6 @@ RSpec.describe Api::Leagues::DraftPicksController, type: :routing do
         .not_to route_to('api/leagues/draft_picks#show', id: '1', league_id: '1')
     end
 
-
     it 'does not route to #create' do
       expect(post: 'api/leagues/1/draft_picks').not_to route_to('api/leagues/draft_picks#create', league_id: '1')
     end

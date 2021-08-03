@@ -4,6 +4,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
   include ActiveSupport::Testing::TimeHelpers
 
   subject(:service) { described_class.call(data, list_position, user) }
+
   let(:user) { create :user }
   let(:round) { create :round, :mini_draft }
   let(:league) { create :league }
@@ -33,8 +34,8 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
 
       travel_to round.deadline_time_as_time - 3.days do
         expect { service }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(service.errors.full_messages).to contain_exactly('The round is not current')
       end
@@ -43,20 +44,20 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
     it 'fails if the mini_draft is closed' do
       travel_to round.deadline_time_as_time - 23.hours do
         expect { service }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(service.errors.full_messages).to contain_exactly('The mini draft is now closed')
       end
     end
 
     it 'fails if round.mini_draft = false' do
-      round.update(mini_draft: false )
+      round.update(mini_draft: false)
 
       travel_to round.deadline_time_as_time - 3.days do
         expect { service }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(service.errors.full_messages).to contain_exactly('The mini draft is not active')
       end
@@ -65,8 +66,8 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
     it 'fails if the mini_draft_deadline has not passed' do
       travel_to round.deadline_time_as_time - 2.weeks do
         expect { service }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(service.errors).to contain_exactly('The mini draft is not open yet')
       end
@@ -77,8 +78,8 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
 
       travel_to round.deadline_time_as_time - 3.days do
         expect { subject }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(subject.errors.full_messages)
           .to contain_exactly('The player you have selected to draft in does not exist')
@@ -90,8 +91,8 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
 
       travel_to round.deadline_time_as_time - 3.days do
         expect { subject }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(subject.errors.full_messages).to contain_exactly('Players must have the same positions')
       end
@@ -104,8 +105,8 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
 
       travel_to round.deadline_time_as_time - 3.days do
         expect { subject }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(service.errors.full_messages).to contain_exactly(
           "You can't have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player2.team.short_name})",
@@ -118,8 +119,8 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
 
       travel_to round.deadline_time_as_time - 3.days do
         expect { subject }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(service.errors.full_messages).to contain_exactly(
           'The player you have selected to draft in is already part of a team in your league'
@@ -132,8 +133,8 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         create :mini_draft_pick, season: season, pick_number: 1, fpl_team: fpl_team1
 
         expect { subject }
-          .to change { MiniDraftPick.count }.by(0)
-          .and change { list_position.reload.updated_at }.by(0)
+          .to not_change { MiniDraftPick.count }
+          .and not_change { list_position.reload.updated_at }
 
         expect(service.errors.full_messages).to contain_exactly(
           'It is not your turn to make a mini draft pick'
@@ -142,13 +143,13 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
     end
   end
 
-  context 'summer' do
+  context 'when summer mini draft' do
     before { round.update(deadline_time: Round.summer_mini_draft_deadline + 1.week) }
 
     it 'creates a mini draft pick, transfers the players and updates the next_fpl_team' do
       travel_to round.deadline_time_as_time - 3.days do
         expect { service }
-          .to change { MiniDraftPick.count }.from(0).to(1)
+          .to change(MiniDraftPick, :count).from(0).to(1)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
 
@@ -166,7 +167,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
 
       travel_to round.deadline_time_as_time - 3.days do
         expect { service }
-          .to change { MiniDraftPick.count }.from(0).to(1)
+          .to change(MiniDraftPick, :count).from(0).to(1)
 
         expect(MiniDraftPick.first).to have_attributes(
           fpl_team: fpl_team1,
@@ -194,7 +195,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         create(:mini_draft_pick, pick_number: 7, fpl_team: fpl_team2)
 
         expect { service }
-          .to change { MiniDraftPick.count }.from(7).to(8)
+          .to change(MiniDraftPick, :count).from(7).to(8)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
 
@@ -219,7 +220,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         create(:mini_draft_pick, pick_number: 3, fpl_team: fpl_team3)
 
         expect { service }
-          .to change { MiniDraftPick.count }.from(3).to(4)
+          .to change(MiniDraftPick, :count).from(3).to(4)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team4.reload.players }.from([player1]).to([player2])
 
@@ -243,7 +244,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         create(:mini_draft_pick, pick_number: 8, fpl_team: fpl_team1)
 
         expect { service }
-          .to change { MiniDraftPick.count }.from(8).to(9)
+          .to change(MiniDraftPick, :count).from(8).to(9)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
 
@@ -258,13 +259,13 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
     include_examples 'invalid'
   end
 
-  context 'winter' do
+  context 'when winter mini draft' do
     before { round.update(deadline_time: Round.winter_mini_draft_deadline + 1.week) }
 
     it 'creates a mini draft pick, transfers the players and updates the next_fpl_team' do
       travel_to round.deadline_time_as_time - 3.days do
         expect { service }
-          .to change { MiniDraftPick.count }.from(0).to(1)
+          .to change(MiniDraftPick, :count).from(0).to(1)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
 
@@ -281,7 +282,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
 
       travel_to round.deadline_time_as_time - 3.days do
         expect { service }
-          .to change { MiniDraftPick.count }.from(0).to(1)
+          .to change(MiniDraftPick, :count).from(0).to(1)
 
         expect(MiniDraftPick.first).to have_attributes(
           fpl_team: fpl_team1,
@@ -309,7 +310,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         create(:mini_draft_pick, :winter, pick_number: 7, fpl_team: fpl_team4)
 
         expect { service }
-          .to change { MiniDraftPick.count }.from(7).to(8)
+          .to change(MiniDraftPick, :count).from(7).to(8)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
 
@@ -334,7 +335,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         create(:mini_draft_pick, :winter, pick_number: 3, fpl_team: fpl_team3)
 
         expect { service }
-          .to change { MiniDraftPick.count }.from(3).to(4)
+          .to change(MiniDraftPick, :count).from(3).to(4)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team2.reload.players }.from([player1]).to([player2])
 
@@ -358,7 +359,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         create(:mini_draft_pick, :winter, pick_number: 8, fpl_team: fpl_team1)
 
         expect { service }
-          .to change { MiniDraftPick.count }.from(8).to(9)
+          .to change(MiniDraftPick, :count).from(8).to(9)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
 

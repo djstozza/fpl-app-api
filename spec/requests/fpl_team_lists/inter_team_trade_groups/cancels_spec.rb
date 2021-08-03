@@ -40,9 +40,9 @@ RSpec.describe(
 
   describe 'POST /create' do
     it 'changes the status of the inter_team_trade_group to cancelled' do
-      expect {
+      expect do
         api.post api_fpl_team_list_inter_team_trade_group_cancel_url(fpl_team_list1, inter_team_trade_group)
-      }
+      end
       .to change { inter_team_trade_group.reload.status }.from('submitted').to('cancelled')
 
       expect(api.response).to have_http_status(:success)
@@ -54,10 +54,10 @@ RSpec.describe(
     it 'returns a 422 if there is an error' do
       fpl_team1.update(owner: create(:user))
 
-      expect {
+      expect do
         api.post api_fpl_team_list_inter_team_trade_group_cancel_url(fpl_team_list1, inter_team_trade_group)
-      }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      end
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
       expect(response).to have_http_status(:unprocessable_entity)
 

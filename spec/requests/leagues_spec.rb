@@ -27,7 +27,6 @@ RSpec.describe 'api/leagues', type: :request do
       api.authenticate(user)
       api.get api_leagues_url, params: { sort: { name: 'desc' } }
 
-
       expect(api.data).to match(
         [
           a_hash_including(

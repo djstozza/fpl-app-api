@@ -53,7 +53,7 @@ RSpec.describe Players::PopulateSummary, type: :service do
           a_hash_including(
             'season_name' => '2017/18',
             'total_points' => 87,
-            'minutes' => 1056,
+            'minutes' => 1_056,
             'goals_scored' => 10,
             'assists' => 4,
             'clean_sheets' => 4,
@@ -62,7 +62,7 @@ RSpec.describe Players::PopulateSummary, type: :service do
           a_hash_including(
             'season_name' => '2018/19',
             'total_points' => 205,
-            'minutes' => 2722,
+            'minutes' => 2_722,
             'goals_scored' => 22,
             'assists' => 7,
             'clean_sheets' => 7,
@@ -71,9 +71,9 @@ RSpec.describe Players::PopulateSummary, type: :service do
           ),
           a_hash_including(
             'season_name' => '2019/20',
-            'element_code' => 54694,
+            'element_code' => 54_694,
             'total_points' => 205,
-            'minutes' => 3136,
+            'minutes' => 3_136,
             'goals_scored' => 22,
             'assists' => 5,
             'clean_sheets' => 10,

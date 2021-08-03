@@ -26,7 +26,7 @@ class InterTeamTradeGroups::BaseService < ApplicationService
   end
 
   def trade_window_open
-    return errors.add(:base, 'This trade is not from the current round') unless out_fpl_team_list.is_current?
+    return errors.add(:base, 'This trade is not from the current round') unless out_fpl_team_list.current?
     return unless Time.current > out_fpl_team_list.deadline_time
 
     errors.add(:base, 'The trade window is now closed')
@@ -71,15 +71,10 @@ class InterTeamTradeGroups::BaseService < ApplicationService
   end
 
   def valid_team_quota_out_fpl_team
-    out_players = out_fpl_team_list.players.where.not(id: [inter_team_trade_group.out_players])
-    out_players = out_players.where.not(id: out_player) if out_player
-    out_teams = out_players.map(&:team)
+    team = in_teams_for_out_fpl_team_list.detect do |in_team|
+      teams_for_out_fpl_team_list.count(in_team) > FplTeam::QUOTAS[:team]
+    end
 
-    in_teams = inter_team_trade_group.in_players.map(&:team)
-    in_teams << in_player.team if in_player
-    teams = out_teams + in_teams
-
-    team = in_teams.detect { |team| teams.count(team) > FplTeam::QUOTAS[:team] }
     return unless team
 
     errors.add(
@@ -88,16 +83,31 @@ class InterTeamTradeGroups::BaseService < ApplicationService
     )
   end
 
+  def out_teams_for_out_fpl_team_list
+    @out_teams_for_out_fpl_team_list ||=
+      out_fpl_team_list
+      .players
+      .where.not(id: [*inter_team_trade_group.out_players, out_player].compact)
+      .includes(:team)
+      .map(&:team)
+  end
+
+  def in_teams_for_out_fpl_team_list
+    @in_teams_for_out_fpl_team_list ||= [
+      *inter_team_trade_group.in_players.includes(:team).map(&:team),
+      in_player&.team,
+    ].compact
+  end
+
+  def teams_for_out_fpl_team_list
+    @teams_for_out_fpl_team_list ||= out_teams_for_out_fpl_team_list + in_teams_for_out_fpl_team_list
+  end
+
   def valid_team_quota_in_fpl_team
-    in_players = in_fpl_team_list.players.where.not(id: inter_team_trade_group.in_players)
-    in_players.where.not(id: in_player) if in_player
-    in_teams = in_players.includes(:team).map(&:team)
+    team = out_teams_for_in_fpl_team_list.detect do |out_team|
+      teams_for_in_fpl_team_list.count(out_team) > FplTeam::QUOTAS[:team]
+    end
 
-    out_teams = inter_team_trade_group.out_players.includes(:team).map(&:team)
-    out_teams << out_player.team if out_player
-    teams = out_teams + in_teams
-
-    team = out_teams.detect { |team| teams.count(team) > FplTeam::QUOTAS[:team] }
     return unless team
 
     errors.add(
@@ -105,6 +115,26 @@ class InterTeamTradeGroups::BaseService < ApplicationService
       "#{in_fpl_team.name} can't have more than #{FplTeam::QUOTAS[:team]} players from the same team " \
         "(#{team.short_name})",
     )
+  end
+
+  def in_teams_for_in_fpl_team_list
+    @in_teams_for_in_fpl_team_list ||=
+      in_fpl_team_list
+      .players
+      .where.not(id: [*inter_team_trade_group.in_players, in_player].compact)
+      .includes(:team)
+      .map(&:team)
+  end
+
+  def out_teams_for_in_fpl_team_list
+    @out_teams_for_in_fpl_team_list ||= [
+      *inter_team_trade_group.out_players.includes(:team).map(&:team),
+      out_player&.team,
+    ].compact
+  end
+
+  def teams_for_in_fpl_team_list
+    @teams_for_in_fpl_team_list ||= out_teams_for_in_fpl_team_list + in_teams_for_in_fpl_team_list
   end
 
   def all_out_players_tradeable
@@ -116,7 +146,7 @@ class InterTeamTradeGroups::BaseService < ApplicationService
     errors.add(:base, "Not all the players in this proposed trade are in your team: #{names}")
   end
 
-  def alL_in_players_tradeable
+  def all_in_players_tradeable
     remainder = inter_team_trade_group.in_players - in_fpl_team_list.players
     return if remainder.empty?
 
@@ -126,19 +156,20 @@ class InterTeamTradeGroups::BaseService < ApplicationService
   end
 
   def no_duplicate_trades
-    duplicates_present =
-      InterTeamTradeGroup
-        .where.not(status: ['pending', 'declined'])
-        .where.not(id: inter_team_trade_group)
-        .where(out_fpl_team_list: out_fpl_team_list, in_fpl_team_list: in_fpl_team_list)
-        .any? do |trade_group|
-          trade_group.in_players == inter_team_trade_group.in_players &&
-          trade_group.out_players == inter_team_trade_group.out_players
-        end
-
     return unless duplicates_present
 
     errors.add(:base, 'You have already proposed this trade')
+  end
+
+  def duplicates_present
+    InterTeamTradeGroup
+      .where.not(status: %w[pending declined])
+      .where.not(id: inter_team_trade_group)
+      .where(out_fpl_team_list: out_fpl_team_list, in_fpl_team_list: in_fpl_team_list)
+      .any? do |trade_group|
+        trade_group.in_players == inter_team_trade_group.in_players &&
+          trade_group.out_players == inter_team_trade_group.out_players
+      end
   end
 
   def same_positions
@@ -148,7 +179,7 @@ class InterTeamTradeGroups::BaseService < ApplicationService
     errors.add(:base, 'Players being traded must have the same positions')
   end
 
-  def is_pending
+  def pending?
     return if inter_team_trade_group.pending?
 
     errors.add(:base, 'Changes can no longer be made to the proposed trade')

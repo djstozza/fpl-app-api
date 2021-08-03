@@ -28,13 +28,13 @@ class Leagues::CreateDraft < Leagues::BaseService
     fpl_team_count * League::PICKS_PER_TEAM
   end
 
-  def fpl_team_index(i)
-    divider = i % (2 * fpl_team_count)
-    divider == 0 ? divider : divider - 1
+  def fpl_team_index(index)
+    divider = index % (2 * fpl_team_count)
+    divider.zero? ? divider : divider - 1
   end
 
-  def fpl_team(i)
-    fpl_team_index = fpl_team_index(i)
+  def fpl_team(index)
+    fpl_team_index = fpl_team_index(index)
 
     if fpl_team_index < fpl_team_count
       fpl_teams[fpl_team_index % fpl_team_count]

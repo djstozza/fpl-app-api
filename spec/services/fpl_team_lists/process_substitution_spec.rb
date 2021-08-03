@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :service do
   subject(:service) { described_class.call(data, fpl_team_list, user) }
+
   let(:data) do
     {
       out_list_position_id: list_position8.id,
@@ -39,8 +40,8 @@ RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :servic
     fpl_team.update(owner: create(:user))
 
     expect { subject }
-      .to change { list_position8.reload.updated_at }.by(0)
-      .and change { list_position13.reload.updated_at }.by(0)
+      .to not_change { list_position8.reload.updated_at }
+      .and not_change { list_position13.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('You are not authorised to perform this action')
   end
@@ -49,8 +50,8 @@ RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :servic
     round.update(data_checked: true)
 
     expect { subject }
-      .to change { list_position8.reload.updated_at }.by(0)
-      .and change { list_position13.reload.updated_at }.by(0)
+      .to not_change { list_position8.reload.updated_at }
+      .and not_change { list_position13.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The team list is not from the current round')
   end
@@ -59,8 +60,8 @@ RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :servic
     round.update(deadline_time: 1.minute.ago)
 
     expect { subject }
-      .to change { list_position8.reload.updated_at }.by(0)
-      .and change { list_position13.reload.updated_at }.by(0)
+      .to not_change { list_position8.reload.updated_at }
+      .and not_change { list_position13.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The time for making substitutions has passed')
   end
@@ -69,8 +70,8 @@ RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :servic
     data[:out_list_position_id] = 'invalid'
 
     expect { subject }
-      .to change { list_position8.reload.updated_at }.by(0)
-      .and change { list_position13.reload.updated_at }.by(0)
+      .to not_change { list_position8.reload.updated_at }
+      .and not_change { list_position13.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('Player being subbed out cannot be found')
   end
@@ -79,8 +80,8 @@ RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :servic
     data[:in_list_position_id] = 'invalid'
 
     expect { subject }
-      .to change { list_position8.reload.updated_at }.by(0)
-      .and change { list_position13.reload.updated_at }.by(0)
+      .to not_change { list_position8.reload.updated_at }
+      .and not_change { list_position13.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('Player being subbed in cannot be found')
   end
@@ -89,8 +90,8 @@ RSpec.describe FplTeamLists::ProcessSubstitution, :no_transaction, type: :servic
     data[:in_list_position_id] = list_position12.id
 
     expect { subject }
-      .to change { list_position8.reload.updated_at }.by(0)
-      .and change { list_position12.reload.updated_at }.by(0)
+      .to not_change { list_position8.reload.updated_at }
+      .and not_change { list_position12.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('Invalid substitution')
   end

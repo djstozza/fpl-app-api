@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Leagues::Update, type: :service do
   subject(:service) { described_class.call(data, user, league: league) }
+
   let(:user) { create :user }
   let!(:league) { create :league, owner: user }
 
@@ -11,7 +12,6 @@ RSpec.describe Leagues::Update, type: :service do
       code: '87654321',
     }
   end
-
 
   it 'updates the league if the user is the owner' do
     expect { service }
@@ -31,7 +31,6 @@ RSpec.describe Leagues::Update, type: :service do
       "Code can't be blank",
     )
   end
-
 
   it 'fails if the user is not the owner' do
     league.update(owner: create(:user))

@@ -4,6 +4,7 @@ RSpec.describe LeagueDecorator, :no_transaction do
   include ActiveSupport::Testing::TimeHelpers
 
   subject(:decorated) { league.decorate }
+
   let!(:round) { create :round, :mini_draft }
   let(:league) { create :league }
   let!(:fpl_team1) { create :fpl_team, mini_draft_pick_number: 1, rank: 3, league: league }
@@ -11,7 +12,7 @@ RSpec.describe LeagueDecorator, :no_transaction do
   let!(:fpl_team3) { create :fpl_team, mini_draft_pick_number: 3, rank: 2, league: league }
 
   describe '#current_mini_draft_pick' do
-    context 'summer' do
+    context 'when summer mini draft' do
       before { round.update(deadline_time: Round.summer_mini_draft_deadline + 1.week) }
 
       it 'returns the current_mini_draft_pick' do
@@ -38,7 +39,7 @@ RSpec.describe LeagueDecorator, :no_transaction do
       end
     end
 
-    context 'winter' do
+    context 'when winter mini draft' do
       before { round.update(deadline_time: Round.winter_mini_draft_deadline + 1.week) }
 
       it 'returns the current_mini_draft_pick' do

@@ -9,12 +9,12 @@ class WaiverPicks::BaseService < ApplicationService
   end
 
   def fpl_team_list_is_current
-    return true if fpl_team_list.is_current?
+    return true if fpl_team_list.current?
 
-    return errors.add(:base, 'The team list is not from the current round')
+    errors.add(:base, 'The team list is not from the current round')
   end
 
-  def waiver_pick_is_pending
+  def waiver_pick_pending?
     return if waiver_pick.pending?
 
     errors.add(:base, 'Only pending waiver picks can be changed')

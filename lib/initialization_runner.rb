@@ -29,7 +29,7 @@ def part(name, &block)
 end
 
 def print_heading(heading)
-  puts "\n== #{heading} =="
+  Rails.logger.debug "\n== #{heading} =="
 end
 
 #
@@ -37,27 +37,27 @@ end
 #
 
 part(:hooks) do
-  print_heading "Installing git hooks"
+  print_heading 'Installing git hooks'
   system! 'git config core.hooksPath .githooks'
 end
 
 part(:bundle) do
-  print_heading "Installing dependencies"
+  print_heading 'Installing dependencies'
   system! 'gem install bundler --conservative'
   system('bundle check') || system!('bundle install')
 end
 
 part(:clear) do
-  print_heading "Removing old logs and tempfiles"
+  print_heading 'Removing old logs and tempfiles'
   system! 'bin/rails log:clear tmp:clear'
 end
 
 part(:restart) do
-  print_heading "Restarting application server"
+  print_heading 'Restarting application server'
   system! 'bin/rails restart'
 end
 
 part(:verify) do
-  print_heading "Verifying setup"
+  print_heading 'Verifying setup'
   system! 'bin/rake RSPEC_PROFILES_DISABLED=true'
 end

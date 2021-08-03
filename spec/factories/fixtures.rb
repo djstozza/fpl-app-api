@@ -24,9 +24,10 @@
 #
 # Indexes
 #
-#  index_fixtures_on_round_id   (round_id)
-#  index_fixtures_on_team_a_id  (team_a_id)
-#  index_fixtures_on_team_h_id  (team_h_id)
+#  index_fixtures_on_external_id  (external_id) UNIQUE
+#  index_fixtures_on_round_id     (round_id)
+#  index_fixtures_on_team_a_id    (team_a_id)
+#  index_fixtures_on_team_h_id    (team_h_id)
 #
 FactoryBot.define do
   factory :fixture do
@@ -42,7 +43,7 @@ FactoryBot.define do
     team_a_difficulty { 1 }
     team_h_score { 1 }
     team_a_score { 0 }
-    kickoff_time { Time.now }
+    kickoff_time { Time.current }
     started { true }
     finished { true }
     minutes { 90 }
@@ -51,17 +52,17 @@ FactoryBot.define do
         {
           'identifier' => 'goals_scored',
           'a' => [],
-          'h'=> [{ 'value' => 1, 'element' => 1 }],
+          'h' => [{ 'value' => 1, 'element' => 1 }],
         },
         {
           'identifier' => 'assists',
           'a' => [],
-          'h'=> [{ 'value' => 1, 'element' => 2 }],
+          'h' => [{ 'value' => 1, 'element' => 2 }],
         },
         {
           'identifier' => 'saves',
           'a' => [{ 'value' => 4, 'element' => 3 }],
-          'h'=> [],
+          'h' => [],
         },
         { 'identifier' => 'own_goals', 'a' => [], 'h' => [] },
         { 'identifier' => 'penalties_saved', 'a' => [], 'h' => [] },

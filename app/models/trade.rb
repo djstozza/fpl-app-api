@@ -22,6 +22,6 @@
 #
 class Trade < ApplicationRecord
   belongs_to :fpl_team_list
-  belongs_to :out_player, class_name: 'Player', foreign_key: :out_player_id
-  belongs_to :in_player, class_name: 'Player', foreign_key: :in_player_id
+  belongs_to :out_player, class_name: 'Player'
+  belongs_to :in_player, class_name: 'Player'
 end

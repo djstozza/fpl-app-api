@@ -14,6 +14,10 @@
 #  updated_at          :datetime         not null
 #  external_id         :integer
 #
+# Indexes
+#
+#  index_positions_on_external_id  (external_id) UNIQUE
+#
 class PositionSerializer < BaseSerializer
   ATTRS = %w[
     id
@@ -27,7 +31,7 @@ class PositionSerializer < BaseSerializer
     squad_select
     squad_min_play
     squad_max_play
-  ]
+  ].freeze
 
   def serializable_hash(*)
     attributes.slice(*attrs)

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe FplTeams::Update, type: :service do
   subject(:service) { described_class.call(data, fpl_team, user) }
+
   let(:user) { create :user }
   let!(:fpl_team) { create :fpl_team, owner: user }
 

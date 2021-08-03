@@ -14,8 +14,11 @@
 #
 # Indexes
 #
-#  index_fpl_teams_on_league_id  (league_id)
-#  index_fpl_teams_on_owner_id   (owner_id)
+#  index_fpl_teams_on_draft_pick_number_and_league_id       (draft_pick_number,league_id) UNIQUE
+#  index_fpl_teams_on_league_id                             (league_id)
+#  index_fpl_teams_on_mini_draft_pick_number_and_league_id  (mini_draft_pick_number,league_id) UNIQUE
+#  index_fpl_teams_on_name                                  (name) UNIQUE
+#  index_fpl_teams_on_owner_id                              (owner_id)
 #
 class FplTeamSerializer < BaseSerializer
   ATTRS = %w[
@@ -24,15 +27,26 @@ class FplTeamSerializer < BaseSerializer
     rank
     draft_pick_number
     mini_draft_pick_number
-  ]
+  ].freeze
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
-      attrs[:league] = LeagueSerializer.new(league) if includes[:league]
+      attrs[:league] = serialized_league if includes[:league]
+
       if includes[:current_user]
         attrs[:is_owner] = owner == includes[:current_user]
-        attrs[:owner] = UserSerializer.new(owner)
+        attrs[:owner] = serialized_owner
       end
     end
+  end
+
+  private
+
+  def serialized_league
+    LeagueSerializer.new(league)
+  end
+
+  def serialized_owner
+    UserSerializer.new(owner)
   end
 end

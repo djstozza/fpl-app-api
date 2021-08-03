@@ -23,6 +23,6 @@ require 'rails_helper'
 
 RSpec.describe InterTeamTradeGroup, type: :model do
   it 'has a valid factory' do
-    expect(build :inter_team_trade_group).to be_valid
+    expect(build(:inter_team_trade_group)).to be_valid
   end
 end

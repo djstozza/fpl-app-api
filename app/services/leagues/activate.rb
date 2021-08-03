@@ -5,7 +5,6 @@ class Leagues::Activate < Leagues::BaseService
   validate :league_status
   validate :draft_picks_completed
 
-
   def initialize(league)
     @league = league
   end
@@ -13,10 +12,7 @@ class Leagues::Activate < Leagues::BaseService
   def call
     return unless valid?
 
-    league.fpl_teams.each do |fpl_team|
-      fpl_team_service = FplTeams::ProcessInitialLineup.call(fpl_team)
-      errors.merge!(fpl_team_service.errors) if fpl_team_service.errors.any?
-    end
+    process_line_ups
 
     league.update(status: 'live')
     errors.merge!(league.errors) if league.errors.any?
@@ -30,8 +26,15 @@ class Leagues::Activate < Leagues::BaseService
     errors.add(:league, 'cannot be activated at this time')
   end
 
+  def process_line_ups
+    league.fpl_teams.each do |fpl_team|
+      fpl_team_service = FplTeams::ProcessInitialLineup.call(fpl_team)
+      errors.merge!(fpl_team_service.errors) if fpl_team_service.errors.any?
+    end
+  end
+
   def draft_picks_completed
-    return unless league.has_incomplete_draft_picks?
+    return unless league.incomplete_draft_picks?
 
     errors.add(:base, 'The draft has not been completed yet')
   end

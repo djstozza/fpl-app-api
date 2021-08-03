@@ -22,7 +22,7 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
     let!(:inter_team_trade2) { create :inter_team_trade, inter_team_trade_group: inter_team_trade_group2 }
     let!(:inter_team_trade3) { create :inter_team_trade, inter_team_trade_group: inter_team_trade_group2 }
 
-    let(:inter_team_trade_group3)  { create(:inter_team_trade_group, :submitted, in_fpl_team_list: fpl_team_list) }
+    let(:inter_team_trade_group3) { create(:inter_team_trade_group, :submitted, in_fpl_team_list: fpl_team_list) }
     let!(:inter_team_trade4) { create :inter_team_trade, inter_team_trade_group: inter_team_trade_group3 }
 
     let(:inter_team_trade_group4) { create :inter_team_trade_group, :declined, in_fpl_team_list: fpl_team_list }
@@ -243,7 +243,7 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
               'position' => inter_team_trade5.out_player.position.singular_name_short,
               'in_player' => a_hash_including(
                 'id' => inter_team_trade5.in_player.to_param,
-                'last_name' =>  inter_team_trade5.in_player.last_name,
+                'last_name' => inter_team_trade5.in_player.last_name,
                 'first_name' => inter_team_trade5.in_player.first_name,
               ),
               'out_player' => a_hash_including(
@@ -298,7 +298,7 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
     before { api.authenticate(fpl_team_list1.owner) }
 
     it 'successfully creates a pending inter_team_trade_group' do
-      expect {
+      expect do
         api.post api_fpl_team_list_inter_team_trade_groups_url(fpl_team_list1),
                  params: {
                    inter_team_trade_group: {
@@ -307,47 +307,47 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
                      in_player_id: player2.id,
                    },
                  }
-      }
-      .to change { InterTeamTradeGroup.count }.from(0).to(1)
-      .and change { InterTeamTrade.count }.from(0).to(1)
+      end
+      .to change(InterTeamTradeGroup, :count).from(0).to(1)
+      .and change(InterTeamTrade, :count).from(0).to(1)
 
       inter_team_trade_group = InterTeamTradeGroup.first
       inter_team_trade = InterTeamTrade.first
 
       expect(api.data['out_trade_groups']).to contain_exactly(
         a_hash_including(
-         'id' => inter_team_trade_group.to_param,
-         'status' => 'Pending',
-         'trades' => contain_exactly(
-           a_hash_including(
-             'id' => inter_team_trade.to_param,
-             'in_team' => a_hash_including(
-               'id' => player2.team.to_param,
-               'short_name' => player2.team.short_name,
-             ),
-             'out_team' => a_hash_including(
-               'id' => player1.team.to_param,
-               'short_name' => player1.team.short_name,
-             ),
-             'position' => position.singular_name_short,
-             'in_player' => a_hash_including(
-               'id' => player2.to_param,
-               'last_name' => player2.last_name,
-               'first_name' => player2.first_name,
-             ),
-             'out_player' => a_hash_including(
-               'id' => player1.to_param,
-               'last_name' => player1.last_name,
-               'first_name' => player1.first_name,
-             ),
-           ),
-         ),
-         'can_cancel' => true,
-         'can_submit' => true,
-         'can_approve' => false,
-         'in_fpl_team' => a_hash_including(
-           'id' => fpl_team2.to_param,
-           'name' => fpl_team2.name,
+          'id' => inter_team_trade_group.to_param,
+          'status' => 'Pending',
+          'trades' => contain_exactly(
+            a_hash_including(
+              'id' => inter_team_trade.to_param,
+              'in_team' => a_hash_including(
+                'id' => player2.team.to_param,
+                'short_name' => player2.team.short_name,
+              ),
+              'out_team' => a_hash_including(
+                'id' => player1.team.to_param,
+                'short_name' => player1.team.short_name,
+              ),
+              'position' => position.singular_name_short,
+              'in_player' => a_hash_including(
+                'id' => player2.to_param,
+                'last_name' => player2.last_name,
+                'first_name' => player2.first_name,
+              ),
+              'out_player' => a_hash_including(
+                'id' => player1.to_param,
+                'last_name' => player1.last_name,
+                'first_name' => player1.first_name,
+              ),
+            ),
+          ),
+          'can_cancel' => true,
+          'can_submit' => true,
+          'can_approve' => false,
+          'in_fpl_team' => a_hash_including(
+            'id' => fpl_team2.to_param,
+            'name' => fpl_team2.name,
           ),
           'out_fpl_team' => a_hash_including(
             'id' => fpl_team1.to_param,
@@ -361,7 +361,7 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
     it 'returns a 422 if there is an error' do
       fpl_team1.update(owner: create(:user))
 
-      expect {
+      expect do
         api.post api_fpl_team_list_inter_team_trade_groups_url(fpl_team_list1),
                  params: {
                    inter_team_trade_group: {
@@ -370,9 +370,9 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
                      in_player_id: player2.id,
                    },
                  }
-      }
-      .to change { InterTeamTradeGroup.count }.by(0)
-      .and change { InterTeamTrade.count }.by(0)
+      end
+      .to not_change { InterTeamTradeGroup.count }
+      .and not_change { InterTeamTrade.count }
 
       expect(response).to have_http_status(:unprocessable_entity)
 

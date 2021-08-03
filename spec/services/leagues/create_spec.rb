@@ -2,21 +2,21 @@ require 'rails_helper'
 
 RSpec.describe Leagues::Create, type: :service do
   subject(:service) { described_class.call(data, user) }
+
   let(:user) { create :user }
 
   let(:data) do
     {
       name: 'New league',
       code: '12345678',
-      fpl_team_name: 'New fpl_team'
+      fpl_team_name: 'New fpl_team',
     }
   end
 
-
   it 'creates the league and fpl_team with the user as the owner' do
     expect { service }
-      .to change { League.count }.from(0).to(1)
-      .and change { FplTeam.count }.from(0).to(1)
+      .to change(League, :count).from(0).to(1)
+      .and change(FplTeam, :count).from(0).to(1)
 
     expect(service.league).to be_persisted
     expect(service.league).to have_attributes(
@@ -41,8 +41,8 @@ RSpec.describe Leagues::Create, type: :service do
     data[:fpl_team_name] = nil
 
     expect { service }
-      .to change { League.count }.by(0)
-      .and change { FplTeam.count}.by(0)
+      .to not_change { League.count }
+      .and not_change { FplTeam.count }
 
     expect(service.errors.full_messages).to include(
       'Name has already been taken',
@@ -55,8 +55,8 @@ RSpec.describe Leagues::Create, type: :service do
     data[:fpl_team_name] = nil
 
     expect { service }
-      .to change { League.count }.by(0)
-      .and change { FplTeam.count}.by(0)
+      .to not_change { League.count }
+      .and not_change { FplTeam.count }
 
     expect(service.errors.full_messages).to include(
       "Fpl team name can't be blank",
@@ -67,11 +67,11 @@ RSpec.describe Leagues::Create, type: :service do
     data[:name] = nil
 
     expect { service }
-      .to change { League.count }.by(0)
-      .and change { FplTeam.count}.by(0)
+      .to not_change { League.count }
+      .and not_change { FplTeam.count }
 
-      expect(service.errors.full_messages).to contain_exactly(
-        "Name can't be blank",
-      )
+    expect(service.errors.full_messages).to contain_exactly(
+      "Name can't be blank",
+    )
   end
 end

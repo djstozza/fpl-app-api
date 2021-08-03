@@ -28,6 +28,10 @@
 #  updated_at            :datetime         not null
 #  external_id           :integer
 #
+# Indexes
+#
+#  index_teams_on_external_id  (external_id) UNIQUE
+#
 require 'rails_helper'
 
 RSpec.describe Team, type: :model do

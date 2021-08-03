@@ -14,10 +14,7 @@ class Leagues::GenerateDraftPick < Leagues::BaseService
 
     fpl_teams.update_all(draft_pick_number: nil)
 
-    shuffled_fpl_teams.each do |fpl_team|
-      fpl_team.update(draft_pick_number: (shuffled_fpl_teams.index(fpl_team) + 1))
-      errors.merge!(fpl_team.errors) if fpl_team.errors.any?
-    end
+    assign_draft_picks
 
     league.update(status: 'draft_picks_generated')
     errors.merge!(league.errors) if league.errors.any?
@@ -27,6 +24,13 @@ class Leagues::GenerateDraftPick < Leagues::BaseService
 
   def shuffled_fpl_teams
     @shuffled_fpl_teams ||= fpl_teams.includes(:owner).shuffle
+  end
+
+  def assign_draft_picks
+    shuffled_fpl_teams.each do |fpl_team|
+      fpl_team.update(draft_pick_number: (shuffled_fpl_teams.index(fpl_team) + 1))
+      errors.merge!(fpl_team.errors) if fpl_team.errors.any?
+    end
   end
 
   def league_status

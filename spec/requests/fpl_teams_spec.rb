@@ -12,7 +12,7 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe "/fpl_teams", type: :request do
+RSpec.describe 'api/fpl_teams', type: :request do
   let!(:user) { create :user }
   let(:fpl_team) { create :fpl_team, owner: user }
 

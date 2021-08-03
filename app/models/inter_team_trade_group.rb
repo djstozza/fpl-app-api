@@ -20,8 +20,8 @@
 #  fk_rails_...  (out_fpl_team_list_id => fpl_team_lists.id)
 #
 class InterTeamTradeGroup < ApplicationRecord
-  belongs_to :out_fpl_team_list, class_name: 'FplTeamList', foreign_key: :out_fpl_team_list_id
-  belongs_to :in_fpl_team_list, class_name: 'FplTeamList', foreign_key: :in_fpl_team_list_id
+  belongs_to :out_fpl_team_list, class_name: 'FplTeamList'
+  belongs_to :in_fpl_team_list, class_name: 'FplTeamList'
 
   has_many :inter_team_trades, dependent: :destroy
   has_many :in_players, class_name: 'Player', foreign_key: :in_player_id, through: :inter_team_trades

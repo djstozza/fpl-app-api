@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe InterTeamTradeGroups::Decline, type: :service do
   subject(:service) { described_class.call(inter_team_trade_group, user) }
+
   let(:round) { create :round, :current }
   let(:user) { create :user }
   let(:fpl_team) { create :fpl_team, owner: user }
@@ -26,7 +27,7 @@ RSpec.describe InterTeamTradeGroups::Decline, type: :service do
     fpl_team.update(owner: create(:user))
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('You are not authorised to perform this action')
   end
@@ -35,7 +36,7 @@ RSpec.describe InterTeamTradeGroups::Decline, type: :service do
     round.update(data_checked: true)
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('This trade is not from the current round')
   end
@@ -44,7 +45,7 @@ RSpec.describe InterTeamTradeGroups::Decline, type: :service do
     round.update(deadline_time: 1.minute.ago)
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The trade window is now closed')
   end
@@ -53,7 +54,7 @@ RSpec.describe InterTeamTradeGroups::Decline, type: :service do
     inter_team_trade_group.update(status: 'approved')
 
     expect { subject }
-      .to change { inter_team_trade_group.reload.updated_at }.by(0)
+      .to not_change { inter_team_trade_group.reload.updated_at }
 
     expect(service.errors.full_messages).to contain_exactly('You can only decline submitted trade proposals')
   end

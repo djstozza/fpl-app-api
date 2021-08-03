@@ -22,21 +22,18 @@ class FplTeamLists::ProcessSubstitution < ApplicationService
   def call
     return unless valid?
 
-    in_role = in_list_position.role
     out_role = out_list_position.role
+    in_role = in_list_position.role
 
-    in_list_position.update(role: out_role)
-    errors.merge!(in_list_position.errors) if in_list_position.errors.any?
-
-    out_list_position.update(role: in_role)
-    errors.merge!(out_list_position.errors) if out_list_position.errors.any?
+    update_list_position(in_list_position, out_role)
+    update_list_position(out_list_position, in_role)
   end
 
   private
 
   def user_can_substitute
     return errors.add(:base, 'You are not authorised to perform this action') if fpl_team_list.owner != user
-    return errors.add(:base, 'The team list is not from the current round') unless fpl_team_list.is_current?
+    return errors.add(:base, 'The team list is not from the current round') unless fpl_team_list.current?
     return unless Time.current > fpl_team_list.deadline_time
 
     errors.add(:base, 'The time for making substitutions has passed')
@@ -66,5 +63,10 @@ class FplTeamLists::ProcessSubstitution < ApplicationService
       'list_positions/valid_substitutions',
       list_position_id: out_list_position_id,
     ).result[:valid_substitutions]
+  end
+
+  def update_list_position(list_position, role)
+    list_position.update(role: role)
+    errors.merge!(in_list_position.errors)
   end
 end

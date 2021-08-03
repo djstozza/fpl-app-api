@@ -47,11 +47,11 @@ RSpec.describe '/inter_team_trades', :no_transaction, type: :request do
 
   describe 'DELETE /destroy' do
     it 'destroys the inter team trade' do
-      expect {
+      expect do
         api.delete api_fpl_team_list_inter_team_trade_url(fpl_team_list1, inter_team_trade)
-      }
-      .to change { InterTeamTrade.count }.from(1).to(0)
-      .and change { InterTeamTradeGroup.count }.from(1).to(0)
+      end
+      .to change(InterTeamTrade, :count).from(1).to(0)
+      .and change(InterTeamTradeGroup, :count).from(1).to(0)
 
       expect(api.response).to have_http_status(:success)
 
@@ -62,11 +62,11 @@ RSpec.describe '/inter_team_trades', :no_transaction, type: :request do
     it 'returns a 422 if there is an error' do
       fpl_team1.update(owner: create(:user))
 
-      expect {
+      expect do
         api.delete api_fpl_team_list_inter_team_trade_url(fpl_team_list1, inter_team_trade)
-      }
-      .to change { InterTeamTrade.count }.by(0)
-      .and change { InterTeamTradeGroup.count }.by(0)
+      end
+      .to not_change { InterTeamTrade.count }
+      .and not_change { InterTeamTradeGroup.count }
 
       expect(response).to have_http_status(:unprocessable_entity)
 

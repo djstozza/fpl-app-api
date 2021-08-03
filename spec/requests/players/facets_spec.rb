@@ -26,15 +26,6 @@ RSpec.describe 'api/players/facets', :no_transaction, type: :request do
   let!(:player3) do
     create(
       :player,
-      :goalkeeper,
-      team: team2,
-      status: 'i',
-      in_dreamteam: true,
-    )
-  end
-  let!(:player3) do
-    create(
-      :player,
       :midfielder,
       team: team2,
       status: 'd',

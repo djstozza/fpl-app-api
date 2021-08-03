@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'api/registrations', type: :request do
   it 'creates a new user' do
-    expect {
+    expect do
       api.post api_registrations_path, params: {
         user: {
           email: 'email@example.com',
@@ -10,7 +10,8 @@ RSpec.describe 'api/registrations', type: :request do
           password: '12345678',
         },
       }
-    }.to change { User.count }.from(0).to(1)
+    end
+    .to change(User, :count).from(0).to(1)
 
     decoded_jwt = JWT.decode(api.data['token'], Rails.application.secrets.secret_key_base)[0]
 
@@ -34,12 +35,12 @@ RSpec.describe 'api/registrations', type: :request do
     api.post api_registrations_path, params: { user: { email: 'invalid', password: '12345' } }
     expect(api.response).to have_http_status(:unprocessable_entity)
     expect(api.errors).to contain_exactly(
-      a_hash_including('detail' => "Email is invalid", 'source' => 'email'),
+      a_hash_including('detail' => 'Email is invalid', 'source' => 'email'),
       a_hash_including(
         'detail' => "Password is too short (minimum is #{User::MIN_PASSWORD_LENGTH} characters)",
         'source' => 'password',
       ),
-      a_hash_including('detail' => "Username can't be blank", 'source'=> 'username'),
+      a_hash_including('detail' => "Username can't be blank", 'source' => 'username'),
     )
   end
 end

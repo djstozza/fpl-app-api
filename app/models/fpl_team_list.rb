@@ -39,7 +39,7 @@ class FplTeamList < ApplicationRecord
            :league,
            to: :fpl_team
 
-  delegate :is_current?,
+  delegate :current?,
            :waiver_deadline,
            :deadline_time,
            :mini_draft,

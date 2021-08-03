@@ -14,6 +14,8 @@
 #  index_inter_team_trades_on_in_player_id               (in_player_id)
 #  index_inter_team_trades_on_inter_team_trade_group_id  (inter_team_trade_group_id)
 #  index_inter_team_trades_on_out_player_id              (out_player_id)
+#  unique_in_player                                      (in_player_id,inter_team_trade_group_id) UNIQUE
+#  unique_out_player                                     (out_player_id,inter_team_trade_group_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -22,9 +24,9 @@
 #
 class InterTeamTrade < ApplicationRecord
   belongs_to :inter_team_trade_group
-  belongs_to :out_player, class_name: 'Player', foreign_key: :out_player_id
-  belongs_to :in_player, class_name: 'Player', foreign_key: :in_player_id
-  validates_uniqueness_of :out_player, :in_player, scope: [:inter_team_trade_group_id]
+  belongs_to :out_player, class_name: 'Player'
+  belongs_to :in_player, class_name: 'Player'
+  validates :out_player, :in_player, uniqueness: { scope: [:inter_team_trade_group_id] }
 
   delegate :out_fpl_team_list, to: :inter_team_trade_group
 end

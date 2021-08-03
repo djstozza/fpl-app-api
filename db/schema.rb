@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_10_001138) do
+ActiveRecord::Schema.define(version: 2021_08_04_135057) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["fpl_team_id"], name: "index_draft_picks_on_fpl_team_id"
     t.index ["league_id"], name: "index_draft_picks_on_league_id"
+    t.index ["pick_number", "league_id"], name: "index_draft_picks_on_pick_number_and_league_id", unique: true
+    t.index ["player_id", "league_id"], name: "index_draft_picks_on_player_id_and_league_id", unique: true
     t.index ["player_id"], name: "index_draft_picks_on_player_id"
   end
 
@@ -47,6 +49,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.integer "external_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["external_id"], name: "index_fixtures_on_external_id", unique: true
     t.index ["round_id"], name: "index_fixtures_on_round_id"
     t.index ["team_a_id"], name: "index_fixtures_on_team_a_id"
     t.index ["team_h_id"], name: "index_fixtures_on_team_h_id"
@@ -74,7 +77,10 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.bigint "league_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["draft_pick_number", "league_id"], name: "index_fpl_teams_on_draft_pick_number_and_league_id", unique: true
     t.index ["league_id"], name: "index_fpl_teams_on_league_id"
+    t.index ["mini_draft_pick_number", "league_id"], name: "index_fpl_teams_on_mini_draft_pick_number_and_league_id", unique: true
+    t.index ["name"], name: "index_fpl_teams_on_name", unique: true
     t.index ["owner_id"], name: "index_fpl_teams_on_owner_id"
   end
 
@@ -101,8 +107,10 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.bigint "in_player_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["in_player_id", "inter_team_trade_group_id"], name: "unique_in_player", unique: true
     t.index ["in_player_id"], name: "index_inter_team_trades_on_in_player_id"
     t.index ["inter_team_trade_group_id"], name: "index_inter_team_trades_on_inter_team_trade_group_id"
+    t.index ["out_player_id", "inter_team_trade_group_id"], name: "unique_out_player", unique: true
     t.index ["out_player_id"], name: "index_inter_team_trades_on_out_player_id"
   end
 
@@ -114,6 +122,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.bigint "owner_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_leagues_on_name", unique: true
     t.index ["owner_id"], name: "index_leagues_on_owner_id"
   end
 
@@ -142,6 +151,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.index ["in_player_id"], name: "index_mini_draft_picks_on_in_player_id"
     t.index ["league_id"], name: "index_mini_draft_picks_on_league_id"
     t.index ["out_player_id"], name: "index_mini_draft_picks_on_out_player_id"
+    t.index ["pick_number", "league_id", "season"], name: "index_mini_draft_picks_on_pick_number_and_league_id_and_season", unique: true
   end
 
   create_table "players", force: :cascade do |t|
@@ -186,6 +196,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.datetime "updated_at", precision: 6, null: false
     t.jsonb "history"
     t.jsonb "history_past"
+    t.index ["external_id"], name: "index_players_on_external_id", unique: true
     t.index ["id", "first_name"], name: "index_players_on_id_and_first_name"
     t.index ["id", "goals_scored"], name: "index_players_on_id_and_goals_scored"
     t.index ["id", "last_name"], name: "index_players_on_id_and_last_name"
@@ -205,6 +216,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.integer "external_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["external_id"], name: "index_positions_on_external_id", unique: true
   end
 
   create_table "rounds", force: :cascade do |t|
@@ -221,6 +233,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "mini_draft", default: false, null: false
+    t.index ["external_id"], name: "index_rounds_on_external_id", unique: true
   end
 
   create_table "teams", force: :cascade do |t|
@@ -248,6 +261,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.integer "strength_defence_away"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["external_id"], name: "index_teams_on_external_id", unique: true
   end
 
   create_table "trades", force: :cascade do |t|
@@ -274,6 +288,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   create_table "waiver_picks", force: :cascade do |t|
@@ -287,6 +302,7 @@ ActiveRecord::Schema.define(version: 2021_07_10_001138) do
     t.index ["fpl_team_list_id"], name: "index_waiver_picks_on_fpl_team_list_id"
     t.index ["in_player_id"], name: "index_waiver_picks_on_in_player_id"
     t.index ["out_player_id"], name: "index_waiver_picks_on_out_player_id"
+    t.index ["pick_number", "fpl_team_list_id"], name: "index_waiver_picks_on_pick_number_and_fpl_team_list_id", unique: true
   end
 
   add_foreign_key "inter_team_trade_groups", "fpl_team_lists", column: "in_fpl_team_list_id"

@@ -1,11 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Leagues::Activate, type: :service do
+  subject(:service) { described_class.call(league) }
+
   let!(:round) { create :round }
   let!(:league) { create :league, status: 'draft' }
   let!(:draft_pick1) { create :draft_pick, league: league, fpl_team: create(:fpl_team, league: league) }
   let!(:draft_pick2) { create :draft_pick, :mini_draft, league: league, fpl_team: create(:fpl_team, league: league) }
-  subject(:service) { described_class.call(league) }
 
   it 'activates the league' do
     expect(FplTeams::ProcessInitialLineup).to receive(:call).twice.and_return(double(errors: []))

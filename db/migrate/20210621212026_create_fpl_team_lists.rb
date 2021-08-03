@@ -9,6 +9,6 @@ class CreateFplTeamLists < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    add_index :fpl_team_lists, [:fpl_team_id, :round_id], unique: true
+    add_index :fpl_team_lists, %i[fpl_team_id round_id], unique: true
   end
 end

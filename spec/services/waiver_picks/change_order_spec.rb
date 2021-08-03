@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe WaiverPicks::ChangeOrder, type: :service do
   subject(:service) { described_class.call(data, waiver_pick, user) }
+
   let(:user) { create :user }
   let(:fpl_team) { create :fpl_team, owner: user }
   let(:round) { create :round, :current }
@@ -15,17 +16,17 @@ RSpec.describe WaiverPicks::ChangeOrder, type: :service do
     { new_pick_number: 3 }
   end
 
-  context 'moving down the order' do
+  context 'when moving down the order' do
     it 'successfully changes the order' do
       expect { service }
         .to change { waiver_pick1.reload.pick_number }.from(1).to(3)
         .and change { waiver_pick2.reload.pick_number }.from(2).to(1)
         .and change { waiver_pick3.reload.pick_number }.from(3).to(2)
-        .and change { waiver_pick4.reload.updated_at }.by(0)
+        .and not_change { waiver_pick4.reload.updated_at }
     end
   end
 
-  context 'moving up the order' do
+  context 'when moving up the order' do
     let(:waiver_pick) { waiver_pick4 }
 
     it 'successfully changes the order' do
@@ -43,10 +44,10 @@ RSpec.describe WaiverPicks::ChangeOrder, type: :service do
     fpl_team.update(owner: create(:user))
 
     expect { subject }
-      .to change { waiver_pick1.reload.updated_at }.by(0)
-      .and change { waiver_pick2.reload.updated_at }.by(0)
-      .and change { waiver_pick3.reload.updated_at }.by(0)
-      .and change { waiver_pick4.reload.updated_at }.by(0)
+      .to not_change { waiver_pick1.reload.updated_at }
+      .and not_change { waiver_pick2.reload.updated_at }
+      .and not_change { waiver_pick3.reload.updated_at }
+      .and not_change { waiver_pick4.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('You are not authorised to perform this action')
   end
@@ -55,10 +56,10 @@ RSpec.describe WaiverPicks::ChangeOrder, type: :service do
     round.update(data_checked: true)
 
     expect { subject }
-      .to change { waiver_pick1.reload.updated_at }.by(0)
-      .and change { waiver_pick2.reload.updated_at }.by(0)
-      .and change { waiver_pick3.reload.updated_at }.by(0)
-      .and change { waiver_pick4.reload.updated_at }.by(0)
+      .to not_change { waiver_pick1.reload.updated_at }
+      .and not_change { waiver_pick2.reload.updated_at }
+      .and not_change { waiver_pick3.reload.updated_at }
+      .and not_change { waiver_pick4.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The team list is not from the current round')
   end
@@ -67,10 +68,10 @@ RSpec.describe WaiverPicks::ChangeOrder, type: :service do
     round.update(deadline_time: 23.hours.from_now)
 
     expect { subject }
-      .to change { waiver_pick1.reload.updated_at }.by(0)
-      .and change { waiver_pick2.reload.updated_at }.by(0)
-      .and change { waiver_pick3.reload.updated_at }.by(0)
-      .and change { waiver_pick4.reload.updated_at }.by(0)
+      .to not_change { waiver_pick1.reload.updated_at }
+      .and not_change { waiver_pick2.reload.updated_at }
+      .and not_change { waiver_pick3.reload.updated_at }
+      .and not_change { waiver_pick4.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('The waiver deadline has passed')
   end
@@ -79,10 +80,10 @@ RSpec.describe WaiverPicks::ChangeOrder, type: :service do
     data[:new_pick_number] = WaiverPick.count + 1
 
     expect { subject }
-      .to change { waiver_pick1.reload.updated_at }.by(0)
-      .and change { waiver_pick2.reload.updated_at }.by(0)
-      .and change { waiver_pick3.reload.updated_at }.by(0)
-      .and change { waiver_pick4.reload.updated_at }.by(0)
+      .to not_change { waiver_pick1.reload.updated_at }
+      .and not_change { waiver_pick2.reload.updated_at }
+      .and not_change { waiver_pick3.reload.updated_at }
+      .and not_change { waiver_pick4.reload.updated_at }
 
     expect(subject.errors.full_messages)
       .to contain_exactly('Pick number is invalid')
@@ -92,10 +93,10 @@ RSpec.describe WaiverPicks::ChangeOrder, type: :service do
     data[:new_pick_number] = 1
 
     expect { subject }
-      .to change { waiver_pick1.reload.updated_at }.by(0)
-      .and change { waiver_pick2.reload.updated_at }.by(0)
-      .and change { waiver_pick3.reload.updated_at }.by(0)
-      .and change { waiver_pick4.reload.updated_at }.by(0)
+      .to not_change { waiver_pick1.reload.updated_at }
+      .and not_change { waiver_pick2.reload.updated_at }
+      .and not_change { waiver_pick3.reload.updated_at }
+      .and not_change { waiver_pick4.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('No change in pick number')
   end
@@ -104,10 +105,10 @@ RSpec.describe WaiverPicks::ChangeOrder, type: :service do
     waiver_pick1.update(status: 'approved')
 
     expect { subject }
-      .to change { waiver_pick1.reload.updated_at }.by(0)
-      .and change { waiver_pick2.reload.updated_at }.by(0)
-      .and change { waiver_pick3.reload.updated_at }.by(0)
-      .and change { waiver_pick4.reload.updated_at }.by(0)
+      .to not_change { waiver_pick1.reload.updated_at }
+      .and not_change { waiver_pick2.reload.updated_at }
+      .and not_change { waiver_pick3.reload.updated_at }
+      .and not_change { waiver_pick4.reload.updated_at }
 
     expect(subject.errors.full_messages).to contain_exactly('Only pending waiver picks can be changed')
   end
