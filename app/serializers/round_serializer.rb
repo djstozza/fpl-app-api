@@ -17,14 +17,11 @@
 #  updated_at                :datetime         not null
 #  external_id               :integer
 #
-# Indexes
-#
-#  index_rounds_on_external_id  (external_id) UNIQUE
-#
 class RoundSerializer < BaseSerializer
   ATTRS = %w[
     id
     name
+    mini_draft
     deadline_time
     deadline_time_epoch
     finished
@@ -36,7 +33,7 @@ class RoundSerializer < BaseSerializer
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
-      attrs[:current] = is_current?
+      attrs[:current] = current?
       attrs[:waiver_deadline] = waiver_deadline
     end
   end
