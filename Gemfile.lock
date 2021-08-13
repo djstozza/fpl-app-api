@@ -350,6 +350,7 @@ DEPENDENCIES
   dotenv-rails
   draper
   factory_bot_rails
+  httparty
   jwt
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)

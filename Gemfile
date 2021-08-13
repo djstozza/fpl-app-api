@@ -43,6 +43,11 @@ gem 'bootsnap', '>= 1.4.2', require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 
+# Add decorators for models
+gem 'draper'
+
+gem 'httparty'
+
 group :development, :test do
   # Identify inefficient ActiveRecord queries
   gem 'bullet'
@@ -88,9 +93,6 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-
-  # Add decorators for models
-  gem 'draper'
 end
 
 group :test do
