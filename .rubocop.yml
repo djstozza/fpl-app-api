@@ -134,3 +134,7 @@ Metrics/ClassLength:
 
 Rails/SkipsModelValidations:
   Enabled: false
+
+GlobalVars:
+  AllowedVariables:
+    - $redis

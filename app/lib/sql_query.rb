@@ -34,7 +34,6 @@ class SqlQuery
     # Mark a string as non-escapable pre-interpolation
     delegate :lit, to: :Sequel
 
-    # Results is a dumb method name, but I don't want to break open PRs just yet
     alias run results
   end
 
