@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe WaiverPicks::ProcessingJob do
-  let(:league) { create :league, status: 'live' }
+  let(:league) { create :league, :live }
   let(:round) { create :round, :current, deadline_time: 23.hours.from_now }
   let(:position) { create :position, :forward }
 

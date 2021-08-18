@@ -22,6 +22,10 @@ FactoryBot.define do
       "League #{n}"
     end
 
+    trait 'live' do
+      status { 'live' }
+    end
+
     code { '12345678' }
 
     association :owner, factory: :user

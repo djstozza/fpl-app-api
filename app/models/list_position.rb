@@ -29,6 +29,8 @@ class ListPosition < ApplicationRecord
   validate :valid_substitutes
   validate :valid_substitute_gkp
 
+  scope :substitutes, -> { where.not(role: 'starting') }
+
   private
 
   def valid_substitutes
