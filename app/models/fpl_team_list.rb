@@ -44,4 +44,12 @@ class FplTeamList < ApplicationRecord
            :deadline_time,
            :mini_draft,
            to: :round
+
+  amoeba do
+    enable
+    nullify :total_score
+    nullify :round_rank
+    include_association :list_positions
+    exclude_association :waiver_picks
+  end
 end

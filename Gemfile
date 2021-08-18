@@ -46,7 +46,11 @@ gem 'rack-cors'
 # Add decorators for models
 gem 'draper'
 
+# Fetch and post http requests
 gem 'httparty'
+
+# Allow easy cloning of application record instances, including has_many associations etc
+gem 'amoeba'
 
 group :development, :test do
   # Identify inefficient ActiveRecord queries
