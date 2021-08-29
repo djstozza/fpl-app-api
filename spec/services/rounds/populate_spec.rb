@@ -22,14 +22,14 @@ RSpec.describe Rounds::Populate, type: :service do
 
     describe 'existing rounds' do
       let!(:round_1) { create :round, :past, external_id: 1 }
-      let!(:round_2) { create :round, :past, external_id: 2 }
+      let!(:round_2) { create :round, :past, external_id: 2, is_current: true }
       let!(:round_3) { create :round, :mini_draft, external_id: 3 }
 
-      it 'only updates existing rounds that have not finished' do
+      it 'does not update rounds that have finished and are no longer current' do
         travel_to Time.current.beginning_of_year do
           expect { described_class.call }
             .to change { round_3.reload.data_checked }.from(false).to(true)
-            .and not_change { round_2.reload.updated_at }
+            .and change { round_2.reload.is_current }.from(true).to(false)
             .and not_change { round_1.reload.updated_at }
         end
       end

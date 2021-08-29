@@ -4,7 +4,7 @@ class Rounds::Populate < BasePopulateService
     response.each do |round_json|
       round = Round.find_or_create_by(external_id: round_json['id'])
 
-      next if round.data_checked && round.finished
+      next if round.finished && !round.is_current
 
       update_round(round, round_json)
     end
