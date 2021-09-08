@@ -42,7 +42,11 @@ END AS season,
 JSONB_BUILD_OBJECT(
   'id', fpl_teams.id::TEXT,
   'name', fpl_teams.name
-) AS fpl_team
+) AS fpl_team,
+JSONB_BUILD_OBJECT(
+  'id', users.id::TEXT,
+  'username', users.username
+) AS user
 FROM mini_draft_picks
 LEFT JOIN players out_player ON out_player.id = mini_draft_picks.out_player_id
 LEFT JOIN positions ON positions.id = out_player.position_id
@@ -50,6 +54,7 @@ LEFT JOIN teams out_team ON out_team.id = out_player.team_id
 LEFT JOIN players in_player ON in_player.id = mini_draft_picks.in_player_id
 LEFT JOIN teams in_team ON in_team.id = in_player.team_id
 JOIN fpl_teams ON fpl_teams.id = mini_draft_picks.fpl_team_id
+JOIN users ON fpl_teams.owner_id = users.id
 WHERE mini_draft_picks.league_id = :league_id
   AND :season = season
 ORDER BY mini_draft_picks.pick_number ASC

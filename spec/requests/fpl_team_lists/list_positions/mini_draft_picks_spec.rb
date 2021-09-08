@@ -55,6 +55,7 @@ RSpec.describe(
             'can_make_mini_draft_pick' => false,
             'mini_draft_finished' => false,
             'season' => season,
+            'fpl_team_list_id' => fpl_team_list.to_param,
           },
         )
       end
@@ -89,6 +90,7 @@ RSpec.describe(
             'can_make_mini_draft_pick' => false,
             'mini_draft_finished' => false,
             'season' => season,
+            'fpl_team_list_id' => fpl_team_list.to_param,
           },
         )
       end
@@ -120,6 +122,7 @@ RSpec.describe(
             'can_make_mini_draft_pick' => false,
             'mini_draft_finished' => true,
             'season' => season,
+            'fpl_team_list_id' => fpl_team_list.to_param,
           },
         )
       end

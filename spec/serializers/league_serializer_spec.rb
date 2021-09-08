@@ -21,6 +21,7 @@ require 'rails_helper'
 RSpec.describe LeagueSerializer, type: :serializer do
   subject(:serializer_with_owner) { described_class.new(league, current_user: league.owner).as_json }
 
+  let!(:round) { create :round, :current }
   let(:serializer) { described_class.new(league).as_json }
   let(:league) { create :league }
   let(:user) { create :user }
@@ -131,6 +132,24 @@ RSpec.describe LeagueSerializer, type: :serializer do
     it 'is true if the league status is live' do
       league.update(status: 'live')
       expect(serializer).to include(can_go_to_draft: true)
+    end
+  end
+
+  describe '#can_go_to_mini_draft' do
+    it 'is false if the league is not live' do
+      round.update(mini_draft: true)
+      expect(serializer).to include(can_go_to_mini_draft: false)
+    end
+
+    it 'is false if the round is not a mini draft round' do
+      league.update(status: 'live')
+      expect(serializer).to include(can_go_to_mini_draft: false)
+    end
+
+    it 'is true if the round is a mini draft round and the league is live' do
+      league.update(status: 'live')
+      round.update(mini_draft: true)
+      expect(serializer).to include(can_go_to_mini_draft: true)
     end
   end
 end

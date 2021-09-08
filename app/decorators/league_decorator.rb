@@ -28,6 +28,7 @@ class LeagueDecorator < Draper::Decorator
   def mini_draft_status_hash(fpl_team, user)
     {
       round: RoundSerializer.new(round),
+      fpl_team_list_id: fpl_team.fpl_team_lists.find_by(round: round).to_param,
       can_make_mini_draft_pick: next_fpl_team == fpl_team && next_fpl_team.owner == user,
       mini_draft_finished: next_fpl_team.nil?,
       season: season,

@@ -58,7 +58,7 @@ RSpec.describe Leagues::ProcessFplTeamLists, type: :service do
 
     expect(fpl_team_list).to have_attributes(
       round: round3,
-      fpl_team: fpl_team4,
+      fpl_team: fpl_team1,
       total_score: nil,
       round_rank: nil,
     )
@@ -67,8 +67,8 @@ RSpec.describe Leagues::ProcessFplTeamLists, type: :service do
 
     expect(list_position).to have_attributes(
       fpl_team_list: fpl_team_list,
-      player: list_position4.player,
-      role: list_position4.role,
+      player: list_position1.player,
+      role: list_position1.role,
     )
   end
 end

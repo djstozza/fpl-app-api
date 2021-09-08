@@ -13,6 +13,7 @@ require 'rails_helper'
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe 'api/fpl_teams', type: :request do
+  let!(:round) { create :round, :current }
   let!(:user) { create :user }
   let(:fpl_team) { create :fpl_team, owner: user }
 

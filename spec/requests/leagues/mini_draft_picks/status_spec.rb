@@ -6,6 +6,7 @@ RSpec.describe 'api/leagues/league_id/mini_draft_picks/status', :no_transaction,
   let(:league) { create :league }
   let!(:fpl_team1) { create :fpl_team, mini_draft_pick_number: 1, rank: 2, league: league }
   let!(:fpl_team2) { create :fpl_team, mini_draft_pick_number: 2, rank: 1, league: league }
+  let!(:fpl_team_list) { create :fpl_team_list, fpl_team: fpl_team1, round: round }
 
   shared_examples 'status' do |season|
     it 'returns the status hash with can_make_mini_draft_pick = true and mini_draft_finished = false' do
@@ -23,6 +24,7 @@ RSpec.describe 'api/leagues/league_id/mini_draft_picks/status', :no_transaction,
             'can_make_mini_draft_pick' => true,
             'mini_draft_finished' => false,
             'season' => season,
+            'fpl_team_list_id' => fpl_team_list.to_param,
           },
         )
       end
@@ -49,6 +51,7 @@ RSpec.describe 'api/leagues/league_id/mini_draft_picks/status', :no_transaction,
             'can_make_mini_draft_pick' => false,
             'mini_draft_finished' => true,
             'season' => season,
+            'fpl_team_list_id' => fpl_team_list.to_param,
           },
         )
       end

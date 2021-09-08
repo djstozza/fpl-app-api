@@ -29,7 +29,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .and change(league, :current_draft_pick).from(draft_pick).to(next_draft_pick)
         .and change { fpl_team.players.count }.from(0).to(1)
         .and change { league.players.count }.from(0).to(1)
-        .and enqueue_job(DraftPicks::BroadcastJob).with(draft_pick.id)
+        .and enqueue_job(DraftPicks::BroadcastJob).with(draft_pick)
     end
 
     it 'fails if the player_id is invalid' do
@@ -256,7 +256,7 @@ RSpec.describe Leagues::UpdateDraftPick, type: :service do
         .to change { draft_pick.reload.mini_draft }.from(false).to(true)
         .and change(league, :current_draft_pick).from(draft_pick).to(next_draft_pick)
         .and change { fpl_team.reload.mini_draft_pick_number }.from(nil).to(1)
-        .and enqueue_job(DraftPicks::BroadcastJob).with(draft_pick.id)
+        .and enqueue_job(DraftPicks::BroadcastJob).with(draft_pick)
     end
 
     it 'does not set the mini_draft pick if the league status is incorrect' do

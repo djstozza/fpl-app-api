@@ -32,6 +32,10 @@ class MiniDraftPicks::Process < ApplicationService
     return unless valid?
 
     passed ? pass_mini_draft_pick : draft_player
+
+    return if errors.any?
+
+    MiniDraftPicks::BroadcastJob.perform_later(MiniDraftPick.last)
   end
 
   private

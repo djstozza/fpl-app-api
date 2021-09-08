@@ -30,7 +30,7 @@ class Leagues::UpdateDraftPick < Leagues::BaseService
 
     return if errors.any?
 
-    DraftPicks::BroadcastJob.perform_later(draft_pick.id)
+    DraftPicks::BroadcastJob.perform_later(draft_pick.reload)
 
     return if league.incomplete_draft_picks?
 

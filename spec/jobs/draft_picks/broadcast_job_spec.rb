@@ -6,7 +6,7 @@ RSpec.describe DraftPicks::BroadcastJob do
     player = draft_pick.player
     user = draft_pick.owner
 
-    expect { described_class.perform_now(draft_pick.id) }
+    expect { described_class.perform_now(draft_pick) }
       .to have_broadcasted_to("league_#{draft_pick.league_id}_draft_picks").with(
         updatedAt: draft_pick.updated_at.to_i,
         message: "#{user.username} has drafted #{player.name} (#{player.team.short_name})"
@@ -17,7 +17,7 @@ RSpec.describe DraftPicks::BroadcastJob do
     draft_pick = create(:draft_pick, :mini_draft)
     user = draft_pick.owner
 
-    expect { described_class.perform_now(draft_pick.id) }
+    expect { described_class.perform_now(draft_pick) }
       .to have_broadcasted_to("league_#{draft_pick.league_id}_draft_picks").with(
         updatedAt: draft_pick.updated_at.to_i,
         message: "#{user.username} has made a mini draft pick"

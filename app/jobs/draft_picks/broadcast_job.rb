@@ -1,7 +1,6 @@
 # Broadcast successful draft picks
 class DraftPicks::BroadcastJob < ApplicationJob
-  def perform(draft_pick_id)
-    draft_pick = DraftPick.find(draft_pick_id).reload
+  def perform(draft_pick)
     player = draft_pick.player
     user = draft_pick.owner
 

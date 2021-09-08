@@ -24,10 +24,7 @@ class LeagueSerializer < BaseSerializer
 
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
-      attrs[:status] = status.humanize
-      attrs[:show_draft_pick_column] = !initialized?
-      attrs[:show_live_columns] = live?
-      attrs[:can_go_to_draft] = can_go_to_draft?
+      default_statuses(attrs)
 
       if current_user
         attrs[:is_owner] = owner?
@@ -54,5 +51,13 @@ class LeagueSerializer < BaseSerializer
 
   def serilized_owner
     UserSerializer.new(owner)
+  end
+
+  def default_statuses(attrs)
+    attrs[:status] = status.humanize
+    attrs[:show_draft_pick_column] = !initialized?
+    attrs[:show_live_columns] = live?
+    attrs[:can_go_to_draft] = can_go_to_draft?
+    attrs[:can_go_to_mini_draft] = live? && can_go_to_mini_draft?
   end
 end

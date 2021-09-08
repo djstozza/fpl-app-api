@@ -64,6 +64,7 @@ RSpec.describe 'api/leagues', type: :request do
         'show_draft_pick_column' => false,
         'show_live_columns' => false,
         'can_go_to_draft' => false,
+        'can_go_to_mini_draft' => false,
       )
     end
 
@@ -82,6 +83,7 @@ RSpec.describe 'api/leagues', type: :request do
         'show_draft_pick_column' => false,
         'show_live_columns' => false,
         'can_go_to_draft' => false,
+        'can_go_to_mini_draft' => false,
       )
     end
   end
@@ -107,6 +109,7 @@ RSpec.describe 'api/leagues', type: :request do
         'show_draft_pick_column' => false,
         'show_live_columns' => false,
         'can_go_to_draft' => false,
+        'can_go_to_mini_draft' => false,
       )
     end
 
@@ -144,6 +147,7 @@ RSpec.describe 'api/leagues', type: :request do
         'show_draft_pick_column' => false,
         'show_live_columns' => false,
         'can_go_to_draft' => false,
+        'can_go_to_mini_draft' => false,
       )
 
       expect(league.reload.code).to eq('12345678')

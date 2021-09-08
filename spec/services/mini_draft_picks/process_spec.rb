@@ -36,6 +36,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         expect { service }
           .to not_change { MiniDraftPick.count }
           .and not_change { list_position.reload.updated_at }
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).exactly(0).times
 
         expect(service.errors.full_messages).to contain_exactly('The round is not current')
       end
@@ -58,6 +59,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         expect { service }
           .to not_change { MiniDraftPick.count }
           .and not_change { list_position.reload.updated_at }
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).exactly(0).times
 
         expect(service.errors.full_messages).to contain_exactly('The mini draft is not active')
       end
@@ -68,6 +70,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         expect { service }
           .to not_change { MiniDraftPick.count }
           .and not_change { list_position.reload.updated_at }
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).exactly(0).times
 
         expect(service.errors).to contain_exactly('The mini draft is not open yet')
       end
@@ -80,6 +83,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         expect { subject }
           .to not_change { MiniDraftPick.count }
           .and not_change { list_position.reload.updated_at }
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).exactly(0).times
 
         expect(subject.errors.full_messages)
           .to contain_exactly('The player you have selected to draft in does not exist')
@@ -93,6 +97,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         expect { subject }
           .to not_change { MiniDraftPick.count }
           .and not_change { list_position.reload.updated_at }
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).exactly(0).times
 
         expect(subject.errors.full_messages).to contain_exactly('Players must have the same positions')
       end
@@ -107,6 +112,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         expect { subject }
           .to not_change { MiniDraftPick.count }
           .and not_change { list_position.reload.updated_at }
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).exactly(0).times
 
         expect(service.errors.full_messages).to contain_exactly(
           "You can't have more than #{FplTeam::QUOTAS[:team]} players from the same team (#{player2.team.short_name})",
@@ -121,6 +127,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         expect { subject }
           .to not_change { MiniDraftPick.count }
           .and not_change { list_position.reload.updated_at }
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).exactly(0).times
 
         expect(service.errors.full_messages).to contain_exactly(
           'The player you have selected to draft in is already part of a team in your league'
@@ -135,6 +142,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
         expect { subject }
           .to not_change { MiniDraftPick.count }
           .and not_change { list_position.reload.updated_at }
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).exactly(0).times
 
         expect(service.errors.full_messages).to contain_exactly(
           'It is not your turn to make a mini draft pick'
@@ -152,6 +160,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .to change(MiniDraftPick, :count).from(0).to(1)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 1))
 
         expect(current_mini_draft_pick).to have_attributes(
           pick_number: 2,
@@ -168,6 +177,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
       travel_to round.deadline_time_as_time - 3.days do
         expect { service }
           .to change(MiniDraftPick, :count).from(0).to(1)
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 1))
 
         expect(MiniDraftPick.first).to have_attributes(
           fpl_team: fpl_team1,
@@ -198,6 +208,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .to change(MiniDraftPick, :count).from(7).to(8)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 8))
 
         expect(current_mini_draft_pick).to have_attributes(
           pick_number: 9,
@@ -223,6 +234,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .to change(MiniDraftPick, :count).from(3).to(4)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team4.reload.players }.from([player1]).to([player2])
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 4))
 
         expect(current_mini_draft_pick).to have_attributes(
           pick_number: 5,
@@ -247,6 +259,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .to change(MiniDraftPick, :count).from(8).to(9)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 9))
 
         expect(current_mini_draft_pick).to have_attributes(
           pick_number: 10,
@@ -268,6 +281,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .to change(MiniDraftPick, :count).from(0).to(1)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 1))
 
         expect(current_mini_draft_pick).to have_attributes(
           pick_number: 2,
@@ -283,6 +297,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
       travel_to round.deadline_time_as_time - 3.days do
         expect { service }
           .to change(MiniDraftPick, :count).from(0).to(1)
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 1))
 
         expect(MiniDraftPick.first).to have_attributes(
           fpl_team: fpl_team1,
@@ -313,6 +328,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .to change(MiniDraftPick, :count).from(7).to(8)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 8))
 
         expect(current_mini_draft_pick).to have_attributes(
           pick_number: 9,
@@ -338,6 +354,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .to change(MiniDraftPick, :count).from(3).to(4)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team2.reload.players }.from([player1]).to([player2])
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 4))
 
         expect(current_mini_draft_pick).to have_attributes(
           pick_number: 5,
@@ -362,6 +379,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .to change(MiniDraftPick, :count).from(8).to(9)
           .and change { list_position.reload.player }.from(player1).to(player2)
           .and change { fpl_team1.reload.players }.from([player1]).to([player2])
+          .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 9))
 
         expect(current_mini_draft_pick).to have_attributes(
           pick_number: 10,
