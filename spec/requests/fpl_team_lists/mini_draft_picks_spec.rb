@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe(
-  'fpl_team_lists/:fpl_team_list_id/list_positions/:list_position_id/mini_draft_picks',
+  'fpl_team_lists/:fpl_team_list_id/mini_draft_picks',
   :no_transaction,
   type: :request
 ) do
@@ -16,37 +16,28 @@ RSpec.describe(
 
   let(:fpl_team_list) { create :fpl_team_list, fpl_team: fpl_team1, round: round }
 
-  let(:position) { create :position }
-  let(:player1) { create :player, position: position }
-  let(:player2) { create :player, position: position }
-
-  let!(:list_position) { create :list_position, player: player1, fpl_team_list: fpl_team_list }
-
-  before { fpl_team1.players << player1 }
-
   shared_examples 'create mini_draft_picks' do |season|
-    it 'creates a mini_draft_pick, transfers the player and updates the next fpl_team' do
+    it 'creates a passed mini draft pick, and updates the next fpl_team' do
       travel_to round.deadline_time_as_time - 3.days do
         api.authenticate user
 
         expect do
-          api.post api_fpl_team_list_list_position_mini_draft_picks_url(fpl_team_list, list_position),
-                   params: { mini_draft_pick: { in_player_id: player2.id } }
+          api.post api_fpl_team_list_mini_draft_picks_url(fpl_team_list),
+                   params: { mini_draft_pick: { passed: true } }
         end
         .to change(MiniDraftPick, :count).from(0).to(1)
-        .and change { list_position.reload.player }.from(player1).to(player2)
-        .and change { fpl_team1.reload.players }.from([player1]).to([player2])
 
         expect(MiniDraftPick.first).to have_attributes(
           pick_number: 1,
-          out_player: player1,
-          in_player: player2,
-          passed: false,
+          out_player: nil,
+          in_player: nil,
+          passed: true,
           fpl_team: fpl_team1,
           season: season,
         )
 
         expect(api.response).to have_http_status(:success)
+
         expect(api.data).to match(
           {
             'round' => a_hash_including(
@@ -61,6 +52,38 @@ RSpec.describe(
       end
     end
 
+    it 'highlights that the mini draft has finished once there are no next fpl_teams' do
+      travel_to round.deadline_time_as_time - 3.days do
+        api.authenticate user
+
+        create :mini_draft_pick, :passed, pick_number: 1, season: season, fpl_team: fpl_team1
+        create :mini_draft_pick, :passed, pick_number: 2, season: season, fpl_team: fpl_team2
+        create :mini_draft_pick, :passed, pick_number: 3, season: season, fpl_team: fpl_team3
+        create :mini_draft_pick, :passed, pick_number: 4, season: season, fpl_team: fpl_team3
+        create :mini_draft_pick, :passed, pick_number: 5, season: season, fpl_team: fpl_team2
+
+        expect do
+          api.post api_fpl_team_list_mini_draft_picks_url(fpl_team_list),
+                   params: { mini_draft_pick: { passed: true } }
+        end
+        .to change(MiniDraftPick, :count).from(5).to(6)
+
+        expect(api.response).to have_http_status(:success)
+
+        expect(api.data).to match(
+          {
+            'round' => a_hash_including(
+              'id' => round.to_param,
+            ),
+            'can_make_mini_draft_pick' => false,
+            'mini_draft_finished' => true,
+            'season' => season,
+            'fpl_team_list_id' => fpl_team_list.to_param,
+          },
+        )
+      end
+    end
+
     it 'returns a 422 message if invalid' do
       fpl_team1.update(owner: create(:user))
 
@@ -68,8 +91,8 @@ RSpec.describe(
         api.authenticate user
 
         expect do
-          api.post api_fpl_team_list_list_position_mini_draft_picks_url(fpl_team_list, list_position),
-                   params: { mini_draft_pick: { in_player_id: player2.id } }
+          api.post api_fpl_team_list_mini_draft_picks_url(fpl_team_list),
+                   params: { mini_draft_pick: { passed: true } }
         end
         .not_to change(MiniDraftPick, :count)
 

@@ -79,6 +79,7 @@ Rails.application.routes.draw do
         resource :change_order, only: %i[create], module: :waiver_picks
       end
 
+      resources :mini_draft_picks, only: %i[create], module: :fpl_team_lists
       resources :trades, only: %i[index], module: :fpl_team_lists
       resources :inter_team_trade_groups, only: %i[index show create], module: :fpl_team_lists do
         resource :submit, only: %i[create], module: :inter_team_trade_groups

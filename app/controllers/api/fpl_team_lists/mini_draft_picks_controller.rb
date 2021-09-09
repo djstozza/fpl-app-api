@@ -1,10 +1,9 @@
 module Api::FplTeamLists
-  class ListPositions::MiniDraftPicksController < ListPositionsController
+  class MiniDraftPicksController < Api::FplTeamListsController
     load_resource :fpl_team_list
-    load_resource :list_position
 
     def create
-      service = ::MiniDraftPicks::Process.call(mini_draft_pick_params.to_h, list_position, current_user)
+      service = ::MiniDraftPicks::Pass.call(mini_draft_pick_params.to_h, fpl_team_list, current_user)
 
       respond_with service.errors.any? ? service : league.mini_draft_status_hash(fpl_team_list.fpl_team, current_user)
     end
@@ -12,7 +11,7 @@ module Api::FplTeamLists
     private
 
     def mini_draft_pick_params
-      params.require(:mini_draft_pick).permit(:in_player_id)
+      params.require(:mini_draft_pick).permit(:passed)
     end
 
     def league

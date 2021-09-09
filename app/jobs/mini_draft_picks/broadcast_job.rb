@@ -23,6 +23,6 @@ class MiniDraftPicks::BroadcastJob < ApplicationJob
     out_player = mini_draft_pick.out_player
 
     "has traded out #{out_player&.name} (#{out_player&.team&.short_name}) for " \
-      "#{in_player&.name} #{in_player&.team&.short_name}"
+      "#{in_player&.name} (#{in_player&.team&.short_name})"
   end
 end

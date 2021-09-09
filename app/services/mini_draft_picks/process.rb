@@ -1,25 +1,14 @@
-class MiniDraftPicks::Process < ApplicationService
-  attr_reader :out_player,
-              :in_player_id,
-              :in_player,
-              :passed,
-              :list_position,
-              :fpl_team_list,
-              :fpl_team,
-              :league,
-              :user
-
+class MiniDraftPicks::Process < MiniDraftPicks::Base
   validate :user_is_owner
   validate :mini_draft?
   validate :user_can_mini_draft
   validate :next_fpl_team?
-  validate :valid_in_player, if: :in_player_id
-  validate :maximum_number_of_players_from_team, if: :in_player_id
-  validate :same_positions, if: :in_player_id
+  validate :valid_in_player
+  validate :maximum_number_of_players_from_team
+  validate :same_positions
 
   def initialize(data, list_position, user)
     @in_player_id = data[:in_player_id]
-    @passed = data[:passed]
     @list_position = list_position
     @fpl_team = list_position.fpl_team
     @fpl_team_list = list_position.fpl_team_list
@@ -31,7 +20,7 @@ class MiniDraftPicks::Process < ApplicationService
   def call
     return unless valid?
 
-    passed ? pass_mini_draft_pick : draft_player
+    draft_player
 
     return if errors.any?
 
@@ -55,10 +44,6 @@ class MiniDraftPicks::Process < ApplicationService
     list_position.update(player: in_player)
     fpl_team.players.delete(out_player)
     fpl_team.players << in_player
-  end
-
-  def pass_mini_draft_pick
-    current_mini_draft_pick.update(passed: true)
   end
 
   def next_fpl_team?
@@ -111,9 +96,5 @@ class MiniDraftPicks::Process < ApplicationService
     return if out_player.position == in_player.position
 
     errors.add(:base, 'Players must have the same positions')
-  end
-
-  def current_mini_draft_pick
-    league.current_mini_draft_pick
   end
 end
