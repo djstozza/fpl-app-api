@@ -61,8 +61,8 @@ RSpec.describe 'api/players/facets', :no_transaction, type: :request do
       ],
       'statuses' => [
         { 'label' => 'Available', 'value' => 'a' },
+        { 'label' => 'Doubtful', 'value' => 'd' },
         { 'label' => 'Unavailable', 'value' => 'u' },
-        { 'label' => 'doubtful', 'value' => 'd' },
       ],
     )
   end

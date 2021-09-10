@@ -4,7 +4,12 @@ fpl_team_list_id::TEXT,
 JSONB_BUILD_OBJECT(
   'id', players.id::TEXT,
   'first_name', first_name,
-  'last_name', last_name
+  'last_name', last_name,
+  'total_points', players.total_points,
+  'status', players.status,
+  'news', news,
+  'news_added', news_added,
+  'chance_of_playing_this_round', chance_of_playing_this_round
 ) AS player,
 JSONB_BUILD_OBJECT(
   'id', positions.id::TEXT,

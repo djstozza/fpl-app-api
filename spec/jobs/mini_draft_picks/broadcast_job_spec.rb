@@ -11,7 +11,7 @@ RSpec.describe MiniDraftPicks::BroadcastJob do
       .to have_broadcasted_to("league_#{mini_draft_pick.league_id}_mini_draft_picks").with(
         updatedAt: mini_draft_pick.updated_at.to_i,
         message: "#{user.username} has traded out #{out_player&.name} (#{out_player&.team&.short_name}) for " \
-          "#{in_player&.name} #{in_player&.team&.short_name}"
+          "#{in_player&.name} (#{in_player&.team&.short_name})"
       )
   end
 

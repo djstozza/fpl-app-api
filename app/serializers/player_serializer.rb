@@ -60,6 +60,7 @@ class PlayerSerializer < BaseSerializer
     id
     first_name
     last_name
+    status
     external_id
     total_points
     goals_scored
