@@ -5,7 +5,7 @@
 #  id         :bigint           not null, primary key
 #  active     :boolean          default(TRUE), not null
 #  code       :string           not null
-#  name       :string           not null
+#  name       :citext           not null
 #  status     :integer          default("initialized"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

@@ -11,11 +11,11 @@
 #  goals_against         :integer
 #  goals_for             :integer
 #  losses                :integer
-#  name                  :string
+#  name                  :citext
 #  played                :integer
 #  points                :integer
 #  position              :integer
-#  short_name            :string
+#  short_name            :citext
 #  strength              :integer
 #  strength_attack_away  :integer
 #  strength_attack_home  :integer

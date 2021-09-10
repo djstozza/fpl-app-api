@@ -5,7 +5,7 @@
 #  id                     :bigint           not null, primary key
 #  draft_pick_number      :integer
 #  mini_draft_pick_number :integer
-#  name                   :string           not null
+#  name                   :citext           not null
 #  rank                   :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null

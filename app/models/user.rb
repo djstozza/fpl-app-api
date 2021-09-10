@@ -4,13 +4,13 @@
 #
 #  id                     :bigint           not null, primary key
 #  current_sign_in_at     :datetime
-#  email                  :string           default(""), not null
+#  email                  :citext           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  last_sign_in_at        :datetime
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
-#  username               :string           default(""), not null
+#  username               :citext           default(""), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #

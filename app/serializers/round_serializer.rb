@@ -12,7 +12,7 @@
 #  is_next                   :boolean
 #  is_previous               :boolean
 #  mini_draft                :boolean          default(FALSE), not null
-#  name                      :string
+#  name                      :citext
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
 #  external_id               :integer

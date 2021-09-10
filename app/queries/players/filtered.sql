@@ -27,6 +27,8 @@ penalties_saved,
 penalties_missed,
 own_goals,
 players.status,
+news,
+news_added,
 chance_of_playing_this_round,
 chance_of_playing_next_round,
 team_id,
@@ -38,3 +40,4 @@ LEFT JOIN leagues ON fpl_teams.league_id = leagues.id
 WHERE (:team_id IS NULL OR team_id IN :team_id)
   AND (:position_id IS NULL OR position_id IN :position_id)
   AND (:league_id IS NULL OR players.id NOT IN (SELECT id FROM league_player_ids))
+  AND (:status IS NULL OR players.status IN :status)

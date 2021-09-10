@@ -3,10 +3,10 @@
 # Table name: positions
 #
 #  id                  :bigint           not null, primary key
-#  plural_name         :string
-#  plural_name_short   :string
-#  singular_name       :string
-#  singular_name_short :string
+#  plural_name         :citext
+#  plural_name_short   :citext
+#  singular_name       :citext
+#  singular_name_short :citext
 #  squad_max_play      :integer
 #  squad_min_play      :integer
 #  squad_select        :integer

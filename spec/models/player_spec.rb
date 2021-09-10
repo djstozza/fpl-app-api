@@ -13,7 +13,7 @@
 #  creativity                   :decimal(, )
 #  dreamteam_count              :integer
 #  event_points                 :integer
-#  first_name                   :string
+#  first_name                   :citext
 #  form                         :decimal(, )
 #  goals_conceded               :integer
 #  goals_scored                 :integer
@@ -22,7 +22,7 @@
 #  ict_index                    :decimal(, )
 #  in_dreamteam                 :boolean
 #  influence                    :decimal(, )
-#  last_name                    :string
+#  last_name                    :citext
 #  minutes                      :integer
 #  news                         :string
 #  news_added                   :datetime

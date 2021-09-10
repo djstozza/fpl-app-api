@@ -27,6 +27,7 @@ class Api::PlayersController < ApplicationController
       team_id: Array(filter_params[:team_id]&.split(',').presence).compact,
       position_id: Array(filter_params[:position_id]&.split(',').presence).compact,
       league_id: filter_params[:league_id],
+      status: Array(filter_params[:status]&.split(',').presence).compact,
     )
   end
 
@@ -41,6 +42,7 @@ class Api::PlayersController < ApplicationController
       :position_id,
       :team_id,
       :league_id,
+      :status,
     )
   end
 
@@ -61,6 +63,7 @@ class Api::PlayersController < ApplicationController
       :penalties_saved,
       :penalties_missed,
       :own_goals,
+      :status
     )
 
     permitted[:total_points] ||= 'desc'

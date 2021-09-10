@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_04_135057) do
+ActiveRecord::Schema.define(version: 2021_09_10_045712) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "plpgsql"
 
   create_table "draft_picks", force: :cascade do |t|
@@ -69,7 +70,7 @@ ActiveRecord::Schema.define(version: 2021_08_04_135057) do
   end
 
   create_table "fpl_teams", force: :cascade do |t|
-    t.string "name", null: false
+    t.citext "name", null: false
     t.integer "draft_pick_number"
     t.integer "mini_draft_pick_number"
     t.integer "rank"
@@ -115,7 +116,7 @@ ActiveRecord::Schema.define(version: 2021_08_04_135057) do
   end
 
   create_table "leagues", force: :cascade do |t|
-    t.string "name", null: false
+    t.citext "name", null: false
     t.string "code", null: false
     t.integer "status", default: 0, null: false
     t.boolean "active", default: true, null: false
@@ -160,8 +161,8 @@ ActiveRecord::Schema.define(version: 2021_08_04_135057) do
     t.integer "code"
     t.integer "dreamteam_count"
     t.integer "event_points"
-    t.string "first_name"
-    t.string "last_name"
+    t.citext "first_name"
+    t.citext "last_name"
     t.decimal "form"
     t.integer "external_id"
     t.boolean "in_dreamteam"
@@ -206,10 +207,10 @@ ActiveRecord::Schema.define(version: 2021_08_04_135057) do
   end
 
   create_table "positions", force: :cascade do |t|
-    t.string "singular_name"
-    t.string "singular_name_short"
-    t.string "plural_name"
-    t.string "plural_name_short"
+    t.citext "singular_name"
+    t.citext "singular_name_short"
+    t.citext "plural_name"
+    t.citext "plural_name_short"
     t.integer "squad_select"
     t.integer "squad_min_play"
     t.integer "squad_max_play"
@@ -220,7 +221,7 @@ ActiveRecord::Schema.define(version: 2021_08_04_135057) do
   end
 
   create_table "rounds", force: :cascade do |t|
-    t.string "name"
+    t.citext "name"
     t.string "deadline_time"
     t.boolean "finished"
     t.boolean "data_checked"
@@ -238,9 +239,9 @@ ActiveRecord::Schema.define(version: 2021_08_04_135057) do
 
   create_table "teams", force: :cascade do |t|
     t.integer "external_id"
-    t.string "name"
+    t.citext "name"
     t.integer "code"
-    t.string "short_name"
+    t.citext "short_name"
     t.integer "strength"
     t.integer "position"
     t.integer "played"
@@ -276,8 +277,8 @@ ActiveRecord::Schema.define(version: 2021_08_04_135057) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "username", default: "", null: false
+    t.citext "email", default: "", null: false
+    t.citext "username", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
