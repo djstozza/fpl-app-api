@@ -334,6 +334,8 @@ RSpec.describe FplTeamLists::Score, :no_transaction, type: :service do
       .and change { fpl_team_list.reload.total_score }.from(nil).to(50)
       .and not_change { list_position12.reload.role }
       .and not_change { list_position6.reload.role }
+      .and have_broadcasted_to("fpl_team_list_#{fpl_team_list.id}_score")
+        .with('updatedAt' => fpl_team_list.reload.updated_at.to_i)
   end
 
   it 'does not sub out starters with upcoming fixtures but does sub in substitutes with upcoming fixtures' do
@@ -351,6 +353,9 @@ RSpec.describe FplTeamLists::Score, :no_transaction, type: :service do
       .and not_change { list_position6.reload.role }
       .and not_change { list_position8.reload.role }
       .and not_change { list_position14.reload.role }
+      .and have_broadcasted_to("fpl_team_list_#{fpl_team_list.id}_score").with do |data|
+        expect(data['updatedAt']).to be_within(1).of(fpl_team_list.reload.updated_at.to_i)
+      end
   end
 
   it 'does not sub in players with no minutes if their fixtures have finished' do
@@ -371,5 +376,7 @@ RSpec.describe FplTeamLists::Score, :no_transaction, type: :service do
       .and not_change { list_position6.reload.role }
       .and not_change { list_position8.reload.role }
       .and not_change { list_position13.reload.role }
+      .and have_broadcasted_to("fpl_team_list_#{fpl_team_list.id}_score")
+        .with('updatedAt' => fpl_team_list.reload.updated_at.to_i)
   end
 end

@@ -10,6 +10,10 @@ class FplTeamLists::Score < ApplicationService
     process_substitutions
 
     fpl_team_list.update!(total_score: total_score)
+
+    ActionCable
+      .server
+      .broadcast("fpl_team_list_#{fpl_team_list.id}_score", { updatedAt: fpl_team_list.reload.updated_at.to_i })
   end
 
   private
