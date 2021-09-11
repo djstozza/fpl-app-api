@@ -24,10 +24,10 @@ class Api::PlayersController < ApplicationController
   def filtered_players_query
     @filtered_players_query ||= SqlQuery.load(
       'players/filtered',
-      team_id: Array(filter_params[:team_id]&.split(',').presence).compact,
-      position_id: Array(filter_params[:position_id]&.split(',').presence).compact,
+      team_id: compacted_params(filter_params[:team_id]),
+      position_id: compacted_params(filter_params[:position_id]),
       league_id: filter_params[:league_id],
-      status: Array(filter_params[:status]&.split(',').presence).compact,
+      status: compacted_params(filter_params[:status]),
     )
   end
 

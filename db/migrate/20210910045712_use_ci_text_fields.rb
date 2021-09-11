@@ -4,7 +4,7 @@ class UseCiTextFields < ActiveRecord::Migration[6.0]
     change_column :players, :last_name, :citext
     change_column :players, :first_name, :citext
     change_column :users, :username, :citext
-    change_column :users, :email,:citext
+    change_column :users, :email, :citext
     change_column :leagues, :name, :citext
     change_column :fpl_teams, :name, :citext
     change_column :teams, :name, :citext
@@ -20,7 +20,7 @@ class UseCiTextFields < ActiveRecord::Migration[6.0]
     change_column :players, :last_name, :string
     change_column :players, :first_name, :string
     change_column :users, :username, :string
-    change_column :users, :email,:string
+    change_column :users, :email, :string
     change_column :leagues, :name, :string
     change_column :fpl_teams, :name, :string
     change_column :teams, :name, :string

@@ -1,37 +1,41 @@
 class LeagueDecorator < Draper::Decorator
   delegate_all
 
-  def current_mini_draft_pick(i = 0)
+  def current_mini_draft_pick(index = 0)
     return if active_fpl_teams.empty?
 
-    fpl_team = next_fpl_team(i, true)
-    return build_mini_draft_pick(i, fpl_team) if fpl_team && active_fpl_teams.include?(fpl_team)
+    fpl_team = next_fpl_team(index, true)
+    return build_mini_draft_pick(index, fpl_team) if fpl_team && active_fpl_teams.include?(fpl_team)
 
     # Teams are no longer active in the mini draft once there have been two consecutive passes.
     # Increment the pick number recursively until an active fpl team is found
-    current_mini_draft_pick(i + 1)
+    current_mini_draft_pick(index + 1)
   end
 
-  def next_fpl_team(i = 0, no_recursion = false)
+  def next_fpl_team(index = 0, no_recursion = false)
     return if active_fpl_teams.blank?
-    index = fpl_team_index(i)
 
-    fpl_team =
-      if index < fpl_team_count
-        ordered_fpl_teams[index % fpl_team_count]
-      else
-        ordered_fpl_teams.reverse[index % fpl_team_count]
-      end
+    index = fpl_team_index(index)
 
-    active_fpl_teams.include?(fpl_team) || active_fpl_teams.empty? || no_recursion ? fpl_team : next_fpl_team(i + 1)
+    fpl_team = fpl_team_by_index(index)
+
+    active_fpl_teams.include?(fpl_team) || active_fpl_teams.empty? || no_recursion ? fpl_team : next_fpl_team(index + 1)
   end
 
-  def fpl_team_divider(i)
-    next_mini_draft_pick_number(i) % (2 * fpl_team_count)
+  def fpl_team_by_index(index)
+    if index < fpl_team_count
+      ordered_fpl_teams[index % fpl_team_count]
+    else
+      ordered_fpl_teams.reverse[index % fpl_team_count]
+    end
   end
 
-  def fpl_team_index(i)
-    divider = fpl_team_divider(i)
+  def fpl_team_divider(index)
+    next_mini_draft_pick_number(index) % (2 * fpl_team_count)
+  end
+
+  def fpl_team_index(index)
+    divider = fpl_team_divider(index)
     divider.zero? ? divider : divider - 1
   end
 
@@ -51,8 +55,8 @@ class LeagueDecorator < Draper::Decorator
 
   private
 
-  def next_mini_draft_pick_number(i)
-    (seasonal_mini_draft_picks.last&.pick_number || 0) + 1 + i
+  def next_mini_draft_pick_number(index)
+    (seasonal_mini_draft_picks.last&.pick_number || 0) + 1 + index
   end
 
   def seasonal_mini_draft_picks
@@ -84,8 +88,8 @@ class LeagueDecorator < Draper::Decorator
     fpl_teams.count
   end
 
-  def build_mini_draft_pick(i, fpl_team)
-    seasonal_mini_draft_picks.build(pick_number: next_mini_draft_pick_number(i), fpl_team: fpl_team, season: season)
+  def build_mini_draft_pick(index, fpl_team)
+    seasonal_mini_draft_picks.build(pick_number: next_mini_draft_pick_number(index), fpl_team: fpl_team, season: season)
   end
 
   def round
