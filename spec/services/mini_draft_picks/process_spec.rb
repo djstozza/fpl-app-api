@@ -238,7 +238,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 9))
 
         expect(current_mini_draft_pick).to have_attributes(
-          pick_number: 10,
+          pick_number: 12, # Skips pick numbers 10 and 11 since fpl_team2 and fpl_team3 passed
           fpl_team: fpl_team4,
           season: season,
         )
@@ -334,7 +334,7 @@ RSpec.describe MiniDraftPicks::Process, :no_transaction, type: :service do
           .and enqueue_job(MiniDraftPicks::BroadcastJob).with(MiniDraftPick.find_by(pick_number: 9))
 
         expect(current_mini_draft_pick).to have_attributes(
-          pick_number: 10,
+          pick_number: 12, # Skips pick numbers 10 and 11 since fpl_team2 and fpl_team3 passed
           fpl_team: fpl_team2,
           season: season,
         )

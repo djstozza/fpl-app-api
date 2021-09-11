@@ -67,7 +67,7 @@ class Leagues::ProcessFplTeamLists < ApplicationService
   end
 
   def process_next_line_ups
-    scoring_fpl_team_lists.each do |fpl_team_list|
+    scoring_fpl_team_lists.order(:id).each do |fpl_team_list|
       new_fpl_team_list = fpl_team_list.amoeba_dup
       new_fpl_team_list.round = current_round
 

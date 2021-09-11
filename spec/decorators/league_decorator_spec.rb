@@ -67,6 +67,44 @@ RSpec.describe LeagueDecorator, :no_transaction do
     end
   end
 
+  describe '#next_draft_pick' do
+    context 'when summer mini draft' do
+      before { round.update(deadline_time: Round.summer_mini_draft_deadline + 1.week) }
+
+      it 'skips teams with consecutive passes' do
+        travel_to round.deadline_time_as_time - 3.days do
+          create :mini_draft_pick, fpl_team: fpl_team1
+          create :mini_draft_pick, :passed, fpl_team: fpl_team2
+          create :mini_draft_pick, fpl_team: fpl_team3
+          create :mini_draft_pick, fpl_team: fpl_team3
+          create :mini_draft_pick, :passed, fpl_team: fpl_team2
+          create :mini_draft_pick, fpl_team: fpl_team1
+          create :mini_draft_pick, fpl_team: fpl_team1
+
+          expect(decorated.next_fpl_team).to eq(fpl_team3)
+        end
+      end
+    end
+
+    context 'when winter mini draft' do
+      before { round.update(deadline_time: Round.winter_mini_draft_deadline + 1.week) }
+
+      it 'skips teams with consecutive passes' do
+        travel_to round.deadline_time_as_time - 3.days do
+          create :mini_draft_pick, :winter, fpl_team: fpl_team1
+          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team3
+          create :mini_draft_pick, :winter, fpl_team: fpl_team2
+          create :mini_draft_pick, :winter, fpl_team: fpl_team2
+          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team3
+          create :mini_draft_pick, :winter, fpl_team: fpl_team1
+          create :mini_draft_pick, :winter, fpl_team: fpl_team1
+
+          expect(decorated.next_fpl_team).to eq(fpl_team2)
+        end
+      end
+    end
+  end
+
   private
 
   def current_mini_draft_pick(fpl_team, pick_number, season)
