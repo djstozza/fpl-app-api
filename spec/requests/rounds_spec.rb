@@ -98,7 +98,7 @@ RSpec.describe '/api/rounds', :no_transaction, type: :request do
         'is_previous' => false,
         'finished' => true,
         'data_checked' => true,
-        'deadline_time' => '2020-09-12T10:00:00Z',
+        'deadline_time' => '2021-08-13T17:30:00Z',
         'fixtures' => including(
           a_hash_including(
             'kickoff_time' => '2020-09-12T11:30:00Z',

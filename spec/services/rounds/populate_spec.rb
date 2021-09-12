@@ -21,15 +21,60 @@ RSpec.describe Rounds::Populate, type: :service do
     end
 
     describe 'existing rounds' do
-      let!(:round_1) { create :round, :past, external_id: 1 }
-      let!(:round_2) { create :round, :past, external_id: 2, is_current: true }
-      let!(:round_3) { create :round, :mini_draft, external_id: 3 }
+      let!(:round_1) do
+        create(
+          :round,
+          name: 'Gameweek 1',
+          deadline_time: '2021-08-13T17:30:00Z',
+          finished: true,
+          data_checked: true,
+          deadline_time_epoch: 1_599_904_800,
+          deadline_time_game_offset: 0,
+          is_previous: false,
+          is_current: false,
+          is_next: false,
+          external_id: 1
+        )
+      end
+      let!(:round_2) do
+        create(
+          :round,
+          name: 'Gameweek 2',
+          deadline_time: '2021-08-21T10:00:00Z',
+          finished: false,
+          data_checked: false,
+          deadline_time_epoch: 1_600_509_600,
+          deadline_time_game_offset: 0,
+          is_previous: false,
+          is_current: true,
+          is_next: false,
+          external_id: 2
+        )
+      end
+      let!(:round_3) do
+        create(
+          :round,
+          name: 'Gameweek 3',
+          deadline_time: '2021-08-28T10:00:00Z',
+          finished: true,
+          data_checked: true,
+          deadline_time_epoch: 1_601_114_400,
+          deadline_time_game_offset: 0,
+          is_previous: false,
+          is_current: false,
+          is_next: true,
+          external_id: 3
+        )
+      end
 
       it 'does not update rounds that have finished and are no longer current' do
-        travel_to Time.current.beginning_of_year do
+        travel_to Time.zone.parse(round_1.deadline_time).beginning_of_year do
           expect { described_class.call }
-            .to change { round_3.reload.data_checked }.from(false).to(true)
+            .to change { round_3.reload.is_next }.from(true).to(false)
+            .and change { round_3.reload.is_current }.from(false).to(true)
             .and change { round_2.reload.is_current }.from(true).to(false)
+            .and change { round_2.reload.data_checked }.from(false).to(true)
+            .and change { round_2.reload.finished }.from(false).to(true)
             .and not_change { round_1.reload.updated_at }
         end
       end

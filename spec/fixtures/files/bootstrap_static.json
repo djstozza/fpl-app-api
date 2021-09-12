@@ -3,7 +3,7 @@
     {
       "id": 1,
       "name": "Gameweek 1",
-      "deadline_time": "2020-09-12T10:00:00Z",
+      "deadline_time": "2021-08-13T17:30:00Z",
       "average_entry_score": 50,
       "finished": true,
       "data_checked": true,
@@ -29,7 +29,7 @@
     {
       "id": 2,
       "name": "Gameweek 2",
-      "deadline_time": "2020-09-19T10:00:00Z",
+      "deadline_time": "2021-08-21T10:00:00Z",
       "average_entry_score": 59,
       "finished": true,
       "data_checked": true,
@@ -57,16 +57,16 @@
     {
       "id": 3,
       "name": "Gameweek 3",
-      "deadline_time": "2020-09-26T10:00:00Z",
+      "deadline_time": "2021-08-28T10:00:00Z",
       "average_entry_score": 43,
-      "finished": true,
-      "data_checked": true,
+      "finished": false,
+      "data_checked": false,
       "highest_scoring_entry": 6223553,
       "deadline_time_epoch": 1601114400,
       "deadline_time_game_offset": 0,
       "highest_score": 119,
       "is_previous": false,
-      "is_current": false,
+      "is_current": true,
       "is_next": false,
       "chip_plays": [
         { "chip_name": "bboost", "num_played": 86797 },

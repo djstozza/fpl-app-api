@@ -1,12 +1,26 @@
 # Populate rounds service
 class Rounds::Populate < BasePopulateService
+  ATTRS = %w[
+    name
+    deadline_time
+    finished
+    data_checked
+    deadline_time_epoch
+    deadline_time_game_offset
+    is_previous
+    is_current
+    is_next
+  ].freeze
+
   def call
     response.each do |round_json|
       round = Round.find_or_create_by(external_id: round_json['id'])
 
-      next if round.finished && !round.is_current
+      new_attrs = round_json.slice(*ATTRS)
 
-      update_round(round, round_json)
+      next if round.attributes.slice(*ATTRS) == new_attrs
+
+      round.update!(new_attrs)
     end
 
     mini_draft_rounds
@@ -16,20 +30,6 @@ class Rounds::Populate < BasePopulateService
 
   def response
     @response ||= ::HTTParty.get(bootstrap_static_url)['events']
-  end
-
-  def update_round(round, round_json)
-    round.update!(
-      name: round_json['name'],
-      deadline_time: round_json['deadline_time'],
-      finished: round_json['finished'],
-      data_checked: round_json['data_checked'],
-      deadline_time_epoch: round_json['deadline_time_epoch'],
-      deadline_time_game_offset: round_json['deadline_time_game_offset'],
-      is_previous: round_json['is_previous'],
-      is_current: round_json['is_current'],
-      is_next: round_json['is_next'],
-    )
   end
 
   def mini_draft_rounds

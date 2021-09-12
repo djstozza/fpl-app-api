@@ -1,11 +1,11 @@
 :schedule:
-  Rounds::PopulateJob:
+  Rounds::ProcessJob:
     cron: '0 */1 * * *'
     description: 'Update round stats every hour'
 
-  Fixtures::PopulateJob:
+  Rounds::ProcessCurrentRoundFixturesJob:
       cron: '*/10 11-23 * * *'
-      description: 'Update fixture stats every 10 minutes between 11am and 11pm UTC'
+      description: 'Update fixture stats every 10 minutes between 11am and 11pm UTC and broadcast'
 
   Teams::PopulateJob:
     cron: '*/10 11-23 * * *'
@@ -18,10 +18,6 @@
   Players::PopulateSummariesJob:
     cron: '*/10 11-23 * * *'
     description: 'Update player stats every 10 minutes between 11am and 11pm UTC'
-
-  Leagues::ProcessFplTeamListsJob:
-    cron: '*/10 * * * *'
-    description: 'Update fpl_team_lists within live leagues every 10 minutes'
 
   Rounds::RecurringDeadlineCheckingJob:
     cron: '0 */1 * * *'
