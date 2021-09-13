@@ -6,7 +6,7 @@ module Api::Leagues
     def create
       service = Leagues::GenerateDraftPick.call(league, current_user)
 
-      respond_with service.errors.any? ? service : FplTeamSerializer.map(fpl_teams, current_user: current_user)
+      respond_with service.errors.any? ? service : FplTeamSerializer.map(fpl_teams.includes(:fpl_team_lists), current_user: current_user)
     end
 
     private

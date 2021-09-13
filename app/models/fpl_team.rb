@@ -5,7 +5,7 @@
 #  id                     :bigint           not null, primary key
 #  draft_pick_number      :integer
 #  mini_draft_pick_number :integer
-#  name                   :citext           not null
+#  name                   :string           not null
 #  rank                   :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
@@ -44,4 +44,8 @@ class FplTeam < ApplicationRecord
             :mini_draft_pick_number,
             uniqueness: { scope: :league },
             allow_nil: true
+
+  def total_score
+    fpl_team_lists.sum { |fpl_team_list| fpl_team_list.total_score || 0 }
+  end
 end

@@ -60,7 +60,7 @@ class Leagues::ProcessFplTeamLists < ApplicationService
 
   def rank_fpl_teams
     fpl_teams.each do |fpl_team|
-      total = fpl_team.fpl_team_lists.sum { |fpl_team_list| fpl_team_list.total_score || 0 }
+      total = fpl_team.total_score
 
       fpl_team.update!(rank: fpl_team_scores_arr.index(total) + 1)
     end

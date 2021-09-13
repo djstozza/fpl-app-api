@@ -5,7 +5,7 @@ class Api::FplTeamsController < ApplicationController
 
   # GET api/fpl_teams
   def index
-    respond_with(FplTeamSerializer.map(current_user.fpl_teams, league: true))
+    respond_with(FplTeamSerializer.map(current_user.fpl_teams.includes(:fpl_team_lists), league: true))
   end
 
   # GET api/fpl_teams/1

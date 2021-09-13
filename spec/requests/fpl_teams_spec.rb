@@ -34,6 +34,7 @@ RSpec.describe 'api/fpl_teams', type: :request do
           'draft_pick_number' => fpl_team.draft_pick_number,
           'mini_draft_pick_number' => fpl_team.mini_draft_pick_number,
           'rank' => fpl_team.rank,
+          'total_score' => 0,
         ),
       )
     end
@@ -54,6 +55,7 @@ RSpec.describe 'api/fpl_teams', type: :request do
         'draft_pick_number' => fpl_team.draft_pick_number,
         'mini_draft_pick_number' => fpl_team.mini_draft_pick_number,
         'rank' => fpl_team.rank,
+        'total_score' => 0,
       )
     end
 
@@ -72,6 +74,7 @@ RSpec.describe 'api/fpl_teams', type: :request do
         'draft_pick_number' => fpl_team.draft_pick_number,
         'mini_draft_pick_number' => fpl_team.mini_draft_pick_number,
         'rank' => fpl_team.rank,
+        'total_score' => 0,
       )
     end
   end
@@ -92,6 +95,7 @@ RSpec.describe 'api/fpl_teams', type: :request do
         'draft_pick_number' => fpl_team.draft_pick_number,
         'mini_draft_pick_number' => fpl_team.mini_draft_pick_number,
         'rank' => fpl_team.rank,
+        'total_score' => 0,
       )
     end
 

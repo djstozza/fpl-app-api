@@ -12,7 +12,7 @@ module Api::Leagues
     end
 
     def fpl_teams
-      @fpl_teams ||= league.fpl_teams.includes(:owner).order(sort_params.to_h)
+      @fpl_teams ||= league.fpl_teams.includes(:fpl_team_lists, :owner).order(sort_params.to_h)
     end
   end
 end

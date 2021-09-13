@@ -32,6 +32,7 @@ class FplTeamSerializer < BaseSerializer
   def serializable_hash(*)
     attributes.slice(*ATTRS).tap do |attrs|
       attrs[:league] = serialized_league if includes[:league]
+      attrs[:total_score] = total_score
 
       if includes[:current_user]
         attrs[:is_owner] = owner == includes[:current_user]
