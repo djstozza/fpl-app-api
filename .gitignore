@@ -31,3 +31,4 @@ coverage/
 # Ignore local environment settings
 .env.local
 .env.*.local
+.env

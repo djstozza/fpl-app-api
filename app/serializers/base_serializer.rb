@@ -6,7 +6,7 @@ class BaseSerializer < SimpleDelegator
     collection.map { |e| new(e, *args) }
   end
 
-  def initialize(object, **includes)
+  def initialize(object, includes = {})
     super(object)
     @object = object
     @includes = includes

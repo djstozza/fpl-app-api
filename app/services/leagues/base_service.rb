@@ -2,8 +2,8 @@
 class Leagues::BaseService < ApplicationService
   attr_reader :league, :name, :fpl_team, :code, :fpl_team_name, :user
 
-  def initialize(data, user, league: nil)
-    @league = league || League.new
+  def initialize(data, user, options = {})
+    @league = options[:league] || League.new
     @fpl_team = FplTeam.new
     @name = data[:name]
     @fpl_team_name = data[:fpl_team_name]

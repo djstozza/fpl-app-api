@@ -29,7 +29,8 @@ module APIHelpers
     end
 
     %i[get post put delete].each do |http_method|
-      define_method(http_method) { |*args| process(http_method, *args) }
+
+      define_method(http_method) { |path, args = {}| process(http_method, path, **args) }
     end
 
     def process(method, path, headers: {}, **args)

@@ -1,8 +1,8 @@
 class Users::BaseService < ApplicationService
   attr_reader :user, :email, :username, :password, :new_password, :token
 
-  def initialize(data, user: nil)
-    @user = user || User.new
+  def initialize(data, options = {})
+    @user = options[:user] || User.new
     @email = data[:email]
     @username = data[:username]
     @password = data[:password]

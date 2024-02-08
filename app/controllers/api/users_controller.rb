@@ -6,7 +6,7 @@ class Api::UsersController < ApplicationController
 
     return respond_with service unless service.call
 
-    respond_with user: UserSerializer.new(service.user)
+    respond_with({ user: UserSerializer.new(service.user) })
   end
 
   private

@@ -35,7 +35,7 @@ class Api::LeaguesController < ApplicationController
 
   def leagues
     League
-      .includes(:owner)
+      .includes(:fpl_teams, :owner)
       .joins(:fpl_teams)
       .where('fpl_teams.owner_id = ?', current_user.id)
       .order(sort_params.to_h)

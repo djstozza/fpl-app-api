@@ -4,9 +4,6 @@ require 'fileutils'
 require_relative '../lib/initialization_runner'
 require_relative '../config/environment'
 
-# path to your application root.
-APP_ROOT = File.expand_path('..', __dir__)
-
 def system!(*args)
   system(*args) || abort("\n== Command #{args} failed ==")
 end

@@ -15,12 +15,12 @@ class SqlQuery
   QUERY_DIR = Rails.root.join('app/queries')
 
   # Execute query and return rows as an array
-  def self.results(name, **params)
-    load(name, **params).results
+  def self.results(name, params = {})
+    load(name, params).results
   end
 
   # Load a query with interpolations
-  def self.load(name, **params)
+  def self.load(name, params = {})
     path = QUERY_DIR.join("#{name}.sql")
     new(path.read, params)
   rescue Errno::ENOENT
@@ -37,7 +37,7 @@ class SqlQuery
     alias run results
   end
 
-  def initialize(sql, **params)
+  def initialize(sql, params = {})
     @dataset = DB[sql, params]
   end
 
