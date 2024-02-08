@@ -31,7 +31,7 @@ class FplTeam < ApplicationRecord
   }.freeze
 
   belongs_to :owner, class_name: 'User'
-  belongs_to :league
+  belongs_to :league, counter_cache: :fpl_teams_count
   has_many :draft_picks
   has_and_belongs_to_many :players
   has_many :teams, through: :players

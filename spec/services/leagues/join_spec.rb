@@ -17,6 +17,8 @@ RSpec.describe Leagues::Join, type: :service do
       .to not_change { League.count }
       .and change(FplTeam, :count).from(0).to(1)
 
+    binding.pry
+
     expect(service.fpl_team).to have_attributes(
       'name' => 'New fpl_team',
       'owner' => user,

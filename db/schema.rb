@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_10_045712) do
+ActiveRecord::Schema.define(version: 2024_02_08_113251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(version: 2021_09_10_045712) do
     t.bigint "owner_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "fpl_teams_count", default: 0, null: false
     t.index ["name"], name: "index_leagues_on_name", unique: true
     t.index ["owner_id"], name: "index_leagues_on_owner_id"
   end

@@ -2,14 +2,15 @@
 #
 # Table name: leagues
 #
-#  id         :bigint           not null, primary key
-#  active     :boolean          default(TRUE), not null
-#  code       :string           not null
-#  name       :citext           not null
-#  status     :integer          default("initialized"), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  owner_id   :bigint
+#  id              :bigint           not null, primary key
+#  active          :boolean          default(TRUE), not null
+#  code            :string           not null
+#  fpl_teams_count :integer          default(0), not null
+#  name            :citext           not null
+#  status          :integer          default("initialized"), not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  owner_id        :bigint
 #
 # Indexes
 #
@@ -44,7 +45,7 @@ class League < ApplicationRecord
   }
 
   def can_generate_draft_picks?
-    fpl_teams.count >= MIN_FPL_TEAM_QUOTA && (initialized? || draft_picks_generated?)
+    fpl_teams_count >= MIN_FPL_TEAM_QUOTA && (initialized? || draft_picks_generated?)
   end
 
   def current_draft_pick
