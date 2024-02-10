@@ -16,7 +16,7 @@ RSpec.describe LeagueDecorator, :no_transaction do
       before { round.update(deadline_time: Round.summer_mini_draft_deadline + 1.week) }
 
       it 'returns the current_mini_draft_pick' do
-        travel_to round.deadline_time_as_time - 3.days do
+        travel_to round.deadline_time_as_time.advance(days: -3) do
           current_mini_draft_pick(fpl_team1, 1, 'summer')
 
           create :mini_draft_pick, pick_number: 1, fpl_team: fpl_team1
@@ -26,13 +26,13 @@ RSpec.describe LeagueDecorator, :no_transaction do
       end
 
       it 'returns nil if all fpl_teams have passed' do
-        travel_to round.deadline_time_as_time - 3.days do
-          create :mini_draft_pick, :passed, fpl_team: fpl_team1
-          create :mini_draft_pick, :passed, fpl_team: fpl_team1
-          create :mini_draft_pick, :passed, fpl_team: fpl_team2
-          create :mini_draft_pick, :passed, fpl_team: fpl_team2
-          create :mini_draft_pick, :passed, fpl_team: fpl_team3
-          create :mini_draft_pick, :passed, fpl_team: fpl_team3
+        travel_to round.deadline_time_as_time.advance(days: -3) do
+          create :mini_draft_pick, :passed, league: league, fpl_team: fpl_team1, pick_number: 1
+          create :mini_draft_pick, :passed, league: league, fpl_team: fpl_team1, pick_number: 2
+          create :mini_draft_pick, :passed, league: league, fpl_team: fpl_team2, pick_number: 3
+          create :mini_draft_pick, :passed, league: league, fpl_team: fpl_team2, pick_number: 4
+          create :mini_draft_pick, :passed, league: league, fpl_team: fpl_team3, pick_number: 5
+          create :mini_draft_pick, :passed, league: league, fpl_team: fpl_team3, pick_number: 6
 
           expect(decorated.current_mini_draft_pick).to be_nil
         end
@@ -43,7 +43,7 @@ RSpec.describe LeagueDecorator, :no_transaction do
       before { round.update(deadline_time: Round.winter_mini_draft_deadline + 1.week) }
 
       it 'returns the current_mini_draft_pick' do
-        travel_to round.deadline_time_as_time - 3.days do
+        travel_to round.deadline_time_as_time.advance(days: -3) do
           current_mini_draft_pick(fpl_team1, 1, 'winter')
 
           create :mini_draft_pick, :winter, pick_number: 1, fpl_team: fpl_team1
@@ -53,13 +53,13 @@ RSpec.describe LeagueDecorator, :no_transaction do
       end
 
       it 'returns nil if all fpl_teams have passed' do
-        travel_to round.deadline_time_as_time - 3.days do
-          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team1
-          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team1
-          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team2
-          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team2
-          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team3
-          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team3
+        travel_to round.deadline_time_as_time.advance(days: -3) do
+          create :mini_draft_pick, :winter, :passed, league: league, fpl_team: fpl_team1, pick_number: 1
+          create :mini_draft_pick, :winter, :passed, league: league, fpl_team: fpl_team1, pick_number: 2
+          create :mini_draft_pick, :winter, :passed, league: league, fpl_team: fpl_team2, pick_number: 3
+          create :mini_draft_pick, :winter, :passed, league: league, fpl_team: fpl_team2, pick_number: 4
+          create :mini_draft_pick, :winter, :passed, league: league, fpl_team: fpl_team3, pick_number: 5
+          create :mini_draft_pick, :winter, :passed, league: league, fpl_team: fpl_team3, pick_number: 6
 
           expect(decorated.current_mini_draft_pick).to be_nil
         end
@@ -69,17 +69,17 @@ RSpec.describe LeagueDecorator, :no_transaction do
 
   describe '#next_draft_pick' do
     context 'when summer mini draft' do
-      before { round.update(deadline_time: Round.summer_mini_draft_deadline + 1.week) }
+      before { round.update(deadline_time: Round.summer_mini_draft_deadline.advance(weeks: 1)) }
 
       it 'skips teams with consecutive passes' do
-        travel_to round.deadline_time_as_time - 3.days do
-          create :mini_draft_pick, fpl_team: fpl_team1
-          create :mini_draft_pick, :passed, fpl_team: fpl_team2
-          create :mini_draft_pick, fpl_team: fpl_team3
-          create :mini_draft_pick, fpl_team: fpl_team3
-          create :mini_draft_pick, :passed, fpl_team: fpl_team2
-          create :mini_draft_pick, fpl_team: fpl_team1
-          create :mini_draft_pick, fpl_team: fpl_team1
+        travel_to round.deadline_time_as_time.advance(days: -3) do
+          create :mini_draft_pick, league: league, fpl_team: fpl_team1, pick_number: 1
+          create :mini_draft_pick, :passed, league: league, fpl_team: fpl_team2, pick_number: 2
+          create :mini_draft_pick, league: league, fpl_team: fpl_team3, pick_number: 3
+          create :mini_draft_pick, league: league, fpl_team: fpl_team3, pick_number: 4
+          create :mini_draft_pick, :passed, league: league, fpl_team: fpl_team2, pick_number: 5
+          create :mini_draft_pick, league: league,  fpl_team: fpl_team1, pick_number: 6
+          create :mini_draft_pick, league: league, fpl_team: fpl_team1, pick_number: 7
 
           expect(decorated.next_fpl_team).to eq(fpl_team3)
         end
@@ -87,17 +87,17 @@ RSpec.describe LeagueDecorator, :no_transaction do
     end
 
     context 'when winter mini draft' do
-      before { round.update(deadline_time: Round.winter_mini_draft_deadline + 1.week) }
+      before { round.update(deadline_time: Round.winter_mini_draft_deadline.advance(weeks: 1)) }
 
       it 'skips teams with consecutive passes' do
-        travel_to round.deadline_time_as_time - 3.days do
-          create :mini_draft_pick, :winter, fpl_team: fpl_team1
-          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team3
-          create :mini_draft_pick, :winter, fpl_team: fpl_team2
-          create :mini_draft_pick, :winter, fpl_team: fpl_team2
-          create :mini_draft_pick, :winter, :passed, fpl_team: fpl_team3
-          create :mini_draft_pick, :winter, fpl_team: fpl_team1
-          create :mini_draft_pick, :winter, fpl_team: fpl_team1
+        travel_to round.deadline_time_as_time.advance(days: -3) do
+          create :mini_draft_pick, :winter, league: league, fpl_team: fpl_team1, pick_number: 1
+          create :mini_draft_pick, :winter, :passed, league: league, fpl_team: fpl_team3, pick_number: 2
+          create :mini_draft_pick, :winter, league: league, fpl_team: fpl_team2, pick_number: 3
+          create :mini_draft_pick, :winter, league: league, fpl_team: fpl_team2, pick_number: 4
+          create :mini_draft_pick, :winter, :passed, league: league, fpl_team: fpl_team3, pick_number: 5
+          create :mini_draft_pick, :winter, league: league, fpl_team: fpl_team1, pick_number: 6
+          create :mini_draft_pick, :winter, league: league, fpl_team: fpl_team1, pick_number: 7
 
           expect(decorated.next_fpl_team).to eq(fpl_team2)
         end

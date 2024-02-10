@@ -37,7 +37,7 @@ class Api::LeaguesController < ApplicationController
     League
       .includes(:fpl_teams, :owner)
       .joins(:fpl_teams)
-      .where('fpl_teams.owner_id = ?', current_user.id)
+      .where(fpl_teams: { owner_id: current_user.id })
       .order(sort_params.to_h)
   end
 

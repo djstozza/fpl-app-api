@@ -23,15 +23,15 @@ class LeagueDecorator < Draper::Decorator
   end
 
   def fpl_team_by_index(index)
-    if index < fpl_team_count
-      ordered_fpl_teams[index % fpl_team_count]
+    if index < fpl_teams_count
+      ordered_fpl_teams[index % fpl_teams_count]
     else
-      ordered_fpl_teams.reverse[index % fpl_team_count]
+      ordered_fpl_teams.reverse[index % fpl_teams_count]
     end
   end
 
   def fpl_team_divider(index)
-    next_mini_draft_pick_number(index) % (2 * fpl_team_count)
+    next_mini_draft_pick_number(index) % (2 * fpl_teams_count)
   end
 
   def fpl_team_index(index)
@@ -82,10 +82,6 @@ class LeagueDecorator < Draper::Decorator
       else
         fpl_teams.order(rank: :desc)
       end
-  end
-
-  def fpl_team_count
-    fpl_teams.count
   end
 
   def build_mini_draft_pick(index, fpl_team)

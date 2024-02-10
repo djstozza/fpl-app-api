@@ -6,6 +6,7 @@ class Leagues::GenerateDraftPick < Leagues::BaseService
 
   def initialize(league, user)
     @league = league
+    @fpl_teams_count = league.fpl_teams_count
     @user = user
   end
 

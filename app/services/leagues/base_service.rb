@@ -1,6 +1,12 @@
 # Base logic for league services
 class Leagues::BaseService < ApplicationService
-  attr_reader :league, :name, :fpl_team, :code, :fpl_team_name, :user
+  attr_reader :league,
+              :name,
+              :fpl_team,
+              :code,
+              :fpl_team_name,
+              :user,
+              :fpl_teams_count
 
   def initialize(data, user, options = {})
     @league = options[:league] || League.new
@@ -36,16 +42,12 @@ class Leagues::BaseService < ApplicationService
   end
 
   def min_fpl_team_quota
-    return if fpl_team_count >= League::MIN_FPL_TEAM_QUOTA
+    return if fpl_teams_count >= League::MIN_FPL_TEAM_QUOTA
 
     errors.add(:base, "There must be at least #{League::MIN_FPL_TEAM_QUOTA} teams present")
   end
 
   def fpl_teams
     @fpl_teams ||= league.fpl_teams
-  end
-
-  def fpl_team_count
-    @fpl_team_count ||= fpl_teams.count
   end
 end

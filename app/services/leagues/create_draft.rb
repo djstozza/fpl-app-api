@@ -6,6 +6,7 @@ class Leagues::CreateDraft < Leagues::BaseService
 
   def initialize(league, user)
     @league = league
+    @fpl_teams_count = league.fpl_teams_count
     @user = user
   end
 
@@ -25,21 +26,21 @@ class Leagues::CreateDraft < Leagues::BaseService
   private
 
   def total_picks
-    fpl_team_count * League::PICKS_PER_TEAM
+    fpl_teams_count * League::PICKS_PER_TEAM
   end
 
   def fpl_team_index(index)
-    divider = index % (2 * fpl_team_count)
+    divider = index % (2 * fpl_teams_count)
     divider.zero? ? divider : divider - 1
   end
 
   def fpl_team(index)
     fpl_team_index = fpl_team_index(index)
 
-    if fpl_team_index < fpl_team_count
-      fpl_teams[fpl_team_index % fpl_team_count]
+    if fpl_team_index < fpl_teams_count
+      fpl_teams[fpl_team_index % fpl_teams_count]
     else
-      fpl_teams.reverse[fpl_team_index % fpl_team_count]
+      fpl_teams.reverse[fpl_team_index % fpl_teams_count]
     end
   end
 
