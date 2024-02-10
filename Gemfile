@@ -70,6 +70,8 @@ group :development, :test do
 
   gem 'responders'
 
+  gem 'faraday-retry'
+
   # Style and Lint checking
   gem 'rubocop', require: false
   gem 'rubocop-performance', require: false
