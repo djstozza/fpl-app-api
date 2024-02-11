@@ -98,7 +98,6 @@ Rails.application.routes.draw do
       scope module: :teams do
         # resources :fixtures, only: %i[index]
         resource :fixtures, only: %i[show]
-        
       end
     end
   end

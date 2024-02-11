@@ -18,7 +18,7 @@ class Leagues::BaseService < ApplicationService
   end
 
   def call
-    return unless valid?
+    nil unless valid?
   end
 
   private

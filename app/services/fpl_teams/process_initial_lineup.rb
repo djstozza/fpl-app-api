@@ -1,6 +1,7 @@
 # Create the first lineup for an fpl_team
 class FplTeams::ProcessInitialLineup < ApplicationService
   attr_reader :fpl_team, :round, :fpl_team_list
+
   validate :valid_fpl_team_list
 
   def initialize(fpl_team)

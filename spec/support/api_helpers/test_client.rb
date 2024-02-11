@@ -51,15 +51,15 @@ module APIHelpers
     end
 
     def data
-      fetch_result(:data) { json.dig('data') }
+      fetch_result(:data) { json['data'] }
     end
 
     def errors
-      fetch_result(:errors) { json.dig('errors') }
+      fetch_result(:errors) { json['errors'] }
     end
 
     def meta
-      fetch_result(:errors) { json.dig('meta') }
+      fetch_result(:errors) { json['meta'] }
     end
 
     def timestamp(*attrs)

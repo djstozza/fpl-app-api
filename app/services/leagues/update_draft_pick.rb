@@ -1,6 +1,7 @@
 # Draft a player or select a place in the mini draft
 class Leagues::UpdateDraftPick < Leagues::BaseService
   attr_reader :player_id, :mini_draft, :league, :draft_pick, :player, :user
+
   delegate :fpl_team, to: :draft_pick
 
   validate :valid_data

@@ -18,9 +18,10 @@ RSpec.describe 'api/leagues', type: :request do
   let!(:fpl_team) { create :fpl_team, league: league, owner: user }
 
   describe 'GET /index' do
-    let(:league_1) { create :league } 
+    let(:league_1) { create :league }
     let!(:another_fpl_team) { create :fpl_team, league: league_1, owner: user }
     let!(:different_owner_fpl_team) { create :fpl_team, league: league_1 }
+
     it 'returns a list of the leagues for which the user has fpl_teams' do
       api.authenticate(user)
       api.get api_leagues_url, params: { sort: { name: 'desc' } }

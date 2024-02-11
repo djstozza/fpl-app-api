@@ -1,5 +1,6 @@
 class Auth::ProcessToken < ApplicationService
   attr_reader :request, :current_user_id
+
   validate :valid_token
 
   def initialize(request)

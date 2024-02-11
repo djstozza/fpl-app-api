@@ -141,3 +141,10 @@ RSpec/AnyInstance:
 GlobalVars:
   AllowedVariables:
     - $redis
+
+Naming/VariableNumber:
+  Enabled: false
+
+Lint/MissingSuper:
+  Enabled: false
+

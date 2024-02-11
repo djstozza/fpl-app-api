@@ -4,7 +4,7 @@ class LeagueDecorator < Draper::Decorator
   def current_mini_draft_pick(index = 0)
     return if active_fpl_teams.empty?
 
-    fpl_team = next_fpl_team(index, true)
+    fpl_team = next_fpl_team(index, no_recursion: true)
     return build_mini_draft_pick(index, fpl_team) if fpl_team && active_fpl_teams.include?(fpl_team)
 
     # Teams are no longer active in the mini draft once there have been two consecutive passes.
@@ -12,7 +12,7 @@ class LeagueDecorator < Draper::Decorator
     current_mini_draft_pick(index + 1)
   end
 
-  def next_fpl_team(index = 0, no_recursion = false)
+  def next_fpl_team(index = 0, no_recursion: false)
     return if active_fpl_teams.blank?
 
     index = fpl_team_index(index)
