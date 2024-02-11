@@ -52,9 +52,6 @@ gem 'httparty'
 # Allow easy cloning of application record instances, including has_many associations etc
 gem 'amoeba'
 
-# TODO: remove once upgraded to rails 7 - https://stackoverflow.com/questions/71191685/visit-psych-nodes-alias-unknown-alias-default-psychbadalias
-gem 'psych', '< 4'
-
 group :development, :test do
   # Identify inefficient ActiveRecord queries
   gem 'bullet'

@@ -232,7 +232,6 @@ GEM
       method_source (~> 1.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    psych (3.3.4)
     public_suffix (5.0.4)
     puma (4.3.12)
       nio4r (~> 2.0)
@@ -421,7 +420,6 @@ DEPENDENCIES
   pronto-rubocop
   pry
   pry-rails
-  psych (< 4)
   puma (~> 4.1)
   rack-cors
   rails (~> 7.0)
