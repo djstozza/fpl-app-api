@@ -1,24 +1,25 @@
-:schedule:
-  Rounds::ProcessJob:
-    cron: '0 */1 * * *'
-    description: 'Update round stats every hour'
+:scheduler:
+  :schedule:
+    Rounds::ProcessJob:
+      cron: '0 */1 * * *'
+      description: 'Update round stats every hour'
 
-  Rounds::ProcessCurrentRoundFixturesJob:
+    Rounds::ProcessCurrentRoundFixturesJob:
+        cron: '*/10 11-23 * * *'
+        description: 'Update fixture stats every 10 minutes between 11am and 11pm UTC and broadcast'
+
+    Teams::PopulateJob:
       cron: '*/10 11-23 * * *'
-      description: 'Update fixture stats every 10 minutes between 11am and 11pm UTC and broadcast'
+      description: 'Update team stats every 10 minutes between 11am and 11pm UTC'
 
-  Teams::PopulateJob:
-    cron: '*/10 11-23 * * *'
-    description: 'Update team stats every 10 minutes between 11am and 11pm UTC'
+    Players::PopulateJob:
+      cron: '*/10 11-23 * * *'
+      description: 'Update player stats every 10 minutes between 11am and 11pm UTC'
 
-  Players::PopulateJob:
-    cron: '*/10 11-23 * * *'
-    description: 'Update player stats every 10 minutes between 11am and 11pm UTC'
+    Players::PopulateSummariesJob:
+      cron: '*/10 11-23 * * *'
+      description: 'Update player stats every 10 minutes between 11am and 11pm UTC'
 
-  Players::PopulateSummariesJob:
-    cron: '*/10 11-23 * * *'
-    description: 'Update player stats every 10 minutes between 11am and 11pm UTC'
-
-  Rounds::RecurringDeadlineCheckingJob:
-    cron: '0 */1 * * *'
-    description: 'Enqueue deadline dependent jobs for the current round'
+    Rounds::RecurringDeadlineCheckingJob:
+      cron: '0 */1 * * *'
+      description: 'Enqueue deadline dependent jobs for the current round'
