@@ -8,3 +8,6 @@ end
 require_relative '../config/boot'
 require 'rake'
 Rake.application.run
+
+# require_relative "../config/boot"
+# require "rake"

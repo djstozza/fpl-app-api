@@ -13,7 +13,7 @@ RSpec.describe 'api/leagues/league_id/mini_draft_picks/status', :no_transaction,
       travel_to round.deadline_time_as_time - 3.days do
         api.authenticate fpl_team1.owner
 
-        api.get api_league_mini_draft_picks_status_index_url(league)
+        api.get api_league_mini_draft_picks_status_index_url(league), params: { mini_draft_pick: { season: season } }
 
         expect(api.response).to have_http_status(:success)
         expect(api.data).to match(
@@ -39,7 +39,7 @@ RSpec.describe 'api/leagues/league_id/mini_draft_picks/status', :no_transaction,
         create :mini_draft_pick, :passed, pick_number: 3, season: season, fpl_team: fpl_team2
         create :mini_draft_pick, :passed, pick_number: 4, season: season, fpl_team: fpl_team1
 
-        api.get api_league_mini_draft_picks_status_index_url(league)
+        api.get api_league_mini_draft_picks_status_index_url(league), params: { mini_draft_pick: { season: season } }
 
         expect(api.response).to have_http_status(:success)
 

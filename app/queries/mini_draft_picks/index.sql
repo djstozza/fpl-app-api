@@ -56,5 +56,6 @@ LEFT JOIN teams in_team ON in_team.id = in_player.team_id
 JOIN fpl_teams ON fpl_teams.id = mini_draft_picks.fpl_team_id
 JOIN users ON fpl_teams.owner_id = users.id
 WHERE mini_draft_picks.league_id = :league_id
+  AND fpl_teams.league_id = :league_id
   AND :season = season
 ORDER BY mini_draft_picks.pick_number ASC

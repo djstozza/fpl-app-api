@@ -13,7 +13,7 @@ RSpec.describe 'api/registrations', type: :request do
     end
     .to change(User, :count).from(0).to(1)
 
-    decoded_jwt = JWT.decode(api.data['token'], Rails.application.secrets.secret_key_base)[0]
+    decoded_jwt = JWT.decode(api.data['token'], Rails.application.secret_key_base)[0]
 
     user = User.first
 

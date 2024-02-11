@@ -25,7 +25,7 @@ class Auth::ProcessToken < ApplicationService
   def jwt_payload
     JWT.decode(
       request.headers['Authorization'].split(' ')[1],
-      Rails.application.secrets.secret_key_base,
+      Rails.application.secret_key_base,
     ).first
   end
 end

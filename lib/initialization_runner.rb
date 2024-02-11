@@ -61,3 +61,6 @@ part(:verify) do
   print_heading 'Verifying setup'
   system! 'bin/rake RSPEC_PROFILES_DISABLED=true'
 end
+
+module InitializationRunner
+end

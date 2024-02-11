@@ -3,7 +3,7 @@ module Api::FplTeamLists
     load_resource :fpl_team_list
 
     def index
-      respond_with query if stale?(query)
+      respond_with query
     end
 
     private

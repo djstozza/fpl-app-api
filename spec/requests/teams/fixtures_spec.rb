@@ -29,7 +29,6 @@ RSpec.describe '/api/teams/:team_id/fixtures', :no_transaction, type: :request d
 
   it 'renders a sortable list of fixtures for the team' do
     api.get api_team_fixtures_url(team_id: team1.id), params: { sort: { result: 'asc' } }
-
     expect(api.data).to match(
       [
         a_hash_including(

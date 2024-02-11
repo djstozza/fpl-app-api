@@ -3,8 +3,8 @@ class Api::Teams::FixturesController < ApplicationController
 
   before_action :check_cache
 
-  # GET /api/teams/fixtures
-  def index
+  # GET /api/teams/id/fixtures
+  def show
     respond_with SqlQuery.results(
       'teams/fixtures',
       team_id: team.id,

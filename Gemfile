@@ -8,7 +8,7 @@ ruby '3.2.2'
 gem 'dotenv-rails', groups: %i[development test]
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 7.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.4.3'
 # Use Puma as the app server
@@ -79,7 +79,7 @@ group :development, :test do
   gem 'rubocop-rspec', require: false
 
   # Test framework
-  gem 'rspec-rails', '~> 4.0.2'
+  gem 'rspec-rails'
 end
 
 group :development do

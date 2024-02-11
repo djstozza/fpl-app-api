@@ -96,7 +96,9 @@ Rails.application.routes.draw do
     resources :positions, only: %i[index]
     resources :teams, only: %i[index show] do
       scope module: :teams do
-        resources :fixtures, only: %i[index]
+        # resources :fixtures, only: %i[index]
+        resource :fixtures, only: %i[show]
+        
       end
     end
   end

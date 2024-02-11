@@ -8,7 +8,7 @@ RSpec.describe 'api/sessions', type: :request do
     it 'returns the user token' do
       api.post api_sessions_path, params: { user: { email: user.email, password: user.password } }
 
-      decoded_jwt = JWT.decode(api.data['token'], Rails.application.secrets.secret_key_base)[0]
+      decoded_jwt = JWT.decode(api.data['token'], Rails.application.secret_key_base)[0]
 
       expect(decoded_jwt).to include(
         'id' => user.id,
@@ -48,7 +48,7 @@ RSpec.describe 'api/sessions', type: :request do
       travel_to ENV['SESSION_EXPIRY'].to_i.minutes.from_now - 1.minute do
         api.put api_sessions_path
 
-        decoded_jwt = JWT.decode(api.data['token'], Rails.application.secrets.secret_key_base)[0]
+        decoded_jwt = JWT.decode(api.data['token'], Rails.application.secret_key_base)[0]
 
         expect(decoded_jwt).to include(
           'id' => user.id,

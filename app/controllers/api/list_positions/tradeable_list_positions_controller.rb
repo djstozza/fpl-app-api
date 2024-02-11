@@ -3,7 +3,7 @@ module Api::ListPositions
     load_resource :list_position
 
     def index
-      respond_with query if stale?(query)
+      respond_with query
     end
 
     private

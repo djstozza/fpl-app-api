@@ -3,7 +3,7 @@ module Api::FplTeamLists
     load_resource :fpl_team_list
 
     def index
-      respond_with waiver_picks_query if stale?(waiver_picks_query)
+      respond_with waiver_picks_query
     end
 
     def destroy

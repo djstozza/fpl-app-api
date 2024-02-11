@@ -9,7 +9,7 @@ RSpec.describe Users::SignUp, type: :service do
     )
 
     token = service.call
-    decoded_jwt = JWT.decode(token, Rails.application.secrets.secret_key_base)[0]
+    decoded_jwt = JWT.decode(token, Rails.application.secret_key_base)[0]
 
     expect(decoded_jwt).to match(
       'id' => service.user.id,
