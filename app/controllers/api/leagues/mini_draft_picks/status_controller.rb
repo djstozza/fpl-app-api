@@ -1,5 +1,5 @@
 module Api::Leagues
-  class MiniDraftPicks::StatusController < Api::Leagues::MiniDraftPicksController
+  class MiniDraftPicks::StatusController < Api::LeaguesController
     load_resource :league
 
     # GET /api/leagues/1/mini_draft_picks/status
