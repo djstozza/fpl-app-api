@@ -39,8 +39,8 @@ fixtures.started,
   END
 ) AS result,
 JSONB_BUILD_OBJECT(
-  'id', opposition.id::TEXT,
-  'short_name', opposition.short_name
+  'id', opposition_team.id::TEXT,
+  'short_name', opposition_team.short_name
 ) AS opponent,
 JSONB_BUILD_OBJECT(
   'id', round::TEXT,
@@ -69,8 +69,8 @@ CROSS JOIN LATERAL JSONB_TO_RECORDSET(history) history(
   round INTEGER,
   fixture INTEGER
 )
-JOIN teams opposition
-  ON opposition.external_id = opponent_team
+JOIN teams opposition_team
+  ON opposition_team.external_id = opponent_team
 JOIN rounds
   ON rounds.external_id = round
 JOIN fixtures
