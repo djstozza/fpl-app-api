@@ -200,7 +200,7 @@ GEM
       timeout
     net-smtp (0.4.0.1)
       net-protocol
-    nio4r (2.7.0)
+    nio4r (2.7.1)
     nokogiri (1.16.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -233,7 +233,7 @@ GEM
     pry-rails (0.3.9)
       pry (>= 0.10.4)
     public_suffix (5.0.4)
-    puma (4.3.12)
+    puma (6.4.2)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.7.3)
@@ -282,7 +282,8 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rdoc (6.3.3)
-    redis (4.8.1)
+    redis (5.1.0)
+      redis-client (>= 0.17.0)
     redis-client (0.19.1)
       connection_pool
     regexp_parser (2.9.0)
@@ -420,10 +421,10 @@ DEPENDENCIES
   pronto-rubocop
   pry
   pry-rails
-  puma (~> 4.1)
+  puma
   rack-cors
   rails (~> 7.0)
-  redis (~> 4.0)
+  redis
   responders
   rspec-rails
   rubocop
