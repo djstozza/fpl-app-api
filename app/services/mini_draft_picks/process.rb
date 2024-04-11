@@ -24,7 +24,7 @@ class MiniDraftPicks::Process < MiniDraftPicks::Base
 
     return if errors.any?
 
-    MiniDraftPicks::BroadcastJob.perform_later(MiniDraftPick.last)
+    MiniDraftPicks::BroadcastJob.perform_later(league.reload.mini_draft_picks.last)
   end
 
   private

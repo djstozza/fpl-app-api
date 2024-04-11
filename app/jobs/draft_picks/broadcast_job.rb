@@ -1,13 +1,12 @@
 # Broadcast successful draft picks
 class DraftPicks::BroadcastJob < ApplicationJob
-  def perform(draft_pick)
-    player = draft_pick.player
+  def perform(draft_pick, player, mini_draft)
     user = draft_pick.owner
 
     player_substr = "has drafted #{player&.name} (#{player&.team&.short_name})"
     mini_draft_substr = 'has made a mini draft pick'
 
-    success_str = "#{user.username} #{draft_pick.mini_draft ? mini_draft_substr : player_substr}"
+    success_str = "#{user.username} #{mini_draft ? mini_draft_substr : player_substr}"
 
     ActionCable
       .server
