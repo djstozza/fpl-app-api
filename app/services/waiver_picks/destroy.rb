@@ -7,7 +7,7 @@ class WaiverPicks::Destroy < WaiverPicks::BaseService
   def initialize(waiver_pick, user)
     @waiver_pick = waiver_pick
     @fpl_team_list = waiver_pick.fpl_team_list
-    @waiver_picks = fpl_team_list.waiver_picks.includes(:out_player, :in_player)
+    @waiver_picks = fpl_team_list.waiver_picks
     @user = user
   end
 

@@ -44,7 +44,7 @@ class WaiverPicks::ChangeOrder < WaiverPicks::BaseService
   end
 
   def waiver_picks
-    fpl_team_list.waiver_picks.includes(:out_player, :in_player)
+    fpl_team_list.waiver_picks
   end
 
   def reorder_higher_pick_numbers
