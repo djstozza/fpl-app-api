@@ -63,7 +63,7 @@ RSpec.describe League, type: :model do
         create(:fpl_team, league: league)
       end
 
-      expect(league.can_generate_draft_picks?).to eq(true)
+      expect(league.can_generate_draft_picks?).to be(true)
     end
 
     it 'is true if the league fpl_team quota is reached and the league status is generate_draft_picks' do
@@ -73,7 +73,7 @@ RSpec.describe League, type: :model do
         create(:fpl_team, league: league)
       end
 
-      expect(league.can_generate_draft_picks?).to eq(true)
+      expect(league.can_generate_draft_picks?).to be(true)
     end
 
     it 'is false if the league fpl_team quota is reached and the league status is incorrect' do
@@ -83,10 +83,10 @@ RSpec.describe League, type: :model do
         create(:fpl_team, league: league)
       end
 
-      expect(league.can_generate_draft_picks?).to eq(false)
+      expect(league.can_generate_draft_picks?).to be(false)
 
       league.update(status: 'live')
-      expect(league.can_generate_draft_picks?).to eq(false)
+      expect(league.can_generate_draft_picks?).to be(false)
     end
 
     it 'is false if the league does not have enough draft picks' do
@@ -96,7 +96,7 @@ RSpec.describe League, type: :model do
         create(:fpl_team, league: league)
       end
 
-      expect(league.can_generate_draft_picks?).to eq(false)
+      expect(league.can_generate_draft_picks?).to be(false)
     end
   end
 end

@@ -36,31 +36,31 @@ RSpec.describe Round, type: :model do
     let!(:round) { create :round, :current }
 
     it 'is true if is_current = true and data_checked = false' do
-      expect(round.current?).to eq(true)
+      expect(round.current?).to be(true)
     end
 
     it 'is false if is_current = true and data_checked = true' do
       round.update(data_checked: true)
 
-      expect(round.current?).to eq(false)
+      expect(round.current?).to be(false)
     end
 
     it 'is false if is_current = false' do
       round.update(is_current: false)
 
-      expect(round.current?).to eq(false)
+      expect(round.current?).to be(false)
     end
 
     it 'is true if is_next = true if no round with is_current = true or if it is data_checked' do
       next_round = create(:round, :next)
 
-      expect(next_round.current?).to eq(false)
+      expect(next_round.current?).to be(false)
 
       round.update(data_checked: true)
-      expect(next_round.current?).to eq(true)
+      expect(next_round.current?).to be(true)
 
       round.update(is_current: false, data_checked: false)
-      expect(next_round.current?).to eq(true)
+      expect(next_round.current?).to be(true)
     end
   end
 end

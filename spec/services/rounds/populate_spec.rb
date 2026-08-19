@@ -91,8 +91,8 @@ RSpec.describe Rounds::Populate, type: :service do
       it 'sets rounds with mini_draft = true if none are present' do
         described_class.call
 
-        expect(round2.reload.mini_draft).to eq(true)
-        expect(round5.reload.mini_draft).to eq(true)
+        expect(round2.reload.mini_draft).to be(true)
+        expect(round5.reload.mini_draft).to be(true)
       end
     end
   end

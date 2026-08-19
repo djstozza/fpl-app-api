@@ -52,9 +52,7 @@ class SqlQuery
   end
 
   # Return a single field from the first row of the query
-  def get(field)
-    @dataset.get(field)
-  end
+  delegate :get, to: :@dataset
 
   # Called by Sequel when interpolating values. Allows safe interpolation into
   # other queries as a SQL fragment

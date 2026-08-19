@@ -11,7 +11,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.prepend_before(:example, no_transaction: true) do
+  config.prepend_before(:example, :no_transaction) do
     @database_cleaner_strategy = :truncation
   end
 

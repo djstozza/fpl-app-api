@@ -27,11 +27,11 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
 
       api.get api_league_draft_picks_status_index_path(league)
 
-      expect(api.data['draft_finished']).to eq(false)
-      expect(api.data['user_can_pick']).to eq(false)
+      expect(api.data['draft_finished']).to be(false)
+      expect(api.data['user_can_pick']).to be(false)
       expect(api.data['next_draft_pick_id']).to eq(draft_pick3.to_param)
-      expect(api.data['can_make_player_pick']).to eq(true)
-      expect(api.data['can_make_mini_draft_pick']).to eq(true)
+      expect(api.data['can_make_player_pick']).to be(true)
+      expect(api.data['can_make_mini_draft_pick']).to be(true)
     end
 
     it 'returns user_can_pick = true if the draft pick owner is next' do
@@ -39,11 +39,11 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
 
       api.get api_league_draft_picks_status_index_path(league)
 
-      expect(api.data['draft_finished']).to eq(false)
-      expect(api.data['user_can_pick']).to eq(true)
+      expect(api.data['draft_finished']).to be(false)
+      expect(api.data['user_can_pick']).to be(true)
       expect(api.data['next_draft_pick_id']).to eq(draft_pick3.to_param)
-      expect(api.data['can_make_player_pick']).to eq(true)
-      expect(api.data['can_make_mini_draft_pick']).to eq(true)
+      expect(api.data['can_make_player_pick']).to be(true)
+      expect(api.data['can_make_mini_draft_pick']).to be(true)
     end
 
     it 'returns draft_finished = true when all the picks have a mini_draft pick or a player associated with them' do
@@ -52,9 +52,9 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
 
       api.get api_league_draft_picks_status_index_path(league)
 
-      expect(api.data['draft_finished']).to eq(true)
-      expect(api.data['user_can_pick']).to eq(false)
-      expect(api.data['next_draft_pick_id']).to eq(nil)
+      expect(api.data['draft_finished']).to be(true)
+      expect(api.data['user_can_pick']).to be(false)
+      expect(api.data['next_draft_pick_id']).to be_nil
     end
 
     it 'returns draft_finished = false if the can_go_to_draft? is false' do
@@ -64,9 +64,9 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
 
       api.get api_league_draft_picks_status_index_path(league)
 
-      expect(api.data['draft_finished']).to eq(false)
-      expect(api.data['user_can_pick']).to eq(false)
-      expect(api.data['next_draft_pick_id']).to eq(nil)
+      expect(api.data['draft_finished']).to be(false)
+      expect(api.data['user_can_pick']).to be(false)
+      expect(api.data['next_draft_pick_id']).to be_nil
     end
 
     it 'returns can_make_player_pick = false if the players quota has been reached' do
@@ -78,7 +78,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
 
       api.get api_league_draft_picks_status_index_path(league)
 
-      expect(api.data['can_make_player_pick']).to eq(false)
+      expect(api.data['can_make_player_pick']).to be(false)
     end
 
     it 'returns can_make_mini_draft_pick = false if the user has made a mini draft pick' do
@@ -86,7 +86,7 @@ RSpec.describe 'api/leagues/league_id/draft_picks/status', :no_transaction, type
 
       api.get api_league_draft_picks_status_index_path(league)
 
-      expect(api.data['can_make_mini_draft_pick']).to eq(false)
+      expect(api.data['can_make_mini_draft_pick']).to be(false)
     end
   end
 end
