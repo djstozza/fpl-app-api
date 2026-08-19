@@ -56,7 +56,6 @@ FileUtils.chdir APP_ROOT do
 
         Ruby: #{ruby_version}
         Rails: #{Rails.version}
-        Spring is #{defined?(Spring) ? 'present' : 'not present'}
 
       GET UP AND RUNNING
 
