@@ -68,7 +68,7 @@ RSpec.describe '/inter_team_trades', :no_transaction, type: :request do
       .to not_change { InterTeamTrade.count }
       .and not_change { InterTeamTradeGroup.count }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

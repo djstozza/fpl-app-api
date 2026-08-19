@@ -96,7 +96,7 @@ RSpec.describe(
         end
         .not_to change(MiniDraftPick, :count)
 
-        expect(api.response).to have_http_status(:unprocessable_entity)
+        expect(api.response).to have_http_status(:unprocessable_content)
 
         expect(api.errors).to contain_exactly(
           a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

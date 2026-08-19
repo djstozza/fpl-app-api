@@ -62,7 +62,7 @@ RSpec.describe 'list_positions/:list_position_id/trades', :no_transaction, type:
       .to not_change { Trade.count }
       .and not_change { list_position.reload.updated_at }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

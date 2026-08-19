@@ -59,7 +59,7 @@ RSpec.describe 'list_positions/:list_position_id/waiver_picks', :no_transaction,
       end
       .not_to change(WaiverPick, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

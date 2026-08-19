@@ -110,7 +110,7 @@ RSpec.describe(
       api.post api_fpl_team_list_waiver_pick_change_order_url(fpl_team_list, waiver_pick1),
                params: { waiver_pick: { new_pick_number: 3 } }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

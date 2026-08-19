@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
 
   def respond_with(resource, meta = {})
     if resource.respond_to?(:errors) && resource.errors.present?
-      render json: serialized_errors(resource), status: meta[:status] || :unprocessable_entity
+      render json: serialized_errors(resource), status: meta[:status] || :unprocessable_content
     else
       render json: { meta: meta, data: resource }
     end

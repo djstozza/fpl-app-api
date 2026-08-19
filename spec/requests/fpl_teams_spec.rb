@@ -104,7 +104,7 @@ RSpec.describe 'api/fpl_teams', type: :request do
 
       api.put api_fpl_team_url(fpl_team), params: { fpl_team: { name: nil } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to include(
         a_hash_including('detail' => "Name can't be blank", 'source' => 'name'),
@@ -117,7 +117,7 @@ RSpec.describe 'api/fpl_teams', type: :request do
 
       api.put api_fpl_team_url(fpl_team), params: { fpl_team: { name: 'New name' } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
       expect(api.errors).to include(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),
       )

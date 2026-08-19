@@ -374,7 +374,7 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/inter_team_trade_groups', :no_t
       .to not_change { InterTeamTradeGroup.count }
       .and not_change { InterTeamTrade.count }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

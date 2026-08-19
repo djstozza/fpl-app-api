@@ -59,7 +59,7 @@ RSpec.describe(
       end
       .to not_change { inter_team_trade_group.reload.updated_at }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

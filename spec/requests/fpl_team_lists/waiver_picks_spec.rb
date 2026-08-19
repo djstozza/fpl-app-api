@@ -181,7 +181,7 @@ RSpec.describe 'fpl_team_lists/:fpl_team_list_id/waiver_picks', :no_transaction,
         .and not_change { waiver_pick3.reload.updated_at }
         .and not_change { waiver_pick4.reload.updated_at }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

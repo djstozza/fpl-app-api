@@ -27,14 +27,14 @@ RSpec.describe 'api/sessions', type: :request do
     it 'fails if invalid attributes are passed' do
       api.post api_sessions_path, params: { user: { email: user.email, password: 'invalid' } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'Email or password is invalid'),
       )
 
       api.post api_sessions_path, params: { user: { email: 'invalid@email.com', password: user.password } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'Email or password is invalid'),
       )

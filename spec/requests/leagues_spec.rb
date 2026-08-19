@@ -117,7 +117,7 @@ RSpec.describe 'api/leagues', type: :request do
 
       api.post api_leagues_url, params: { league: { name: nil, code: nil, fpl_team_name: nil } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => "Name can't be blank", 'source' => 'name'),
@@ -157,7 +157,7 @@ RSpec.describe 'api/leagues', type: :request do
 
       api.put api_league_url(league), params: { league: { name: nil, code: nil } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => "Name can't be blank", 'source' => 'name'),
@@ -171,7 +171,7 @@ RSpec.describe 'api/leagues', type: :request do
 
       api.put api_league_url(league), params: { league: { name: 'New league', code: '12345678' } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

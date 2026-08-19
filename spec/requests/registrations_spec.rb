@@ -33,7 +33,7 @@ RSpec.describe 'api/registrations', type: :request do
 
   it 'fails if invalid attributes are passed' do
     api.post api_registrations_path, params: { user: { email: 'invalid', password: '12345' } }
-    expect(api.response).to have_http_status(:unprocessable_entity)
+    expect(api.response).to have_http_status(:unprocessable_content)
     expect(api.errors).to contain_exactly(
       a_hash_including('detail' => 'Email is invalid', 'source' => 'email'),
       a_hash_including(

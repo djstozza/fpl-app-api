@@ -109,7 +109,7 @@ RSpec.describe(
       .and not_change { list_position1.reload.updated_at }
       .and not_change { list_position2.reload.updated_at }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You are not authorised to perform this action', 'source' => 'base'),

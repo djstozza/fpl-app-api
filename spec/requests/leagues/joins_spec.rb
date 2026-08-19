@@ -47,7 +47,7 @@ RSpec.describe 'api/leagues/league_id/joins', type: :request do
       api.post api_leagues_join_url,
                params: { league: { fpl_team_name: 'New fpl_team', code: league.code, name: league.name } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'You have already joined this league', 'source' => 'base'),
@@ -60,7 +60,7 @@ RSpec.describe 'api/leagues/league_id/joins', type: :request do
       api.post api_leagues_join_url,
                params: { league: { fpl_team_name: 'New fpl_team', code: league.code, name: 'invalid' } }
 
-      expect(api.response).to have_http_status(:unprocessable_entity)
+      expect(api.response).to have_http_status(:unprocessable_content)
 
       expect(api.errors).to contain_exactly(
         a_hash_including('detail' => 'Name does not match with any league on record', 'source' => 'name'),
