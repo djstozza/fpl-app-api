@@ -32,5 +32,5 @@ class InterTeamTradeGroup < ApplicationRecord
   delegate :league, :owner, to: :out_fpl_team
   delegate :round, to: :out_fpl_team_list
 
-  enum status: { pending: 0, submitted: 1, approved: 2, declined: 3, expired: 4, cancelled: 5 }
+  enum :status, { pending: 0, submitted: 1, approved: 2, declined: 3, expired: 4, cancelled: 5 }
 end

@@ -37,7 +37,7 @@ class League < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: false, allow_nil: true }
   validates :code, presence: true, length: { is: CODE_LENGTH, allow_nil: true }
 
-  enum status: {
+  enum :status, {
     initialized: 0,
     draft_picks_generated: 1,
     draft: 2,

@@ -30,7 +30,7 @@ class WaiverPick < ApplicationRecord
 
   validates :status, :pick_number, presence: true
   validates :pick_number, uniqueness: { scope: :fpl_team_list_id }
-  enum status: {
+  enum :status, {
     pending: 0,
     approved: 1,
     declined: 2,

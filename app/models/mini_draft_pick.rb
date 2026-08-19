@@ -39,7 +39,7 @@ class MiniDraftPick < ApplicationRecord
   validates :in_player, :out_player, presence: true, unless: :passed
   validates :in_player, :out_player, absence: true, if: :passed
 
-  enum season: {
+  enum :season, {
     summer: 0,
     winter: 1,
   }

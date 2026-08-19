@@ -1,16 +1,16 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.2'
+ruby '3.4.4'
 
 # Configure ENV from .env files
 # Load this first so ENV is available for other gems
 gem 'dotenv-rails', groups: %i[development test]
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.0'
+gem 'rails', '~> 8.1'
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 1.4.3'
+gem 'pg', '~> 1.5'
 # Use Puma as the app server
 gem 'puma'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -27,7 +27,7 @@ gem 'devise'
 gem 'jwt'
 
 # The Database Toolkit for Ruby
-gem 'sequel', '~> 5.23'
+gem 'sequel', '~> 5.0'
 gem 'sequel_pg', require: false
 
 # Background processing jobs

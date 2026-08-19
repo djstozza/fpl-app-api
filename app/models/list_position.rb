@@ -23,7 +23,7 @@ class ListPosition < ApplicationRecord
   delegate :league, to: :fpl_team
   delegate :position, to: :player
 
-  enum role: { starting: 0, substitute_1: 1, substitute_2: 2, substitute_3: 3, substitute_gkp: 4 }
+  enum :role, { starting: 0, substitute_1: 1, substitute_2: 2, substitute_3: 3, substitute_gkp: 4 }
 
   validates :player_id, uniqueness: { scope: [:fpl_team_list_id] }
   validate :valid_substitutes
