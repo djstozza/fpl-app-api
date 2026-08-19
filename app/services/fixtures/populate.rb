@@ -44,6 +44,6 @@ class Fixtures::Populate < BasePopulateService
   attr_accessor :round
 
   def response
-    @response ||= ::HTTParty.get(fixtures_url(round&.external_id))
+    @response ||= fpl_get(fixtures_url(round&.external_id))
   end
 end

@@ -22,6 +22,6 @@ class Teams::Populate < BasePopulateService
   private
 
   def response
-    @response ||= ::HTTParty.get(bootstrap_static_url)['teams']
+    @response ||= fpl_get(bootstrap_static_url)['teams']
   end
 end

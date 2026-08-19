@@ -31,5 +31,19 @@ RSpec.describe Teams::Populate, type: :service do
       expect { described_class.call }
         .to change { team.reload.name }.from('Scunthorpe United').to('Arsenal')
     end
+
+    it 'retries when rate limited by the FPL API' do
+      stub_request(:get, 'https://fantasy.premierleague.com/api/bootstrap-static/')
+        .to_return(
+          { status: 429, headers: { 'Retry-After' => '0' } },
+          {
+            status: 200,
+            body: file_fixture('bootstrap_static.json').read,
+            headers: { 'Content-Type' => 'application/json' },
+          },
+        )
+
+      expect { described_class.call }.to change(Team, :count).from(0).to(20)
+    end
   end
 end

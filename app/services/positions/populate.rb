@@ -19,6 +19,6 @@ class Positions::Populate < BasePopulateService
   private
 
   def response
-    @response ||= ::HTTParty.get(bootstrap_static_url)['element_types']
+    @response ||= fpl_get(bootstrap_static_url)['element_types']
   end
 end

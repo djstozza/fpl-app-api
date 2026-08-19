@@ -33,6 +33,7 @@ gem 'sequel_pg', require: false
 # Background processing jobs
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
+gem 'sidekiq-throttled'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

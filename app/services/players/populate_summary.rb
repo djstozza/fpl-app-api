@@ -16,7 +16,7 @@ class Players::PopulateSummary < BasePopulateService
   attr_accessor :player
 
   def response
-    @response ||= ::HTTParty.get(player_summary_url(player.external_id))
+    @response ||= fpl_get(player_summary_url(player.external_id))
   end
 
   def history

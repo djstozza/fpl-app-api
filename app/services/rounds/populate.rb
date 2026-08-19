@@ -29,7 +29,7 @@ class Rounds::Populate < BasePopulateService
   private
 
   def response
-    @response ||= ::HTTParty.get(bootstrap_static_url)['events']
+    @response ||= fpl_get(bootstrap_static_url)['events']
   end
 
   def mini_draft_rounds

@@ -52,7 +52,7 @@ class Players::Populate < BasePopulateService
   private
 
   def response
-    @response ||= ::HTTParty.get(bootstrap_static_url)['elements']
+    @response ||= fpl_get(bootstrap_static_url)['elements']
   end
 
   def team(external_id)
