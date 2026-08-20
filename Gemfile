@@ -16,7 +16,9 @@ gem 'puma'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
-gem 'redis'
+# Pinned below 6 - actioncable's Redis pubsub adapter hard-requires "< 6" (as of actioncable 8.1.3.1)
+# and raises Gem::LoadError on boot otherwise.
+gem 'redis', '< 6'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
