@@ -9,8 +9,8 @@ Users are able to create their own leagues and challenge their friends to see wh
 ## Getting Started
 
 ### Prerequisites
-- Ruby
-- Postgres
+- Ruby 3.4.10
+- Postgres 18
 - Redis
 
 ### Setup
@@ -21,9 +21,11 @@ Please find below the steps required to set up and run Fpl App Api. Once this ha
 bin/setup
 ```
 
-**NB:** Please note that setup may take over 10 minutes. In order to remain under the Heroku 10,000 row limit for free-tier databases, I was forced to include `player_fixture_histories` and `player_past_histories` as `jsonb` on the `Player` model rather than having them as tables.
+**NB:** In order to remain under the Heroku 10,000 row limit for free-tier databases, I was forced to include `player_fixture_histories` and `player_past_histories` as `jsonb` on the `Player` model rather than having them as tables.
 
 Apologies in advance!
+
+Each player's history is fetched from the FPL API individually and is throttled to avoid rate limiting, so this happens via a Sidekiq job per player rather than inline during `bin/setup`. Player history won't populate until you start Redis and Sidekiq (see below).
 
 #### Run the server
 ```
